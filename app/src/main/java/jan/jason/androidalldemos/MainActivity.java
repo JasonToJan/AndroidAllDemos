@@ -8,6 +8,7 @@ import android.view.View;
 
 import jan.jason.androidalldemos.databinding.ActivityMainAllBinding;
 import jan.jason.androidalldemos.transitions.TransitionMainActivity;
+import jan.jason.androidalldemos.visualizer.VisualizerMainActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainBinding=DataBindingUtil.setContentView(this,R.layout.activity_main_all);
 
         mainBinding.amBtn1.setOnClickListener(this);
+        mainBinding.amBtn2.setOnClickListener(this);
     }
 
     @Override
@@ -27,6 +29,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.am_btn1:
                 startActivity(new Intent(this,TransitionMainActivity.class));
+                break;
+
+            case R.id.am_btn2:
+                startActivity(new Intent(this,VisualizerMainActivity.class));
                 break;
 
         }

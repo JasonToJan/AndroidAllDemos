@@ -1,2 +1,5 @@
 include ':app'
-include ':transitions:transitionEverywhere',':transitions:transitionEverywhereDemo'                //转场动画相关
+//转场动画相关
+include ':transitions:transitionEverywhere',':transitions:transitionEverywhereDemo'
+//频谱相关
+include ':visualizer:visualizerlib'

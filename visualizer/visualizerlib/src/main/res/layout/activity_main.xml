@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout
+    android:id="@+id/panelInfo"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="vertical"
+    android:splitMotionEvents="false"
+    tools:context=".activity.ActivityHost">
+
+    <LinearLayout
+        android:id="@+id/panelTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="vertical"
+        android:splitMotionEvents="false">
+
+        <include layout="@layout/activity_main_top_title"/>
+
+        <include layout="@layout/activity_main_top_controls"/>
+
+    </LinearLayout>
+
+    <jan.jason.visualizerlib.ui.BgListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:nextFocusForward="@+id/btnAdd">
+
+        <requestFocus/>
+    </jan.jason.visualizerlib.ui.BgListView>
+
+</LinearLayout>

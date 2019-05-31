@@ -16,7 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".transitions.TransitionMainActivity"></activity>
+        <activity android:name=".transitions.TransitionMainActivity" />
+        <activity android:name=".visualizer.VisualizerMainActivity"></activity>
     </application>
 
 </manifest>
