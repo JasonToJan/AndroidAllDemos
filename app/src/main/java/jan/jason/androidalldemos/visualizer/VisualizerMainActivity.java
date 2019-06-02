@@ -20,6 +20,7 @@ public class VisualizerMainActivity extends AppCompatActivity implements View.On
 
         mainBinding=DataBindingUtil.setContentView(this,R.layout.activity_visualizer_main);
         mainBinding.avmVisualizerBtn1.setOnClickListener(this);
+        mainBinding.avmVisualizerBtn2.setOnClickListener(this);
     }
 
     @Override
@@ -27,6 +28,10 @@ public class VisualizerMainActivity extends AppCompatActivity implements View.On
         switch (v.getId()){
             case R.id.avm_visualizer_btn1:
                 startActivity(new Intent(this,ActivityHost.class));
+                break;
+
+            case R.id.avm_visualizer_btn2:
+                startActivity(new Intent(this,VisualizerDemoActivity.class));
                 break;
         }
     }

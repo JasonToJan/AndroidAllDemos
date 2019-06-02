@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--使用线性布局
+    由于你这儿是音乐列表中的一行，因此android:layout_height肯定不可以设置为填充父控件
+    android:layout_height="66dp"，个人感觉66很吉利，而且显示效果也还不错-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_visualizer_root"
+    android:layout_width="match_parent"
+    android:layout_height="66dp">
+
+    <!--android:layout_gravity="center_vertical"   使ImageView在LinearLayout中垂直方向居中显示
+        android:layout_marginHorizontal="5dp"，和左右两侧的控件都相距5dp
+        android:scaleType="fitXY"   使图片填充整个ImageView，偏大的图片会压缩，偏小的图片会拉伸-->
+    <ImageView
+        android:id="@+id/item_visualizer_artwork"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_vertical"
+        android:background="@color/colorPrimaryDark"
+        android:layout_marginHorizontal="5dp"
+        android:scaleType="fitXY"/>
+
+    <!--ImageView右侧添加再添加一个LinerLayout布局，布局方向为垂直
+        android:gravity="center_vertical"  让LinearLayout中的控件垂直居中显示-->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/item_visualizer_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="光辉岁月"
+            android:textColor="#050505" />
+        <TextView
+            android:id="@+id/item_visualizer_artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Beyond"
+            android:textColor="#808080"
+            android:textSize="10dp"/>
+    </LinearLayout>
+
+</LinearLayout>
