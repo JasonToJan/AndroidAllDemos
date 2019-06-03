@@ -43,6 +43,7 @@ dependencies {
 
     implementation project(':transitions:transitionEverywhereDemo')
     implementation project(':visualizer:visualizerlib')
+    implementation project(':visualizer:visualizerlibrary')
 
 
 }

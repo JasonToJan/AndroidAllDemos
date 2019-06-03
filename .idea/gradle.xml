@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/transitions/transitioneverywheredemo" />
             <option value="$PROJECT_DIR$/visualizer" />
             <option value="$PROJECT_DIR$/visualizer/visualizerlib" />
+            <option value="$PROJECT_DIR$/visualizer/visualizerlibrary" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

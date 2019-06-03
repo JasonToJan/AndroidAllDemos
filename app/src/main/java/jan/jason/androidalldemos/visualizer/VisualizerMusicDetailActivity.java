@@ -4,11 +4,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import java.util.Date;
 import jan.jason.androidalldemos.R;
 import jan.jason.androidalldemos.utils.BlurUtil;
 import jan.jason.androidalldemos.utils.StatusBarUtil;
+import jan.jason.androidalldemos.utils.ToastUtils;
 
 public class VisualizerMusicDetailActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -30,6 +32,7 @@ public class VisualizerMusicDetailActivity extends AppCompatActivity implements 
     private TextView timeTV;//总时长
     private ImageView prveBtn;//上一首歌
     private ImageView nextBtn;//下一首
+    private Button visualizerBtn;//频谱
     private int position;
     private ImageView discBtn;
     private ImageView needleBtn;
@@ -69,6 +72,7 @@ public class VisualizerMusicDetailActivity extends AppCompatActivity implements 
         nextBtn.setOnClickListener(this);
         pressBtn.setOnClickListener(this);
         putBtn.setOnClickListener(this);
+        visualizerBtn.setOnClickListener(this);
 
         allSongList=ApplicationData.getInstance().getAllSongList();
         if(allSongList==null||allSongList.size()==0) finish();
@@ -176,6 +180,7 @@ public class VisualizerMusicDetailActivity extends AppCompatActivity implements 
         putBtn = findViewById(R.id.music_putdown);
         currentime=findViewById(R.id.music_firsttime);
         seekBar = findViewById(R.id.playSeekBar);
+        visualizerBtn= findViewById(R.id.music_visualizer_btn);
     }
 
     //点击事件
@@ -212,6 +217,11 @@ public class VisualizerMusicDetailActivity extends AppCompatActivity implements 
             case R.id.music_putdown:
                 this.finish();
                 break;
+
+            case R.id.music_visualizer_btn:
+                ToastUtils.show("点击频谱，即将跳转到频谱库中~");
+                break;
+
             default:
                 break;
 

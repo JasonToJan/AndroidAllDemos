@@ -47,7 +47,7 @@ public class VisualizerDemoActivity extends AppCompatActivity {
         switch (requestCode) {
             case 1:
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    LogUtils.d("liukun", "onRequestPermissionsResult: 成功授权");
+                    LogUtils.d("测试", "onRequestPermissionsResult: 成功授权");
                 else {
                     Toast.makeText(this,"You denied the permission",Toast.LENGTH_SHORT).show();
                 }
@@ -62,6 +62,7 @@ public class VisualizerDemoActivity extends AppCompatActivity {
                 this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(VisualizerDemoActivity.this,new
                     String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
+            return;
         }
 
         //读取本地音乐

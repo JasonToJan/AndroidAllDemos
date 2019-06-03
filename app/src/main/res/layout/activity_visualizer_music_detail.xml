@@ -106,6 +106,7 @@
             android:src="@mipmap/music_next_white_48" />
 
         <Button
+            android:id="@+id/music_visualizer_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
