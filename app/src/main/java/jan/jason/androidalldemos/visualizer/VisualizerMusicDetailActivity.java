@@ -1,9 +1,13 @@
 package jan.jason.androidalldemos.visualizer;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.media.audiofx.Visualizer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,15 +18,20 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.coocent.visualizerlib.ActivityVisualizer;
+import com.coocent.visualizerlib.IVisualizer;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
 import jan.jason.androidalldemos.R;
 import jan.jason.androidalldemos.utils.BlurUtil;
+import jan.jason.androidalldemos.utils.LogUtils;
 import jan.jason.androidalldemos.utils.StatusBarUtil;
-import jan.jason.androidalldemos.utils.ToastUtils;
+
 
 public class VisualizerMusicDetailActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -219,7 +228,8 @@ public class VisualizerMusicDetailActivity extends AppCompatActivity implements 
                 break;
 
             case R.id.music_visualizer_btn:
-                ToastUtils.show("点击频谱，即将跳转到频谱库中~");
+                //ToastUtils.show("点击频谱，即将跳转到频谱库中~");
+                keepToVisualizer();
                 break;
 
             default:
@@ -232,6 +242,21 @@ public class VisualizerMusicDetailActivity extends AppCompatActivity implements 
     protected void onDestroy() {
         super.onDestroy();
         mediaPlayer.reset();
+    }
+
+    public void keepToVisualizer(){
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 101);
+                LogUtils.d("这里开始申请权限了");
+                return;
+            }
+        }
+
+        startActivity((new Intent(this, ActivityVisualizer.class)).
+                putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName())
+                .putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_IMMERSIVE_PARTICLE_VR));
+
     }
 
 

@@ -8,7 +8,6 @@ import android.view.View;
 
 import jan.jason.androidalldemos.R;
 import jan.jason.androidalldemos.databinding.ActivityVisualizerMainBinding;
-import jan.jason.visualizerlib.activity.ActivityHost;
 
 public class VisualizerMainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -27,7 +26,7 @@ public class VisualizerMainActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.avm_visualizer_btn1:
-                startActivity(new Intent(this,ActivityHost.class));
+//                startActivity(new Intent(this,ActivityHost.class));
                 break;
 
             case R.id.avm_visualizer_btn2:

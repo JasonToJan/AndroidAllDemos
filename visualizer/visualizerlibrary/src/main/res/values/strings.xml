@@ -1,3 +1,34 @@
 <resources>
-    <string name="app_name">visualizerlibrary</string>
+
+    <string name="portrait">Portrait</string>
+    <string name="landscape">Landscape</string>
+    <string name="empty_list">Empty list!</string>
+    <string name="visualizer_not_supported">Your device does not support visualization :(</string>
+    <string name="selected">Selected</string>
+    <string name="unselected">Unselected</string>
+    <string name="menu">Menu</string>
+    <string name="error">Error:</string>
+    <string name="go_back">Return</string>
+    <string name="previous">Previous</string>
+    <string name="pause">Pause</string>
+    <string name="next">Next</string>
+    <string name="play">Play</string>
+    <string name="nothing_playing">Nothing playing</string>
+    <string name="msg_no_sensors">Sorry, but your device does not have the necessary sensors :(</string>
+    <string name="msg_immersive">&#8634; Move your device around (be careful!)</string>
+    <string name="sorry">Sorry!</string>
+    <string name="opengl_error">OpenGL error</string>
+    <string name="opengl_not_supported">No support for OpenGL ES 2.0</string>
+    <string name="choose_image">Choose image&#8230;</string>
+    <string name="diffusion">Diffusion</string>
+    <string name="speed">Speed</string>
+    <string name="blue">Blue</string>
+    <string name="green">Green</string>
+    <string name="orange">Orange</string>
+    <string name="light">Light</string>
+    <string name="sustain">Sustain:</string>
+    <string name="none">None</string>
+
+
 </resources>
+

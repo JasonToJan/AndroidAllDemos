@@ -27,23 +27,23 @@
     </style>
 
     <style name="ZoomFadeAnimation">
-        <item name="android:windowEnterAnimation">@anim/zoomfadein</item>
-        <item name="android:windowExitAnimation">@anim/zoomfadeout</item>
+        <item name="android:windowEnterAnimation">@anim/zoomfadein2</item>
+        <item name="android:windowExitAnimation">@anim/zoomfadeout2</item>
     </style>
 
     <style name="SlideSmoothAnimation">
-        <item name="android:windowEnterAnimation">@anim/slidein</item>
-        <item name="android:windowExitAnimation">@anim/slideout</item>
+        <item name="android:windowEnterAnimation">@anim/slidein2</item>
+        <item name="android:windowExitAnimation">@anim/slideout2</item>
     </style>
 
     <style name="FadeAnimation">
-        <item name="android:windowEnterAnimation">@anim/fadein</item>
-        <item name="android:windowExitAnimation">@anim/fadeout</item>
+        <item name="android:windowEnterAnimation">@anim/fadein2</item>
+        <item name="android:windowExitAnimation">@anim/fadeout2</item>
     </style>
 
     <style name="DissolveAnimation">
-        <item name="android:windowEnterAnimation">@anim/dissolvein</item>
-        <item name="android:windowExitAnimation">@anim/dissolveout</item>
+        <item name="android:windowEnterAnimation">@anim/dissolvein2</item>
+        <item name="android:windowExitAnimation">@anim/dissolveout2</item>
     </style>
 
     <style name="BgDialog" parent="@android:style/Theme.Dialog">
