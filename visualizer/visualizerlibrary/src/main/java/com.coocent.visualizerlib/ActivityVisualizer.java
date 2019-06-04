@@ -35,7 +35,10 @@ package com.coocent.visualizerlib;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -45,6 +48,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -81,7 +85,7 @@ public final class ActivityVisualizer extends Activity implements
 			panelTopWasVisibleOk,
 			visualizerPaused;
 	private boolean isFinishChange=true;//是否已经完成了改变，重复调用会猜测会异常
-
+	private boolean isHasRegistBroadcast;//是否已经注册了广播
 	private int version, panelTopLastTime, panelTopHiding, requiredOrientation;
 	private static final int MSG_HIDE = 0x0400;
 	private static final int MSG_SYSTEM_UI_CHANGED = 0x0401;
@@ -166,6 +170,13 @@ public final class ActivityVisualizer extends Activity implements
 	@Override
 	protected void onDestroy() {
 		finalCleanup();
+		try{
+			if (mStatusListener != null&&isHasRegistBroadcast){
+				unregisterReceiver(mStatusListener);
+			}
+		}catch (Exception e){
+			LogUtils.d("反注册广播异常"+e.getMessage());
+		}
 		super.onDestroy();
 	}
 
@@ -247,17 +258,8 @@ public final class ActivityVisualizer extends Activity implements
 		}
 	}
 
-	//replace onKeyDown with dispatchKeyEvent + event.getAction() + event.getKeyCode()?!?!?!
 	@Override
 	public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-		//
-		//Allowing applications to play nice(r) with each other: Handling remote control buttons
-		//http://android-developers.blogspot.com.br/2010/06/allowing-applications-to-play-nicer.html
-		//
-		//...In a media playback application, this is used to react to headset button
-		//presses when your activity doesn’t have the focus. For when it does, we override
-		//the Activity.onKeyDown() or onKeyUp() methods for the user interface to trap the
-		//headset button-related events...
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_VOLUME_DOWN:
 			case KeyEvent.KEYCODE_VOLUME_UP:
@@ -276,20 +278,6 @@ public final class ActivityVisualizer extends Activity implements
 		hideAllUIDelayed();
 		return super.onKeyDown(keyCode, event);
 	}
-
-	//	@Override
-//	public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-//		//return (Player.isMediaButton(keyCode) || super.onKeyLongPress(keyCode, event));
-//
-//		return false;
-//	}
-//
-//	@Override
-//	public boolean onKeyUp(int keyCode, @NonNull KeyEvent event) {
-//		//return (Player.isMediaButton(keyCode) || super.onKeyUp(keyCode, event));
-//
-//		return false;
-//	}
 
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
@@ -319,8 +307,19 @@ public final class ActivityVisualizer extends Activity implements
 			finish();
 		}  else if (view == btnPlay) {
 			//Player.playPause();
+			if(VisualizerManager.getInstance().getMusicVisualizerInter()!=null){
+				VisualizerManager.getInstance().getMusicVisualizerInter().vi_playorpause();
+			}
+			updateTrackInfo();
+			setPauseButtonImage();
+
 		} else if (view == btnNext) {
 			//Player.next();
+			if(VisualizerManager.getInstance().getMusicVisualizerInter()!=null){
+				VisualizerManager.getInstance().getMusicVisualizerInter().vi_next();
+			}
+			updateTrackInfo();
+
 			if (visualizerService != null)
 				visualizerService.resetAndResume();
 		} else if (view == btnMenu) {
@@ -330,24 +329,24 @@ public final class ActivityVisualizer extends Activity implements
 				visualizer.onClick();
 		} else if(view==nextVisualizerIb){
 
-			if(ApplicationProxy.getInstance().visualizerIndex
-					==ApplicationProxy.getInstance().visualizerDataType.length-1){
-				ApplicationProxy.getInstance().visualizerIndex=0;
+			if(VisualizerManager.getInstance().visualizerIndex
+					==VisualizerManager.getInstance().visualizerDataType.length-1){
+				VisualizerManager.getInstance().visualizerIndex=0;
 			}else{
-				ApplicationProxy.getInstance().visualizerIndex++;
+				VisualizerManager.getInstance().visualizerIndex++;
 			}
 
-			changeVisualizer(ApplicationProxy.getInstance().visualizerIndex);
+			changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
 
 		} else if(view==prevVisualizerIb){
 
-			if(ApplicationProxy.getInstance().visualizerIndex ==0){
-				ApplicationProxy.getInstance().visualizerIndex=
-						ApplicationProxy.getInstance().visualizerDataType.length-1;
+			if(VisualizerManager.getInstance().visualizerIndex ==0){
+				VisualizerManager.getInstance().visualizerIndex=
+						VisualizerManager.getInstance().visualizerDataType.length-1;
 			}else{
-				ApplicationProxy.getInstance().visualizerIndex--;
+				VisualizerManager.getInstance().visualizerIndex--;
 			}
-			changeVisualizer(ApplicationProxy.getInstance().visualizerIndex);
+			changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
 		}
 	}
 
@@ -596,16 +595,12 @@ public final class ActivityVisualizer extends Activity implements
 		}
 	}
 
-	private void updateTitle() {
+	private void updateTrackInfo() {
 
-//		if (Player.localSong == null) {
-//			lblTitle.setText(getText(R.string.nothing_playing));
-//		} else {
-//			String txt = Player.getCurrentTitle(Player.isPreparing());
-//			if (Player.localSong.extraInfo != null && Player.localSong.extraInfo.length() > 0 && (Player.localSong.extraInfo.length() > 1 || Player.localSong.extraInfo.charAt(0) != '-'))
-//				txt += "\n" + Player.localSong.extraInfo;
-//			lblTitle.setText(txt);
-//		}
+		if(VisualizerManager.getInstance().getMusicVisualizerInter()!=null){
+			titleTv.setText(VisualizerManager.getInstance().getMusicVisualizerInter().vi_title());
+			artistTv.setText(VisualizerManager.getInstance().getMusicVisualizerInter().vi_artist());
+		}
 	}
 
 	/**
@@ -667,13 +662,14 @@ public final class ActivityVisualizer extends Activity implements
 		initVisualizer();
 		initStatus();
 		initOther();
+		initRegistBroadcast();
 	}
 
 	/**
 	 * 初始化Application
 	 */
 	private void initApplication(){
-		ApplicationProxy.getInstance().init(this.getApplication());
+		VisualizerManager.getInstance().init(this.getApplication());
 	}
 
 	/**
@@ -807,6 +803,22 @@ public final class ActivityVisualizer extends Activity implements
 	}
 
 	/**
+	 * 注册广播相关
+	 */
+	private void initRegistBroadcast(){
+		if(VisualizerManager.getInstance().getMusicVisualizerInter()!=null){
+			if(!TextUtils.isEmpty(VisualizerManager.getInstance().getMusicVisualizerInter().vi_metachange())
+					&&!TextUtils.isEmpty(VisualizerManager.getInstance().getMusicVisualizerInter().vi_playstatechange())){
+				IntentFilter f = new IntentFilter();
+				f.addAction(VisualizerManager.getInstance().getMusicVisualizerInter().vi_metachange());
+				f.addAction(VisualizerManager.getInstance().getMusicVisualizerInter().vi_playstatechange());
+				registerReceiver(mStatusListener, new IntentFilter(f));
+				isHasRegistBroadcast=true;
+			}
+		}
+	}
+
+	/**
 	 * 初始化视图并且设置监听
 	 */
 	private void initView(){
@@ -831,7 +843,8 @@ public final class ActivityVisualizer extends Activity implements
 		nextVisualizerIb.setOnClickListener(this);
 		prevVisualizerIb.setOnClickListener(this);
 
-		updateTitle();
+		updateTrackInfo();
+		setPauseButtonImage();
 	}
 
 	/**
@@ -839,7 +852,7 @@ public final class ActivityVisualizer extends Activity implements
 	 */
 	private void addVisualizerView(){
 		if (visualizer != null) {
-			ApplicationProxy.getInstance().visualizerIndex=0;//默认是水波纹
+			VisualizerManager.getInstance().visualizerIndex=0;//默认是水波纹
 			visualizerViewFullscreen = visualizer.isFullscreen();
 			((View)visualizer).setOnClickListener(this);
 			panelControls.addView((View)visualizer);
@@ -894,7 +907,7 @@ public final class ActivityVisualizer extends Activity implements
 	 * @param type
 	 */
 	private void changeVisualizer(int type){
-		LogUtils.d("当前选择的频谱类型为："+type+" 名称为："+ApplicationProxy.getInstance().visualizerDataType[type]);
+		LogUtils.d("当前选择的频谱类型为："+type+" 名称为："+VisualizerManager.getInstance().visualizerDataType[type]);
 		if(!isFinishChange) return;
 		isFinishChange=false;
 
@@ -956,32 +969,32 @@ public final class ActivityVisualizer extends Activity implements
 
 	private Intent setIntent(int type){
 		Intent intent=new Intent();
-		switch (ApplicationProxy.getInstance().visualizerDataType[type]){
-			case ApplicationProxy.LIQUID_TYPE:
+		switch (VisualizerManager.getInstance().visualizerDataType[type]){
+			case VisualizerManager.LIQUID_TYPE:
 				intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
 				intent.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_LIQUID);
 				break;
 
-			case ApplicationProxy.SPECTRUM2_TYPE:
+			case VisualizerManager.SPECTRUM2_TYPE:
 				intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
 				intent.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_SPECTRUM2);
 				break;
 
-			case ApplicationProxy.COLOR_WAVES_TYPE:
+			case VisualizerManager.COLOR_WAVES_TYPE:
 				intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
 				intent.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_COLOR_WAVES);
 				break;
 
-			case ApplicationProxy.PARTICLE_TYPE:
+			case VisualizerManager.PARTICLE_TYPE:
 				intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
 				intent.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_PARTICLE);
 				break;
 
-			case ApplicationProxy.NORMAL_TYPE:
+			case VisualizerManager.NORMAL_TYPE:
 				intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
 				break;
 
-			case ApplicationProxy.SPIN_TYPE:
+			case VisualizerManager.SPIN_TYPE:
 				intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
 				intent.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_SPIN);
 				break;
@@ -989,5 +1002,41 @@ public final class ActivityVisualizer extends Activity implements
 
 		return intent;
 	}
+
+	/**
+	 * 外部改变了歌曲状态或者歌曲信息后，需要
+	 * 更新歌曲信息
+	 */
+	private void setPauseButtonImage(){
+
+		if(VisualizerManager.getInstance().getMusicVisualizerInter()!=null){
+			if(VisualizerManager.getInstance().getMusicVisualizerInter().vi_isPlaying()){
+				btnPlay.setImageResource(R.drawable.control_pause_selector);
+			}else{
+				btnPlay.setImageResource(R.drawable.control_play_selector);
+			}
+		}
+	}
+
+	private BroadcastReceiver mStatusListener = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if(VisualizerManager.getInstance().getMusicVisualizerInter()==null) return;
+
+			String metachange=VisualizerManager.getInstance().getMusicVisualizerInter().vi_metachange();
+			String playstatechange=VisualizerManager.getInstance().getMusicVisualizerInter().vi_playstatechange();
+
+			if(!TextUtils.isEmpty(metachange)&&!TextUtils.isEmpty(playstatechange)) {
+				if (action.equals(metachange)) {
+					updateTrackInfo();
+					setPauseButtonImage();
+				} else if (action.equals(playstatechange)) {
+					setPauseButtonImage();
+				}
+			}
+
+		}
+	};
 
 }

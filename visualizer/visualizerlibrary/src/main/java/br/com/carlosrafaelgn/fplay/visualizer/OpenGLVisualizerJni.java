@@ -59,7 +59,7 @@ import android.view.SurfaceHolder;
 import android.view.ViewDebug.ExportedProperty;
 import android.view.WindowManager;
 
-import com.coocent.visualizerlib.ApplicationProxy;
+import com.coocent.visualizerlib.VisualizerManager;
 import com.coocent.visualizerlib.ArraySorter;
 import com.coocent.visualizerlib.ColorDrawable;
 import com.coocent.visualizerlib.IVisualizer;
@@ -164,7 +164,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 		}
 
 		try {
-			windowManager = (WindowManager)ApplicationProxy.getInstance().getApplication().getSystemService(Context.WINDOW_SERVICE);
+			windowManager = (WindowManager)VisualizerManager.getInstance().getApplication().getSystemService(Context.WINDOW_SERVICE);
 		} catch (Throwable ex) {
 			windowManager = null;
 		}
@@ -176,7 +176,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 				UI.toast(R.string.msg_no_sensors);
 			} else {
 				sensorManager.start();
-				CharSequence originalText = ApplicationProxy.getInstance().getApplication().getText(R.string.msg_immersive);
+				CharSequence originalText = VisualizerManager.getInstance().getApplication().getText(R.string.msg_immersive);
 				final int iconIdx = originalText.toString().indexOf('\u21BA');
 				if (iconIdx >= 0) {
 					final SpannableStringBuilder txt = new SpannableStringBuilder(originalText);
@@ -727,7 +727,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 		InputStream input = null;
 		Bitmap bitmap = null;
 		try {
-			input = ApplicationProxy.getInstance().getApplication().getContentResolver().openInputStream(selectedUri);
+			input = VisualizerManager.getInstance().getApplication().getContentResolver().openInputStream(selectedUri);
 			if (input == null)
 				return;
 			BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -745,7 +745,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 				largest >>= 1;
 			}
 
-			input = ApplicationProxy.getInstance().getApplication().getContentResolver().openInputStream(selectedUri);
+			input = VisualizerManager.getInstance().getApplication().getContentResolver().openInputStream(selectedUri);
 			opts.inJustDecodeBounds = false;
 			opts.inPreferredConfig = Bitmap.Config.RGB_565;
 			opts.inDither = true;
@@ -805,9 +805,9 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 		case MSG_OPENGL_ERROR:
 			if (!alerted) {
 				alerted = true;
-				UI.toast(ApplicationProxy.getInstance().getApplication().getText(R.string.sorry) + " "
-						+ ((error != 0) ? (ApplicationProxy.getInstance().getApplication().getText(R.string.opengl_error).toString()
-						+ UI.collon() + error) : ApplicationProxy.getInstance().getApplication().getText(R.string.opengl_not_supported).toString()) + " :(");
+				UI.toast(VisualizerManager.getInstance().getApplication().getText(R.string.sorry) + " "
+						+ ((error != 0) ? (VisualizerManager.getInstance().getApplication().getText(R.string.opengl_error).toString()
+						+ UI.collon() + error) : VisualizerManager.getInstance().getApplication().getText(R.string.opengl_not_supported).toString()) + " :(");
 			}
 			break;
 		case MSG_CHOOSE_IMAGE:
@@ -921,34 +921,34 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 		case TYPE_IMMERSIVE_PARTICLE:
 		case TYPE_IMMERSIVE_PARTICLE_VR:
 			itemsAdded = true;
-			s = menu.addSubMenu(1, 0, 1, ApplicationProxy.getInstance().getApplication().getText(R.string.diffusion) + "\u2026")
+			s = menu.addSubMenu(1, 0, 1, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + "\u2026")
 				.setIcon(new TextIconDrawable(UI.ICON_SETTINGS));
 			UI.prepare(s);
-			s.add(0, MNU_DIFFUSION0, 0, ApplicationProxy.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 0"))
+			s.add(0, MNU_DIFFUSION0, 0, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 0"))
 				.setOnMenuItemClickListener(this)
 				.setIcon(new TextIconDrawable((diffusion == 0) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-			s.add(0, MNU_DIFFUSION1, 1, ApplicationProxy.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 1"))
+			s.add(0, MNU_DIFFUSION1, 1, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 1"))
 				.setOnMenuItemClickListener(this)
 				.setIcon(new TextIconDrawable((diffusion != 0 && diffusion != 2 && diffusion != 3) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-			s.add(0, MNU_DIFFUSION2, 2, ApplicationProxy.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 2"))
+			s.add(0, MNU_DIFFUSION2, 2, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 2"))
 				.setOnMenuItemClickListener(this)
 				.setIcon(new TextIconDrawable((diffusion == 2) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-			s.add(0, MNU_DIFFUSION3, 3, ApplicationProxy.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 3"))
+			s.add(0, MNU_DIFFUSION3, 3, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 3"))
 				.setOnMenuItemClickListener(this)
 				.setIcon(new TextIconDrawable((diffusion == 3) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-			s = menu.addSubMenu(1, 0, 2, ApplicationProxy.getInstance().getApplication().getText(R.string.speed) + "\u2026")
+			s = menu.addSubMenu(1, 0, 2, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + "\u2026")
 				.setIcon(new TextIconDrawable(UI.ICON_SETTINGS));
 			UI.prepare(s);
-			s.add(0, MNU_RISESPEED0, 0, ApplicationProxy.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 0"))
+			s.add(0, MNU_RISESPEED0, 0, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 0"))
 				.setOnMenuItemClickListener(this)
 				.setIcon(new TextIconDrawable((riseSpeed == 0) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-			s.add(0, MNU_RISESPEED1, 1, ApplicationProxy.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 1"))
+			s.add(0, MNU_RISESPEED1, 1, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 1"))
 				.setOnMenuItemClickListener(this)
 				.setIcon(new TextIconDrawable((riseSpeed != 0 && riseSpeed != 2 && riseSpeed != 3) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-			s.add(0, MNU_RISESPEED2, 2, ApplicationProxy.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 2"))
+			s.add(0, MNU_RISESPEED2, 2, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 2"))
 				.setOnMenuItemClickListener(this)
 				.setIcon(new TextIconDrawable((riseSpeed == 2) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-			s.add(0, MNU_RISESPEED3, 3, ApplicationProxy.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 3"))
+			s.add(0, MNU_RISESPEED3, 3, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 3"))
 				.setOnMenuItemClickListener(this)
 				.setIcon(new TextIconDrawable((riseSpeed == 3) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
 			break;
@@ -961,16 +961,16 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 		}
 		if (itemsAdded)
 			UI.separator(menu, 2, 0);
-		menu.add(2, MNU_SPEED0, 1, ApplicationProxy.getInstance().getApplication().getText(R.string.sustain) + " 3")
+		menu.add(2, MNU_SPEED0, 1, VisualizerManager.getInstance().getApplication().getText(R.string.sustain) + " 3")
 			.setOnMenuItemClickListener(this)
 			.setIcon(new TextIconDrawable((speed != 1 && speed != 2 && speed != 99) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-		menu.add(2, MNU_SPEED1, 2, ApplicationProxy.getInstance().getApplication().getText(R.string.sustain) + " 2")
+		menu.add(2, MNU_SPEED1, 2, VisualizerManager.getInstance().getApplication().getText(R.string.sustain) + " 2")
 			.setOnMenuItemClickListener(this)
 			.setIcon(new TextIconDrawable((speed == 1) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-		menu.add(2, MNU_SPEED2, 3, ApplicationProxy.getInstance().getApplication().getText(R.string.sustain) + " 1")
+		menu.add(2, MNU_SPEED2, 3, VisualizerManager.getInstance().getApplication().getText(R.string.sustain) + " 1")
 			.setOnMenuItemClickListener(this)
 			.setIcon(new TextIconDrawable((speed == 2) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-		menu.add(2, MNU_SPEED_FASTEST, 3, ApplicationProxy.getInstance().getApplication().getText(R.string.sustain) + " " + ApplicationProxy.getInstance().getApplication().getText(R.string.none))
+		menu.add(2, MNU_SPEED_FASTEST, 3, VisualizerManager.getInstance().getApplication().getText(R.string.sustain) + " " + VisualizerManager.getInstance().getApplication().getText(R.string.none))
 			.setOnMenuItemClickListener(this)
 			.setIcon(new TextIconDrawable((speed == 99) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
 	}

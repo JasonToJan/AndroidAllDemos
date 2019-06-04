@@ -42,7 +42,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
 
-import com.coocent.visualizerlib.ApplicationProxy;
+import com.coocent.visualizerlib.VisualizerManager;
 
 
 public final class OpenGLVisualizerSensorManager extends Thread implements Handler.Callback, SensorEventListener {
@@ -58,7 +58,7 @@ public final class OpenGLVisualizerSensorManager extends Thread implements Handl
 	public OpenGLVisualizerSensorManager(boolean forceMagnetic) {
 		super("OpenGL Visualizer Sensor Manager Thread");
 		try {
-			sensorManager = (SensorManager)ApplicationProxy.getInstance().getApplication().getSystemService(Context.SENSOR_SERVICE);
+			sensorManager = (SensorManager)VisualizerManager.getInstance().getApplication().getSystemService(Context.SENSOR_SERVICE);
 		} catch (Throwable ex) {
 			sensorManager = null;
 			accel = null;

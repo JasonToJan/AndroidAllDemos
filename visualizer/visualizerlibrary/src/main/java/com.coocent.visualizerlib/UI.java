@@ -815,22 +815,22 @@ public final class UI implements Animation.AnimationListener, Interpolator {
 //	}
 
 	public static void initialize(Activity activityContext, int newUsableScreenWidth, int newUsableScreenHeight) {
-		final Resources resources = (activityContext != null ? activityContext.getResources() : ApplicationProxy.getInstance().getApplication().getResources());
+		final Resources resources = (activityContext != null ? activityContext.getResources() : VisualizerManager.getInstance().getApplication().getResources());
 		final Configuration configuration = resources.getConfiguration();
 
-		accessibilityManager = (AccessibilityManager)ApplicationProxy.getInstance().getApplication().getSystemService(Context.ACCESSIBILITY_SERVICE);
+		accessibilityManager = (AccessibilityManager)VisualizerManager.getInstance().getApplication().getSystemService(Context.ACCESSIBILITY_SERVICE);
 		isAccessibilityManagerEnabled = (accessibilityManager != null && accessibilityManager.isEnabled());
 		if (iconsTypeface == null)
-			iconsTypeface = Typeface.createFromAsset(ApplicationProxy.getInstance().getApplication().getAssets(), "fonts/icons.ttf");
+			iconsTypeface = Typeface.createFromAsset(VisualizerManager.getInstance().getApplication().getAssets(), "fonts/icons.ttf");
 		if (!fullyInitialized) {
 			try {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2)
-					isTV = ((((UiModeManager)ApplicationProxy.getInstance().getApplication().getSystemService(Context.UI_MODE_SERVICE)).getCurrentModeType() & Configuration.UI_MODE_TYPE_TELEVISION) != 0);
+					isTV = ((((UiModeManager)VisualizerManager.getInstance().getApplication().getSystemService(Context.UI_MODE_SERVICE)).getCurrentModeType() & Configuration.UI_MODE_TYPE_TELEVISION) != 0);
 			} catch (Throwable ex) {
 				//just ignore
 			}
 			try {
-				hasTouch = ((Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) || ApplicationProxy.getInstance().getApplication().getPackageManager().hasSystemFeature("android.hardware.touchscreen"));
+				hasTouch = ((Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) || VisualizerManager.getInstance().getApplication().getPackageManager().hasSystemFeature("android.hardware.touchscreen"));
 			} catch (Throwable ex) {
 				hasTouch = true;
 				ex.printStackTrace();

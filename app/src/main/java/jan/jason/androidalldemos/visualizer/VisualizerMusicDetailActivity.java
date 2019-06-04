@@ -18,8 +18,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.coocent.visualizerlib.ActivityVisualizer;
-import com.coocent.visualizerlib.ApplicationProxy;
+import com.coocent.visualizerlib.VisualizerManager;
 import com.coocent.visualizerlib.IVisualizer;
+import com.coocent.visualizerlib.MusicVisualizerInter;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -34,7 +35,7 @@ import jan.jason.androidalldemos.utils.LogUtils;
 import jan.jason.androidalldemos.utils.StatusBarUtil;
 
 
-public class VisualizerMusicDetailActivity extends AppCompatActivity implements View.OnClickListener{
+public class VisualizerMusicDetailActivity extends AppCompatActivity implements View.OnClickListener,MusicVisualizerInter {
 
     private TextView titleTV;//歌名
     private TextView autherTV;//歌手
@@ -119,6 +120,8 @@ public class VisualizerMusicDetailActivity extends AppCompatActivity implements 
 
             }
         });
+
+        VisualizerManager.getInstance().setMusicVisualizerInter(this);
 
     }
 
@@ -256,7 +259,7 @@ public class VisualizerMusicDetailActivity extends AppCompatActivity implements 
             }
         }
 
-        ApplicationProxy.getInstance().setSessionId(mediaPlayer.getAudioSessionId());
+        VisualizerManager.getInstance().setSessionId(mediaPlayer.getAudioSessionId());
 
         switch(visulaizerType){
             case 1:
@@ -341,6 +344,68 @@ public class VisualizerMusicDetailActivity extends AppCompatActivity implements 
 
         }
 
+    }
+
+    @Override
+    public void vi_next() {
+        position++;
+        if (position ==allSongList.size()) {
+            position = 0;
+        }
+        play();
+    }
+
+    @Override
+    public void vi_prev() {
+        position--;
+        if (position == -1) {
+            position =allSongList.size() - 1;
+        }
+        play();
+    }
+
+    @Override
+    public boolean vi_isPlaying() {
+        return mediaPlayer.isPlaying();
+    }
+
+    @Override
+    public void vi_playorpause() {
+        //用if语句判断音乐播放的的状态
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+            pressBtn.setImageResource(R.mipmap.music_pause_white_48);
+        } else {
+            mediaPlayer.start();
+            //点击下一首时会继续出现暂停的按钮
+            pressBtn.setImageResource(R.mipmap.music_play_white_48);
+
+        }
+    }
+
+    @Override
+    public int vi_getSessionId() {
+        return mediaPlayer.getAudioSessionId();
+    }
+
+    @Override
+    public String vi_artist() {
+        return  ApplicationData.getInstance().getAllSongList().get(position).getArtist();
+    }
+
+    @Override
+    public String vi_title() {
+        return ApplicationData.getInstance().getAllSongList().get(position).getTitle();
+    }
+
+    @Override
+    public String vi_metachange() {
+        return null;
+    }
+
+    @Override
+    public String vi_playstatechange() {
+        return null;
     }
 
 
