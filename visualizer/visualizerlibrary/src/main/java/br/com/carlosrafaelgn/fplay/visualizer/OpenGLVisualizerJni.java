@@ -98,7 +98,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 
 	private static int GLVersion = -1;
 
-	public static final String EXTRA_VISUALIZER_TYPE = "jan.jason.visualizerlib.OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE";
+	public static final String EXTRA_VISUALIZER_TYPE = "com.coocent.visualizerlib.OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE";
 
 	public static final int TYPE_SPECTRUM = 0;
 	public static final int TYPE_LIQUID = 1;

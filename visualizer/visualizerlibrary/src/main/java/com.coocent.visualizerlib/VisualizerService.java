@@ -53,6 +53,7 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 		alive = true;
 		reset = true;
 //		playing = Player.localPlaying;
+		playing = true;
 		waveform = new byte[IVisualizer.CAPTURE_SIZE];
 		timer = new Timer(this, "Visualizer Thread", false, false, true);
 		timer.start(16);
@@ -60,7 +61,7 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 
 	@Override
 	public void playingChanged() {
-//		playing = Player.localPlaying;
+		playing = true;
 	}
 
 	@Override
@@ -102,7 +103,8 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 //			final int g = Player.audioSessionId;
 
 			//TODO 这里需要Session
-			final int g=0;
+			final int g=ApplicationProxy.getInstance().getSessionId();
+			LogUtils.d("当前歌曲的sessionId="+g);
 
 			if (g < 0)
 				return true;

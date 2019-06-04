@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.coocent.visualizerlib.InterceptableLayout
-    android:id="@+id/panelControls"
+    android:id="@+id/av_panelControls"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,90 +9,175 @@
     android:splitMotionEvents="false"
     tools:context=".ActivityVisualizer">
 
+    <!--<RelativeLayout-->
+        <!--android:visibility="gone"-->
+        <!--android:id="@+id/panelTop"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:splitMotionEvents="false">-->
+
+        <!--<com.coocent.visualizerlib.BgButton-->
+            <!--android:id="@+id/btnGoBack"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:contentDescription="@string/go_back"-->
+            <!--android:nextFocusDown="@+id/btnPrev"-->
+            <!--android:nextFocusForward="@+id/btnPrev"-->
+            <!--android:nextFocusLeft="@+id/btnMenu"-->
+            <!--android:nextFocusRight="@+id/btnPrev"-->
+            <!--android:nextFocusUp="@+id/btnMenu"/>-->
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/panelSecondary"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:baselineAligned="false"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:splitMotionEvents="false">-->
+
+            <!--<com.coocent.visualizerlib.BgButton-->
+                <!--android:id="@+id/btnPrev"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:contentDescription="@string/previous"-->
+                <!--android:nextFocusDown="@+id/btnPlay"-->
+                <!--android:nextFocusForward="@+id/btnPlay"-->
+                <!--android:nextFocusLeft="@+id/btnGoBack"-->
+                <!--android:nextFocusRight="@+id/btnPlay"-->
+                <!--android:nextFocusUp="@+id/btnGoBack"/>-->
+
+            <!--<com.coocent.visualizerlib.BgButton-->
+                <!--android:id="@+id/btnPlay"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:contentDescription="@string/play"-->
+                <!--android:nextFocusDown="@+id/btnNext"-->
+                <!--android:nextFocusForward="@+id/btnNext"-->
+                <!--android:nextFocusLeft="@+id/btnPrev"-->
+                <!--android:nextFocusRight="@+id/btnNext"-->
+                <!--android:nextFocusUp="@+id/btnPrev"/>-->
+
+            <!--<com.coocent.visualizerlib.BgButton-->
+                <!--android:id="@+id/btnNext"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:contentDescription="@string/next"-->
+                <!--android:nextFocusDown="@+id/btnMenu"-->
+                <!--android:nextFocusForward="@+id/btnMenu"-->
+                <!--android:nextFocusLeft="@+id/btnPlay"-->
+                <!--android:nextFocusRight="@+id/btnMenu"-->
+                <!--android:nextFocusUp="@+id/btnPlay"/>-->
+        <!--</LinearLayout>-->
+
+        <!--<com.coocent.visualizerlib.BgButton-->
+            <!--android:id="@+id/btnMenu"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:contentDescription="@string/menu"-->
+            <!--android:nextFocusDown="@+id/btnGoBack"-->
+            <!--android:nextFocusForward="@+id/btnGoBack"-->
+            <!--android:nextFocusLeft="@+id/btnNext"-->
+            <!--android:nextFocusRight="@+id/btnGoBack"-->
+            <!--android:nextFocusUp="@+id/btnNext"/>-->
+        <!---->
+    <!--</RelativeLayout>-->
+
     <RelativeLayout
-        android:id="@+id/panelTop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:splitMotionEvents="false">
+        android:id="@+id/av_panelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:clickable="true">
 
         <com.coocent.visualizerlib.BgButton
-            android:id="@+id/btnGoBack"
+            android:id="@+id/av_backBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:contentDescription="@string/go_back"
-            android:nextFocusDown="@+id/btnPrev"
-            android:nextFocusForward="@+id/btnPrev"
-            android:nextFocusLeft="@+id/btnMenu"
-            android:nextFocusRight="@+id/btnPrev"
-            android:nextFocusUp="@+id/btnMenu"/>
+            android:layout_centerVertical="true" />
+
+        <com.coocent.visualizerlib.BgButton
+            android:id="@+id/av_moreBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true" />
 
         <LinearLayout
-            android:id="@+id/panelSecondary"
+            android:id="@+id/av_buttons"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@id/av_moreBtn"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:splitMotionEvents="false">
+            android:showDividers="middle"
+            android:layout_toStartOf="@id/av_moreBtn">
 
-            <com.coocent.visualizerlib.BgButton
-                android:id="@+id/btnPrev"
+            <ImageView
+                android:id="@+id/av_visualizer_play"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/previous"
-                android:nextFocusDown="@+id/btnPlay"
-                android:nextFocusForward="@+id/btnPlay"
-                android:nextFocusLeft="@+id/btnGoBack"
-                android:nextFocusRight="@+id/btnPlay"
-                android:nextFocusUp="@+id/btnGoBack"/>
+                android:layout_height="match_parent"
+                android:padding="3dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/control_pause_selector" />
 
-            <com.coocent.visualizerlib.BgButton
-                android:id="@+id/btnPlay"
+            <ImageView
+                android:id="@+id/av_visualizer_next"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/play"
-                android:nextFocusDown="@+id/btnNext"
-                android:nextFocusForward="@+id/btnNext"
-                android:nextFocusLeft="@+id/btnPrev"
-                android:nextFocusRight="@+id/btnNext"
-                android:nextFocusUp="@+id/btnPrev"/>
-
-            <com.coocent.visualizerlib.BgButton
-                android:id="@+id/btnNext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/next"
-                android:nextFocusDown="@+id/btnMenu"
-                android:nextFocusForward="@+id/btnMenu"
-                android:nextFocusLeft="@+id/btnPlay"
-                android:nextFocusRight="@+id/btnMenu"
-                android:nextFocusUp="@+id/btnPlay"/>
+                android:layout_height="match_parent"
+                android:padding="3dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/control_next_selector" />
         </LinearLayout>
 
-        <com.coocent.visualizerlib.BgButton
-            android:id="@+id/btnMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/menu"
-            android:nextFocusDown="@+id/btnGoBack"
-            android:nextFocusForward="@+id/btnGoBack"
-            android:nextFocusLeft="@+id/btnNext"
-            android:nextFocusRight="@+id/btnGoBack"
-            android:nextFocusUp="@+id/btnNext"/>
-
-        <TextView
-            android:id="@+id/lblTitle"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/panelSecondary"
-            android:layout_centerInParent="true"
-            android:ellipsize="end"
-            android:gravity="center_horizontal"
-            android:maxLines="3"
-            android:text="@string/nothing_playing"/>
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/av_buttons"
+            android:layout_toRightOf="@id/av_backBtn"
+            android:gravity="center_vertical"
+            android:layout_toEndOf="@id/av_backBtn"
+            android:layout_toStartOf="@id/av_buttons">
+
+            <TextView
+                android:id="@+id/av_title_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearance"
+                android:textColor="#fff" />
+
+            <TextView
+                android:id="@+id/av_artist_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/av_title_tv"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#eee" />
+        </RelativeLayout>
+
     </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/av_leftBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@drawable/button_left_selector" />
+
+    <ImageButton
+        android:id="@+id/av_rightBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/button_right_selector"
+        android:layout_alignParentEnd="true" />
 
 </com.coocent.visualizerlib.InterceptableLayout>

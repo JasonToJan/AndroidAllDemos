@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
-import android.media.audiofx.Visualizer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +18,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.coocent.visualizerlib.ActivityVisualizer;
+import com.coocent.visualizerlib.ApplicationProxy;
 import com.coocent.visualizerlib.IVisualizer;
 
 import java.io.IOException;
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
+import br.com.carlosrafaelgn.fplay.visualizer.SimpleVisualizerJni;
 import jan.jason.androidalldemos.R;
 import jan.jason.androidalldemos.utils.BlurUtil;
 import jan.jason.androidalldemos.utils.LogUtils;
@@ -54,6 +55,8 @@ public class VisualizerMusicDetailActivity extends AppCompatActivity implements 
     private TextView currentime;//当前时间
     private long totalTime;
     private ArrayList<Song> allSongList;
+
+    private int visulaizerType=1;
 
     //运用Handler中的handleMessage方法接收子线程传递的信息
     private Handler handler = new Handler() {
@@ -253,9 +256,90 @@ public class VisualizerMusicDetailActivity extends AppCompatActivity implements 
             }
         }
 
-        startActivity((new Intent(this, ActivityVisualizer.class)).
-                putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName())
-                .putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_IMMERSIVE_PARTICLE_VR));
+        ApplicationProxy.getInstance().setSessionId(mediaPlayer.getAudioSessionId());
+
+        switch(visulaizerType){
+            case 1:
+                //简单频谱
+                visulaizerType++;
+                startActivity((new Intent(this, ActivityVisualizer.class)).
+                putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, SimpleVisualizerJni.class.getName()));
+                break;
+
+            case 2:
+                //OpenGL类型频谱
+                visulaizerType++;
+                startActivity((new Intent(this, ActivityVisualizer.class)).
+                        putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName()));
+                break;
+
+            case 3:
+                //上下部分
+                visulaizerType++;
+                startActivity((new Intent(this, ActivityVisualizer.class)).
+                        putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName())
+                        .putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_SPECTRUM2));
+                break;
+
+            case 4:
+                //液体
+                visulaizerType++;
+                startActivity((new Intent(this, ActivityVisualizer.class)).
+                        putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName())
+                        .putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_LIQUID));
+                break;
+
+            case 5:
+                //液体升级版
+                visulaizerType++;
+                startActivity((new Intent(this, ActivityVisualizer.class)).
+                        putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName())
+                        .putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_LIQUID_POWER_SAVER));
+                break;
+
+            case 6:
+                //多彩版
+                visulaizerType++;
+                startActivity((new Intent(this, ActivityVisualizer.class)).
+                        putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName())
+                        .putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_COLOR_WAVES));
+                break;
+            case 7:
+                //spin版
+                visulaizerType++;
+                startActivity((new Intent(this, ActivityVisualizer.class)).
+                        putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName())
+                .putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_SPIN));
+                break;
+            case 8:
+                //Particle版
+                visulaizerType++;
+                startActivity((new Intent(this, ActivityVisualizer.class)).
+                        putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName())
+                .putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_PARTICLE));
+                break;
+            case 9:
+                //沉浸式Particle版
+                visulaizerType++;
+                startActivity((new Intent(this, ActivityVisualizer.class)).
+                        putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName())
+                .putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_IMMERSIVE_PARTICLE));
+                break;
+            case 10:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.CAMERA}, 102);
+                        return;
+                    }
+                }
+                //沉浸式Particle_VR版
+                visulaizerType=1;
+                startActivity((new Intent(this, ActivityVisualizer.class)).
+                        putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName())
+                        .putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_IMMERSIVE_PARTICLE_VR));
+                break;
+
+        }
 
     }
 

@@ -35,12 +35,14 @@ package com.coocent.visualizerlib;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.UiModeManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -336,6 +338,12 @@ public final class UI implements Animation.AnimationListener, Interpolator {
 	public static Typeface iconsTypeface, defaultTypeface;
 
 	public static Context context;
+
+	public static void initColorDefault(){
+		colorState_text_reactive=new BgColorStateList(Color.GRAY);
+        colorState_text_visualizer_reactive=new BgColorStateList(Color.WHITE,Color.GREEN);
+        color_text_selected=Color.WHITE;
+	}
 
 	public static final class DisplayInfo {
 		public int usableScreenWidth, usableScreenHeight, screenWidth, screenHeight;
@@ -806,79 +814,79 @@ public final class UI implements Animation.AnimationListener, Interpolator {
 //		widgetIconColor = opts.getInt(0x0024, 0xff000000);
 //	}
 
-//	public static void initialize(Activity activityContext, int newUsableScreenWidth, int newUsableScreenHeight) {
-//		final Resources resources = (activityContext != null ? activityContext.getResources() : Player.theApplication.getResources());
-//		final Configuration configuration = resources.getConfiguration();
-//
-//		accessibilityManager = (AccessibilityManager)Player.theApplication.getSystemService(Context.ACCESSIBILITY_SERVICE);
-//		isAccessibilityManagerEnabled = (accessibilityManager != null && accessibilityManager.isEnabled());
-//		if (iconsTypeface == null)
-//			iconsTypeface = Typeface.createFromAsset(Player.theApplication.getAssets(), "fonts/icons.ttf");
-//		if (!fullyInitialized) {
-//			try {
-//				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2)
-//					isTV = ((((UiModeManager)Player.theApplication.getSystemService(Context.UI_MODE_SERVICE)).getCurrentModeType() & Configuration.UI_MODE_TYPE_TELEVISION) != 0);
-//			} catch (Throwable ex) {
-//				//just ignore
-//			}
-//			try {
-//				hasTouch = ((Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) || Player.theApplication.getPackageManager().hasSystemFeature("android.hardware.touchscreen"));
-//			} catch (Throwable ex) {
-//				hasTouch = true;
-//				ex.printStackTrace();
-//			}
-//			fullyInitialized = true;
-//		}
-//		final DisplayInfo info = new DisplayInfo();
-//		info.getInfo(activityContext, newUsableScreenWidth, newUsableScreenHeight);
-//		density = info.displayMetrics.density;
-//		densityDpi = info.displayMetrics.densityDpi;
-//		scaledDensity = info.displayMetrics.scaledDensity;
-//		xdpi_1_72 = info.displayMetrics.xdpi * (1.0f / 72.0f);
-//		screenWidth = info.screenWidth;
-//		screenHeight = info.screenHeight;
-//		usableScreenWidth = info.usableScreenWidth;
-//		usableScreenHeight = info.usableScreenHeight;
-//		isScreenWidthLarge = (usableScreenWidth >= dpToPxI(550));
-//		isLargeScreen = (isTV || info.isLargeScreen);
-//		isLandscape = info.isLandscape;
-//		isLowDpiScreen = info.isLowDpiScreen;
-//		//let's do some guessing here... :/
-//		deviceSupportsAnimations = ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) || ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) && (density >= 1.5f || isLargeScreen)));
-//
-//		//apparently, the display metrics returned by Resources.getDisplayMetrics()
-//		//is not the same as the one returned by Display.getMetrics()/getRealMetrics()
-//		final float sd = resources.getDisplayMetrics().scaledDensity;
-//		if (sd > 0)
-//			scaledDensity = sd;
-//		else if (scaledDensity <= 0)
-//			scaledDensity = 1.0f;
-//
-//		_1dp = dpToPxI(1);
-//		strokeSize = (_1dp + 1) >> 1;
-//		thickDividerSize = dpToPxI(1.5f);// ((_1dp >= 2) ? _1dp : 2);
-//		if (thickDividerSize < 2) thickDividerSize = 2;
-//		if (thickDividerSize <= _1dp) thickDividerSize = _1dp + 1;
-//		_4dp = dpToPxI(4);
-//		_22sp = spToPxI(22);
-//		_18sp = spToPxI(18);
-//		_14sp = spToPxI(14);
-//		controlLargeMargin = dpToPxI(16);
-//		controlMargin = controlLargeMargin >> 1;
-//		controlSmallMargin = controlLargeMargin >> 2;
-//		controlXtraSmallMargin = controlLargeMargin >> 3;
-//		menuMargin = controlMargin;
-//		dialogMargin = controlLargeMargin;
-//		if (isLargeScreen || !isLowDpiScreen)
-//			menuMargin += controlSmallMargin;
-//		dialogDropDownVerticalMargin = (dialogMargin * 3) >> 1;
-//		defaultControlContentsSize = dpToPxI(32);
-//		defaultControlSize = defaultControlContentsSize + (controlMargin << 1);
-//		defaultCheckIconSize = dpToPxI(24); //both descent and ascent of iconsTypeface are 0!
-//		if (!setForcedLocale(activityContext, forcedLocale))
-//			setUsingAlternateTypeface(isUsingAlternateTypeface);
-//		setVerticalMarginLarge(isVerticalMarginLarge);
-//	}
+	public static void initialize(Activity activityContext, int newUsableScreenWidth, int newUsableScreenHeight) {
+		final Resources resources = (activityContext != null ? activityContext.getResources() : ApplicationProxy.getInstance().getApplication().getResources());
+		final Configuration configuration = resources.getConfiguration();
+
+		accessibilityManager = (AccessibilityManager)ApplicationProxy.getInstance().getApplication().getSystemService(Context.ACCESSIBILITY_SERVICE);
+		isAccessibilityManagerEnabled = (accessibilityManager != null && accessibilityManager.isEnabled());
+		if (iconsTypeface == null)
+			iconsTypeface = Typeface.createFromAsset(ApplicationProxy.getInstance().getApplication().getAssets(), "fonts/icons.ttf");
+		if (!fullyInitialized) {
+			try {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2)
+					isTV = ((((UiModeManager)ApplicationProxy.getInstance().getApplication().getSystemService(Context.UI_MODE_SERVICE)).getCurrentModeType() & Configuration.UI_MODE_TYPE_TELEVISION) != 0);
+			} catch (Throwable ex) {
+				//just ignore
+			}
+			try {
+				hasTouch = ((Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) || ApplicationProxy.getInstance().getApplication().getPackageManager().hasSystemFeature("android.hardware.touchscreen"));
+			} catch (Throwable ex) {
+				hasTouch = true;
+				ex.printStackTrace();
+			}
+			fullyInitialized = true;
+		}
+		final DisplayInfo info = new DisplayInfo();
+		info.getInfo(activityContext, newUsableScreenWidth, newUsableScreenHeight);
+		density = info.displayMetrics.density;
+		densityDpi = info.displayMetrics.densityDpi;
+		scaledDensity = info.displayMetrics.scaledDensity;
+		xdpi_1_72 = info.displayMetrics.xdpi * (1.0f / 72.0f);
+		screenWidth = info.screenWidth;
+		screenHeight = info.screenHeight;
+		usableScreenWidth = info.usableScreenWidth;
+		usableScreenHeight = info.usableScreenHeight;
+		isScreenWidthLarge = (usableScreenWidth >= dpToPxI(550));
+		isLargeScreen = (isTV || info.isLargeScreen);
+		isLandscape = info.isLandscape;
+		isLowDpiScreen = info.isLowDpiScreen;
+		//let's do some guessing here... :/
+		deviceSupportsAnimations = ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) || ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) && (density >= 1.5f || isLargeScreen)));
+
+		//apparently, the display metrics returned by Resources.getDisplayMetrics()
+		//is not the same as the one returned by Display.getMetrics()/getRealMetrics()
+		final float sd = resources.getDisplayMetrics().scaledDensity;
+		if (sd > 0)
+			scaledDensity = sd;
+		else if (scaledDensity <= 0)
+			scaledDensity = 1.0f;
+
+		_1dp = dpToPxI(1);
+		strokeSize = (_1dp + 1) >> 1;
+		thickDividerSize = dpToPxI(1.5f);// ((_1dp >= 2) ? _1dp : 2);
+		if (thickDividerSize < 2) thickDividerSize = 2;
+		if (thickDividerSize <= _1dp) thickDividerSize = _1dp + 1;
+		_4dp = dpToPxI(4);
+		_22sp = spToPxI(22);
+		_18sp = spToPxI(18);
+		_14sp = spToPxI(14);
+		controlLargeMargin = dpToPxI(16);
+		controlMargin = controlLargeMargin >> 1;
+		controlSmallMargin = controlLargeMargin >> 2;
+		controlXtraSmallMargin = controlLargeMargin >> 3;
+		menuMargin = controlMargin;
+		dialogMargin = controlLargeMargin;
+		if (isLargeScreen || !isLowDpiScreen)
+			menuMargin += controlSmallMargin;
+		dialogDropDownVerticalMargin = (dialogMargin * 3) >> 1;
+		defaultControlContentsSize = dpToPxI(32);
+		defaultControlSize = defaultControlContentsSize + (controlMargin << 1);
+		defaultCheckIconSize = dpToPxI(24); //both descent and ascent of iconsTypeface are 0!
+		if (!setForcedLocale(activityContext, forcedLocale))
+			setUsingAlternateTypeface(isUsingAlternateTypeface);
+		setVerticalMarginLarge(isVerticalMarginLarge);
+	}
 	
 //	public static void prepareWidgetPlaybackIcons() {
 //		if (widgetIconColor != createdWidgetIconColor) {
@@ -1262,7 +1270,7 @@ public final class UI implements Animation.AnimationListener, Interpolator {
 //		return true;
 //	}
 	
-	private static void loadCommonColors(boolean invertSelectedAndFocus) {
+	public static void loadCommonColors(boolean invertSelectedAndFocus) {
 		color_window = 0xff303030;
 		color_control_mode = 0xff000000;
 		color_visualizer = 0xff000000;
