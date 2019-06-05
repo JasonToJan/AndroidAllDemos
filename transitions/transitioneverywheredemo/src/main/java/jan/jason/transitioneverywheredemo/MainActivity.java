@@ -26,8 +26,9 @@ public class MainActivity extends AppCompatActivity implements ListFragment.Samp
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ListFragment listFragment = new ListFragment();
-        listFragment.setSampleListListener(this);
+        listFragment.setSampleListListener(this);//回调监听
         getSupportFragmentManager()
             .beginTransaction()
             .replace(R.id.container, listFragment)
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements ListFragment.Samp
     @Override
     public void onSampleSelected(int index) {
         getSupportFragmentManager()
-            .beginTransaction()
+            .beginTransaction()//fragment切换动画，淡入淡出
             .setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
                 R.anim.fade_in, R.anim.fade_out)
             .replace(R.id.container, createFragmentForPosition(index))

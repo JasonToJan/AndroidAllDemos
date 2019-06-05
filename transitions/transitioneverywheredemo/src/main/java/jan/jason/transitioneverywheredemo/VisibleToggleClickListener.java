@@ -18,6 +18,7 @@ package jan.jason.transitioneverywheredemo;
 import android.view.View;
 
 /**
+ * 点击后需要改变视图的显示和隐藏，逻辑在changeVisibility中处理
  * Created by Andrey Kulikov on 24/03/16.
  */
 public abstract class VisibleToggleClickListener implements View.OnClickListener {

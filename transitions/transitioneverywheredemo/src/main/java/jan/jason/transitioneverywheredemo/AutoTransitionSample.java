@@ -27,6 +27,9 @@ import com.transitionseverywhere.TransitionManager;
 
 
 /**
+ * 第一个demo
+ * 点击按钮，按钮下方弹出文字动画
+ * 再点一次，文字隐藏，按钮下移
  * Created by Andrey Kulikov on 20/03/16.
  */
 public class AutoTransitionSample extends Fragment {
@@ -36,13 +39,14 @@ public class AutoTransitionSample extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_autotransition, container, false);
 
-        final ViewGroup transitionsContainer = view.findViewById(R.id.transitions_container);
+        final ViewGroup transitionsContainer = view.findViewById(R.id.transitions_container);//LinearLayout
         final TextView text = transitionsContainer.findViewById(R.id.text);
 
         transitionsContainer.findViewById(R.id.button).setOnClickListener(new VisibleToggleClickListener() {
 
             @Override
             protected void changeVisibility(boolean visible) {
+                //延迟的作用
                 TransitionManager.beginDelayedTransition(transitionsContainer);
                 // it is the same as
                 // TransitionManager.beginDelayedTransition(transitionsContainer, new AutoTransition());

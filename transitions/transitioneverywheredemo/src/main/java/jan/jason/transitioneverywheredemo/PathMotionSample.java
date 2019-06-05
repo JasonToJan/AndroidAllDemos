@@ -30,6 +30,7 @@ import com.transitionseverywhere.TransitionManager;
 
 
 /**
+ * 可以将直线变成圆滑曲线
  * Created by Andrey Kulikov on 24/03/16.
  */
 public class PathMotionSample extends Fragment {
@@ -49,7 +50,7 @@ public class PathMotionSample extends Fragment {
             @Override
             public void onClick(View v) {
                 final ChangeBounds changeBounds = new ChangeBounds();
-                changeBounds.setPathMotion(new ArcMotion());
+                changeBounds.setPathMotion(new ArcMotion());//设置Path
                 changeBounds.setDuration(500);
                 TransitionManager.beginDelayedTransition(transitionsContainer, changeBounds);
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     android:id="@+id/transitions_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="24dp">
 
     <include
@@ -12,4 +13,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left|top"/>
 
-</FrameLayout>
+    <Button android:id="@+id/interpolator_button2"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="DO MAGIC"
+        android:theme="@style/AppTheme.White"/>
+
+</LinearLayout>
