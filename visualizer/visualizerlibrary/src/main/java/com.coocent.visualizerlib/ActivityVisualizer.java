@@ -32,6 +32,7 @@
 //
 package com.coocent.visualizerlib;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -40,6 +41,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.media.AudioManager;
@@ -62,6 +64,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.coocent.visualizerlib.common.Timer;
+import com.coocent.visualizerlib.inter.IVisualizer;
+import com.coocent.visualizerlib.ui.UI;
+import com.coocent.visualizerlib.utils.LogUtils;
+import com.coocent.visualizerlib.view.BgButton;
+import com.coocent.visualizerlib.view.BgColorStateList;
+import com.coocent.visualizerlib.view.ColorDrawable;
+import com.coocent.visualizerlib.view.CustomContextMenu;
+import com.coocent.visualizerlib.view.InterceptableLayout;
+import com.coocent.visualizerlib.view.TextIconDrawable;
 
 import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
 
@@ -91,6 +104,7 @@ public final class ActivityVisualizer extends Activity implements
 	private static final int MSG_SYSTEM_UI_CHANGED = 0x0401;
 	private static final int MNU_ORIENTATION = 100;
 	private static final int MNU_DUMMY = 101;
+	private static final int CAMERA_PERMISSION_CODE=1001;//照相机权限回调Code
 	private float panelTopAlpha;
 
 	//自定义视图相关
@@ -180,9 +194,19 @@ public final class ActivityVisualizer extends Activity implements
 		super.onDestroy();
 	}
 
+
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode==CAMERA_PERMISSION_CODE){
+			if(resultCode==RESULT_OK){
+				//照相机权限获取到了，需要重新进入
+				startActivity((new Intent(this, ActivityVisualizer.class)).
+						putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName())
+						.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_IMMERSIVE_PARTICLE_VR));
+			}
+		}
 		final IVisualizer v = visualizer;
 		if (v != null){
 			v.onActivityResult(requestCode, resultCode, data);
@@ -328,7 +352,7 @@ public final class ActivityVisualizer extends Activity implements
 			if (visualizer != null && panelTopWasVisibleOk)
 				visualizer.onClick();
 		} else if(view==nextVisualizerIb){
-
+			LogUtils.d("点击了下一个~");
 			if(VisualizerManager.getInstance().visualizerIndex
 					==VisualizerManager.getInstance().visualizerDataType.length-1){
 				VisualizerManager.getInstance().visualizerIndex=0;
@@ -340,6 +364,7 @@ public final class ActivityVisualizer extends Activity implements
 
 		} else if(view==prevVisualizerIb){
 
+			LogUtils.d("点击了上一个~");
 			if(VisualizerManager.getInstance().visualizerIndex ==0){
 				VisualizerManager.getInstance().visualizerIndex=
 						VisualizerManager.getInstance().visualizerDataType.length-1;
@@ -715,26 +740,27 @@ public final class ActivityVisualizer extends Activity implements
 	 */
 	private void initVisualizer(){
 		String name = null;
-		final Intent si = getIntent();
+		final Intent si = setIntent(VisualizerManager.getInstance().visualizerIndex);
 		if (si != null && (name = si.getStringExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME)) != null) {
-			if (!name.startsWith("br.com.carlosrafaelgn.fplay"))
-				name = null;
-		}
-		if (name != null) {
-			try {
-				final Class<?> clazz = Class.forName(name);
-				if (clazz != null) {
-					try {
-						updateInfoWithConfiguration(null);
-						visualizer = (IVisualizer)clazz.getConstructor(Activity.class, boolean.class, Intent.class).newInstance(this, info.isLandscape, si);
-					} catch (Throwable ex) {
-						ex.printStackTrace();
-					}
-				}
-			} catch (Throwable ex) {
-				ex.printStackTrace();
+			if (!name.startsWith("br.com.carlosrafaelgn.fplay")){
+				return;
 			}
 		}
+//		if (name != null) {
+//			try {
+//				final Class<?> clazz = Class.forName(name);
+//				if (clazz != null) {
+//					try {
+//						updateInfoWithConfiguration(null);
+//						visualizer = (IVisualizer)clazz.getConstructor(Activity.class, boolean.class, Intent.class).newInstance(this, info.isLandscape, si);
+//					} catch (Throwable ex) {
+//						ex.printStackTrace();
+//					}
+//				}
+//			} catch (Throwable ex) {
+//				ex.printStackTrace();
+//			}
+//		}
 
 		final boolean visualizerRequiresThread;
 		if (visualizer != null) {
@@ -997,6 +1023,29 @@ public final class ActivityVisualizer extends Activity implements
 			case VisualizerManager.SPIN_TYPE:
 				intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
 				intent.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_SPIN);
+				break;
+
+			case VisualizerManager.PARTICLE_IMMERSIVE:
+				intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
+                intent.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_IMMERSIVE_PARTICLE);
+				break;
+
+			case VisualizerManager.PARTICLE_VR:
+				//需要照相机支持
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+					if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+						requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+						break;
+					}
+				}
+				//沉浸式Particle_VR版
+				intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
+				intent.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_IMMERSIVE_PARTICLE_VR);
+				break;
+
+			case VisualizerManager.LIQUID_POWER_SAVER:
+				intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
+				intent.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_LIQUID_POWER_SAVER);
 				break;
 		}
 

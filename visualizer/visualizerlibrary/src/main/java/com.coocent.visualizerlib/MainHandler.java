@@ -38,6 +38,8 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 
+import com.coocent.visualizerlib.ui.UI;
+
 
 public final class MainHandler extends Handler {
 	public static final int MSG_HANDLER_TOAST = 0x0500;

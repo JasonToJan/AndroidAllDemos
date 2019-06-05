@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.coocent.visualizerlib.InterceptableLayout
+<com.coocent.visualizerlib.view.InterceptableLayout
     android:id="@+id/av_panelControls"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -18,7 +18,7 @@
         <!--android:layout_alignParentTop="true"-->
         <!--android:splitMotionEvents="false">-->
 
-        <!--<com.coocent.visualizerlib.BgButton-->
+        <!--<com.coocent.visualizerlib.view.BgButton-->
             <!--android:id="@+id/btnGoBack"-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="wrap_content"-->
@@ -39,7 +39,7 @@
             <!--android:orientation="horizontal"-->
             <!--android:splitMotionEvents="false">-->
 
-            <!--<com.coocent.visualizerlib.BgButton-->
+            <!--<com.coocent.visualizerlib.view.BgButton-->
                 <!--android:id="@+id/btnPrev"-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
@@ -50,7 +50,7 @@
                 <!--android:nextFocusRight="@+id/btnPlay"-->
                 <!--android:nextFocusUp="@+id/btnGoBack"/>-->
 
-            <!--<com.coocent.visualizerlib.BgButton-->
+            <!--<com.coocent.visualizerlib.view.BgButton-->
                 <!--android:id="@+id/btnPlay"-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
@@ -61,7 +61,7 @@
                 <!--android:nextFocusRight="@+id/btnNext"-->
                 <!--android:nextFocusUp="@+id/btnPrev"/>-->
 
-            <!--<com.coocent.visualizerlib.BgButton-->
+            <!--<com.coocent.visualizerlib.view.BgButton-->
                 <!--android:id="@+id/btnNext"-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
@@ -73,7 +73,7 @@
                 <!--android:nextFocusUp="@+id/btnPlay"/>-->
         <!--</LinearLayout>-->
 
-        <!--<com.coocent.visualizerlib.BgButton-->
+        <!--<com.coocent.visualizerlib.view.BgButton-->
             <!--android:id="@+id/btnMenu"-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="wrap_content"-->
@@ -93,13 +93,13 @@
         android:layout_height="60dp"
         android:clickable="true">
 
-        <com.coocent.visualizerlib.BgButton
+        <com.coocent.visualizerlib.view.BgButton
             android:id="@+id/av_backBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true" />
 
-        <com.coocent.visualizerlib.BgButton
+        <com.coocent.visualizerlib.view.BgButton
             android:id="@+id/av_moreBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -180,4 +180,4 @@
         android:background="@drawable/button_right_selector"
         android:layout_alignParentEnd="true" />
 
-</com.coocent.visualizerlib.InterceptableLayout>
+</com.coocent.visualizerlib.view.InterceptableLayout>

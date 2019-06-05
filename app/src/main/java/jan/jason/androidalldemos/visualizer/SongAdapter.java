@@ -48,7 +48,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder>{
                 @Override
                 public void onClick(View v) {
                     if(mContext!=null){
-                        Intent intent=new Intent(mContext,VisualizerMusicDetailActivity.class);
+                        Intent intent=new Intent(mContext,VisualizerMusicDetailActivity2.class);
                         intent.putExtra("position",getAdapterPosition());
                         LogUtils.d("这里的position="+getAdapterPosition());
                         mContext.startActivity(intent);

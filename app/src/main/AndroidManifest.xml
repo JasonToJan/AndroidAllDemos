@@ -28,6 +28,11 @@
             android:name=".visualizer.VisualizerMusicDetailActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
+        <activity
+            android:name=".visualizer.VisualizerMusicDetailActivity2"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+
     </application>
 
 </manifest>

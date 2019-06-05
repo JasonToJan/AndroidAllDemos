@@ -34,6 +34,10 @@ package com.coocent.visualizerlib;
 
 import android.os.Build;
 
+import com.coocent.visualizerlib.common.Timer;
+import com.coocent.visualizerlib.inter.IVisualizer;
+import com.coocent.visualizerlib.inter.IVisualizerService;
+import com.coocent.visualizerlib.utils.LogUtils;
 
 
 public final class VisualizerService implements IVisualizerService, Runnable, Timer.TimerHandler {

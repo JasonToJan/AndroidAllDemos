@@ -59,15 +59,15 @@ import android.view.SurfaceHolder;
 import android.view.ViewDebug.ExportedProperty;
 import android.view.WindowManager;
 
-import com.coocent.visualizerlib.VisualizerManager;
-import com.coocent.visualizerlib.ArraySorter;
-import com.coocent.visualizerlib.ColorDrawable;
-import com.coocent.visualizerlib.IVisualizer;
 import com.coocent.visualizerlib.MainHandler;
 import com.coocent.visualizerlib.R;
-import com.coocent.visualizerlib.SongInfo;
-import com.coocent.visualizerlib.TextIconDrawable;
-import com.coocent.visualizerlib.UI;
+import com.coocent.visualizerlib.VisualizerManager;
+import com.coocent.visualizerlib.common.ArraySorter;
+import com.coocent.visualizerlib.entity.SongInfo;
+import com.coocent.visualizerlib.inter.IVisualizer;
+import com.coocent.visualizerlib.ui.UI;
+import com.coocent.visualizerlib.view.ColorDrawable;
+import com.coocent.visualizerlib.view.TextIconDrawable;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -530,7 +530,12 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 						cameraId = 0;
 					}
 					camera = ((cameraId >= 0) ? Camera.open(cameraId) : null);
+
+					//调整镜像,还是不行,放弃吧
+					//setCameraDisplayOrientation(info,camera);
+
 					cameraNativeOrientation = info.orientation;
+
 				} catch (Throwable ex) {
 					if (camera != null) {
 						camera.release();
@@ -582,11 +587,11 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 				rotation = windowManager.getDefaultDisplay().getRotation();
 			} catch (Throwable ex) {
 				//silly assumption for phones....
-				rotation = ((width >= height) ? Surface.ROTATION_90 : Surface.ROTATION_0);
+				rotation = ((width < height) ? Surface.ROTATION_90 : Surface.ROTATION_0);
 			}
 		} else {
 			//silly assumption for phones....
-			rotation = ((width >= height) ? Surface.ROTATION_90 : Surface.ROTATION_0);
+			rotation = ((width < height) ? Surface.ROTATION_90 : Surface.ROTATION_0);
 		}
 
 		int cameraPreviewW = 0, cameraPreviewH = 0;
@@ -609,7 +614,10 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 						break;
 					}
 					final int cameraDisplayOrientation = (cameraNativeOrientation - degrees + 360) % 360;
+
+					//LogUtils.d("cameraNativeOrientation="+cameraDisplayOrientation+" 预览旋转角度为："+cameraDisplayOrientation);
 					camera.setDisplayOrientation(cameraDisplayOrientation);
+
 					final Camera.Parameters parameters = camera.getParameters();
 
 					//try to find the ideal preview size...
@@ -1012,7 +1020,8 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 	//Runs on ANY thread
 	@Override
 	public int requiredOrientation() {
-		return (type == TYPE_IMMERSIVE_PARTICLE_VR ? ORIENTATION_LANDSCAPE : ORIENTATION_NONE);
+		return (type == TYPE_IMMERSIVE_PARTICLE_VR ? ORIENTATION_PORTRAIT : ORIENTATION_NONE);
+//		return ORIENTATION_NONE;
 	}
 
 	//Runs on a SECONDARY thread (B)
@@ -1071,5 +1080,38 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 		}
 		activity = null;
 		SimpleVisualizerJni.glReleaseView();
+	}
+
+	/**
+	 * @param camera   相机对象
+	 */
+	public void setCameraDisplayOrientation(Camera.CameraInfo info, Camera camera) {
+		if(activity==null) return;
+
+		int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+		int degrees = 0;
+		switch (rotation) {
+			case Surface.ROTATION_0:
+				degrees = 0;
+				break;
+			case Surface.ROTATION_90:
+				degrees = 90;
+				break;
+			case Surface.ROTATION_180:
+				degrees = 180;
+				break;
+			case Surface.ROTATION_270:
+				degrees = 270;
+				break;
+		}
+		int result;
+		if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+			result = (info.orientation + degrees) % 360;
+			result = (360 - result) % 360;  // compensate the mirror
+		} else {
+			// back-facing
+			result = (info.orientation - degrees + 360) % 360;
+		}
+		camera.setDisplayOrientation(180);
 	}
 }

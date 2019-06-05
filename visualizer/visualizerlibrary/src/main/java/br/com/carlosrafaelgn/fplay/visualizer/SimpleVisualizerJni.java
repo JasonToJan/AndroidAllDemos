@@ -44,12 +44,12 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewDebug.ExportedProperty;
 
-import com.coocent.visualizerlib.IVisualizer;
+import com.coocent.visualizerlib.inter.IVisualizer;
 import com.coocent.visualizerlib.R;
-import com.coocent.visualizerlib.SlimLock;
-import com.coocent.visualizerlib.SongInfo;
-import com.coocent.visualizerlib.TextIconDrawable;
-import com.coocent.visualizerlib.UI;
+import com.coocent.visualizerlib.common.SlimLock;
+import com.coocent.visualizerlib.entity.SongInfo;
+import com.coocent.visualizerlib.view.TextIconDrawable;
+import com.coocent.visualizerlib.ui.UI;
 
 import java.util.Arrays;
 
