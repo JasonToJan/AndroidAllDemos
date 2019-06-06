@@ -26,7 +26,8 @@ public class VisualizerMainActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.avm_visualizer_btn1:
-//                startActivity(new Intent(this,ActivityHost.class));
+                startActivity(new Intent(this,com.coocent.visualizerlib.test.VisualizerDemoActivity.class));
+               // KeepToUtils.keepToVisualizerActivity(this,0);
                 break;
 
             case R.id.avm_visualizer_btn2:

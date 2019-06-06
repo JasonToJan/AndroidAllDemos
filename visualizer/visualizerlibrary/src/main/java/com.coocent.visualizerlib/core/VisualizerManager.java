@@ -1,10 +1,16 @@
-package com.coocent.visualizerlib;
+package com.coocent.visualizerlib.core;
 
 
 import android.app.Application;
+import android.content.Context;
 
+import com.coocent.visualizerlib.entity.MenuItem;
+import com.coocent.visualizerlib.inter.IControlVisualizer;
+import com.coocent.visualizerlib.inter.IVisualizerMenu;
 import com.coocent.visualizerlib.inter.MusicVisualizerInter;
 import com.coocent.visualizerlib.utils.LogUtils;
+
+import java.util.List;
 
 /**
  * Description: 管理频谱类，全局单例实现
@@ -14,19 +20,43 @@ import com.coocent.visualizerlib.utils.LogUtils;
  */
 public class VisualizerManager {
 
-    static VisualizerManager instance=null;
-
+    /**
+     * 全局上下文
+     */
     public Application application;
+    /**
+     * 当前频谱类型索引
+     */
+    public int visualizerIndex;
+    /**
+     * 当前SessionId
+     */
+    private int sessionId;
+    /**
+     * 控制频谱切换接口
+     */
+    public IControlVisualizer controlVisualizer;
+    /**
+     * 控制频谱菜单接口
+     */
+    public IVisualizerMenu visualizerMenu;
+    /**
+     * 是否允许横屏
+     */
+    public boolean isAllowLandscape=false;
+    /**
+     * 是否是横屏
+     */
+    public boolean isLandscape;
+    /**
+     * 频谱颜色，是否是绿色
+     */
+    public boolean isGreen;
+    /**
+     * 当前频谱颜色
+     */
+    public int currentColor;
 
-    private void VisualizerManager(){}
-
-    public static VisualizerManager getInstance(){
-        return SingletonTool.instance;
-    }
-
-    public int sessionId;
-
-    public int visualizerIndex;//第0个为水波纹，第1个上下波纹，第2个波浪，第3个小花点,第4个中间蓝色波纹，第5个彩虹
 
     //实际的展示频谱类型，如果要增加在这里面增加即可
     public String[] visualizerDataType={
@@ -66,6 +96,13 @@ public class VisualizerManager {
             LIQUID_POWER_SAVER,
     };
 
+    static VisualizerManager instance=null;
+
+    private void VisualizerManager(){}
+
+    public static VisualizerManager getInstance(){
+        return SingletonTool.instance;
+    }
 
     /**
      * 音乐接口，需要在服务中自行设置
@@ -110,6 +147,37 @@ public class VisualizerManager {
             LogUtils.d("糟了，这里的MusicVisualizerInter为空了！！！");
         }
         return musicVisualizerInter;
+    }
+
+    public void setControlVisualizer(IControlVisualizer controlVisualizer){
+        this.controlVisualizer=controlVisualizer;
+    }
+
+    public IControlVisualizer getControlVisualizer(){
+        if(controlVisualizer==null) {
+            LogUtils.d("糟了，这里的controlVisualizer为空了！！！");
+        }
+        return controlVisualizer;
+    }
+
+    public void setVisualizerMenu(IVisualizerMenu visualizerMenu){
+        this.visualizerMenu=visualizerMenu;
+    }
+
+    public IVisualizerMenu getVisualizerMenu(){
+        if(visualizerMenu==null) {
+            LogUtils.d("糟了，这里的controlVisualizer为空了！！！");
+        }
+        return visualizerMenu;
+    }
+
+    /**
+     * 获取当前频谱的菜单项
+     * @param context
+     * @return
+     */
+    public List<MenuItem> getCurrentTypeMenus(Context context){
+        return MenuData.getCurrentMenus(context);
     }
 
 }

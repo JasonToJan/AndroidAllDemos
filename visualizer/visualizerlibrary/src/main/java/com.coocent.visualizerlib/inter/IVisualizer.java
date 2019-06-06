@@ -113,4 +113,5 @@ public interface IVisualizer {
 
 	//Runs on the MAIN thread (AFTER release())
 	void releaseView();
+
 }

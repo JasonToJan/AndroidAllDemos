@@ -36,7 +36,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 
-import com.coocent.visualizerlib.MainHandler;
+import com.coocent.visualizerlib.core.MainHandler;
 
 
 public final class Timer implements Handler.Callback {

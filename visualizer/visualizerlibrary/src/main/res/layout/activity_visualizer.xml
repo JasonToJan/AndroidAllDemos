@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
     android:splitMotionEvents="false"
-    tools:context=".ActivityVisualizer">
+    tools:context=".VisualizerActivity">
 
     <!--<RelativeLayout-->
         <!--android:visibility="gone"-->

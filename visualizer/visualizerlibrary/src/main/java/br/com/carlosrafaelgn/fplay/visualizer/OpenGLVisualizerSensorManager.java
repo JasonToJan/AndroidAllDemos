@@ -42,7 +42,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
 
-import com.coocent.visualizerlib.VisualizerManager;
+import com.coocent.visualizerlib.core.VisualizerManager;
 
 
 public final class OpenGLVisualizerSensorManager extends Thread implements Handler.Callback, SensorEventListener {

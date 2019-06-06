@@ -30,7 +30,7 @@
 //
 // https://github.com/carlosrafaelgn/FPlayAndroid
 //
-package com.coocent.visualizerlib;
+package com.coocent.visualizerlib.core;
 
 import android.os.Handler;
 import android.os.Looper;

@@ -2,5 +2,6 @@
 <resources>
 
     <color name="color_transparent">#00000000</color>
+    <color name="colorAccent">#4ADDFE</color>
 
 </resources>

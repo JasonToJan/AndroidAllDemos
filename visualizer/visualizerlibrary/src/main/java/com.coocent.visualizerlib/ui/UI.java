@@ -79,7 +79,7 @@ import android.widget.Toast;
 
 import com.coocent.visualizerlib.BuildConfig;
 import com.coocent.visualizerlib.R;
-import com.coocent.visualizerlib.VisualizerManager;
+import com.coocent.visualizerlib.core.VisualizerManager;
 import com.coocent.visualizerlib.utils.ColorUtils;
 import com.coocent.visualizerlib.view.BgButton;
 import com.coocent.visualizerlib.view.BgColorStateList;

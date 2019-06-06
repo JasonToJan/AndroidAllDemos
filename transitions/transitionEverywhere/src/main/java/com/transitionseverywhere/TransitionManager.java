@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import com.transitionseverywhere.utils.LogUtils;
 import com.transitionseverywhere.utils.ViewGroupOverlayUtils;
 import com.transitionseverywhere.utils.ViewGroupUtils;
 import com.transitionseverywhere.utils.ViewUtils;
@@ -435,6 +436,9 @@ public class TransitionManager {
                         sceneRoot + ", " + transition);
             }
             sPendingTransitions.add(sceneRoot);
+
+            LogUtils.d("sceneRoot已经添加到PendingTransitions中了");
+
             if (transition == null) {
                 transition = sDefaultTransition;
             }

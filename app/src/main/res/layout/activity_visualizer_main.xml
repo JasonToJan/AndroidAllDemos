@@ -12,7 +12,7 @@
 
         <Button
             android:id="@+id/avm_visualizer_btn1"
-            android:text="点击进入完整音乐App中"
+            android:text="点击进入频谱Demo"
             android:textAllCaps="false"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
@@ -20,11 +20,13 @@
 
         <Button
             android:id="@+id/avm_visualizer_btn2"
-            android:text="点击进入频谱Demo"
+            android:text="点击进入音乐+频谱demo"
             android:textAllCaps="false"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
+
 
     </LinearLayout>
 

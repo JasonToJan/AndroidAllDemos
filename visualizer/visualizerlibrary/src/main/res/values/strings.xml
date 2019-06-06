@@ -24,10 +24,14 @@
     <string name="speed">Speed</string>
     <string name="blue">Blue</string>
     <string name="green">Green</string>
+    <string name="change_color">Change color</string>
     <string name="orange">Orange</string>
     <string name="light">Light</string>
     <string name="sustain">Sustain:</string>
     <string name="none">None</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+
 
 
 </resources>

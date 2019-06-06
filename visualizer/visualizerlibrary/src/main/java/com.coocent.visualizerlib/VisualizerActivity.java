@@ -66,9 +66,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.coocent.visualizerlib.common.Timer;
+import com.coocent.visualizerlib.core.MainHandler;
+import com.coocent.visualizerlib.core.VisualizerManager;
+import com.coocent.visualizerlib.core.VisualizerService;
 import com.coocent.visualizerlib.inter.IVisualizer;
 import com.coocent.visualizerlib.ui.UI;
+import com.coocent.visualizerlib.utils.CommonUtils;
 import com.coocent.visualizerlib.utils.LogUtils;
+import com.coocent.visualizerlib.utils.PermissionUtils;
 import com.coocent.visualizerlib.view.BgButton;
 import com.coocent.visualizerlib.view.BgColorStateList;
 import com.coocent.visualizerlib.view.ColorDrawable;
@@ -82,7 +87,7 @@ import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
 /**
  * 频谱主页
  */
-public final class ActivityVisualizer extends Activity implements
+public final class VisualizerActivity extends Activity implements
 		VisualizerService.Observer,
 		MainHandler.Callback,
 		View.OnClickListener,
@@ -104,7 +109,8 @@ public final class ActivityVisualizer extends Activity implements
 	private static final int MSG_SYSTEM_UI_CHANGED = 0x0401;
 	private static final int MNU_ORIENTATION = 100;
 	private static final int MNU_DUMMY = 101;
-	private static final int CAMERA_PERMISSION_CODE=1001;//照相机权限回调Code
+	public static final int CAMERA_PERMISSION_CODE=1001;//照相机权限回调Code
+	public static final int RECORD_PERMISSION_CODE=1002;//录音权限
 	private float panelTopAlpha;
 
 	//自定义视图相关
@@ -199,17 +205,29 @@ public final class ActivityVisualizer extends Activity implements
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if(requestCode==CAMERA_PERMISSION_CODE){
-			if(resultCode==RESULT_OK){
-				//照相机权限获取到了，需要重新进入
-				startActivity((new Intent(this, ActivityVisualizer.class)).
-						putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName())
-						.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_IMMERSIVE_PARTICLE_VR));
-			}
-		}
+
 		final IVisualizer v = visualizer;
 		if (v != null){
 			v.onActivityResult(requestCode, resultCode, data);
+		}
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode,  String[] permissions,  int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		if(requestCode==CAMERA_PERMISSION_CODE){
+			//照相机权限获取到了，需要重新进入
+			if(PermissionUtils.hasCameraPermission(this)){
+				startActivity((new Intent(this, VisualizerActivity.class)).
+						putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName())
+						.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_IMMERSIVE_PARTICLE_VR));
+			}
+
+		}else if(requestCode==RECORD_PERMISSION_CODE){
+			if(PermissionUtils.hasRecordPermission(this)){
+				LogUtils.d("Activity权限请求成功");
+				changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
+			}
 		}
 	}
 
@@ -679,6 +697,7 @@ public final class ActivityVisualizer extends Activity implements
 	 */
 	private void init(){
 		initApplication();
+		initPermission();
 		initUI();
 		initHandler();
 		initLanguage();
@@ -698,12 +717,26 @@ public final class ActivityVisualizer extends Activity implements
 	}
 
 	/**
+	 * 申请权限
+	 */
+	private void initPermission(){
+		if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+				requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_PERMISSION_CODE);
+				LogUtils.d("这里开始申请权限了");
+				return;
+			}
+		}
+	}
+
+	/**
 	 * 初始化UI
 	 */
 	private void initUI(){
-		UI.initialize(ActivityVisualizer.this, 1080,1920);
+		UI.initialize(VisualizerActivity.this, CommonUtils.getScreenWidth(this),CommonUtils.getScreenWidth(this));
 		UI.loadCommonColors(true);
 		UI.initColorDefault();//默认的相关颜色值
+		PermissionUtils.requestRecordAudioPermissionInActivity(this,RECORD_PERMISSION_CODE);
 	}
 
 	/**
@@ -761,6 +794,9 @@ public final class ActivityVisualizer extends Activity implements
 //				ex.printStackTrace();
 //			}
 //		}
+
+
+		visualizer = new OpenGLVisualizerJni(this, true, si);
 
 		final boolean visualizerRequiresThread;
 		if (visualizer != null) {

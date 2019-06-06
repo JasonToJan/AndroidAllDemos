@@ -38,6 +38,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.SurfaceTexture;
@@ -59,13 +60,17 @@ import android.view.SurfaceHolder;
 import android.view.ViewDebug.ExportedProperty;
 import android.view.WindowManager;
 
-import com.coocent.visualizerlib.MainHandler;
 import com.coocent.visualizerlib.R;
-import com.coocent.visualizerlib.VisualizerManager;
 import com.coocent.visualizerlib.common.ArraySorter;
+import com.coocent.visualizerlib.core.MainHandler;
+import com.coocent.visualizerlib.core.VisualizerManager;
 import com.coocent.visualizerlib.entity.SongInfo;
 import com.coocent.visualizerlib.inter.IVisualizer;
+import com.coocent.visualizerlib.inter.IVisualizerMenu;
+import com.coocent.visualizerlib.ui.ColorPickerDialog;
 import com.coocent.visualizerlib.ui.UI;
+import com.coocent.visualizerlib.utils.Constants;
+import com.coocent.visualizerlib.utils.LogUtils;
 import com.coocent.visualizerlib.view.ColorDrawable;
 import com.coocent.visualizerlib.view.TextIconDrawable;
 
@@ -85,7 +90,10 @@ import javax.microedition.khronos.opengles.GL10;
 
 
 
-public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfaceView.Renderer, GLSurfaceView.EGLContextFactory, GLSurfaceView.EGLWindowSurfaceFactory, IVisualizer, MenuItem.OnMenuItemClickListener, MainHandler.Callback {
+public final class OpenGLVisualizerJni extends GLSurfaceView
+		implements GLSurfaceView.Renderer, GLSurfaceView.EGLContextFactory,
+		GLSurfaceView.EGLWindowSurfaceFactory, IVisualizer,
+		MenuItem.OnMenuItemClickListener, MainHandler.Callback,IVisualizerMenu {
 
 	private static final int MNU_COLOR = MNU_VISUALIZER + 1, MNU_SPEED0 = MNU_VISUALIZER + 2, MNU_SPEED1 = MNU_VISUALIZER + 3,
 		MNU_SPEED2 = MNU_VISUALIZER + 4, MNU_CHOOSE_IMAGE = MNU_VISUALIZER + 5, MNU_DIFFUSION0 = MNU_VISUALIZER + 6,
@@ -136,6 +144,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 
 	public OpenGLVisualizerJni(Activity activity, boolean landscape, Intent extras) {
 		super(activity);
+		VisualizerManager.getInstance().setVisualizerMenu(this);
 		final int t = extras.getIntExtra(EXTRA_VISUALIZER_TYPE, TYPE_SPECTRUM);
 		type = ((t < TYPE_LIQUID || t > TYPE_COLOR_WAVES) ? TYPE_SPECTRUM : t);
 		setClickable(true);
@@ -839,6 +848,8 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 			final Intent intent = new Intent();
 			intent.setType("image/*");
 			intent.setAction(Intent.ACTION_GET_CONTENT);
+
+			LogUtils.d("即将选择图片~");
 			activity.startActivityForResult(intent, 1234);
 		}
 	}
@@ -887,8 +898,10 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 	public void onActivityResult(int requestCode, int resultCode, Object intent) {
 		if (requestCode == 1234) {
 			browsing = false;
-			if (resultCode == Activity.RESULT_OK)
+			if (resultCode == Activity.RESULT_OK){
 				selectedUri = ((Intent)intent).getData();
+				LogUtils.d("返回图片URI为："+selectedUri);
+			}
 		}
 	}
 
@@ -1114,4 +1127,102 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 		}
 		camera.setDisplayOrientation(180);
 	}
+
+	@Override
+	public void changeImageUri(Uri selectedUri1) {
+		if(selectedUri1!=null){
+			selectedUri=selectedUri1;
+		}
+		loadBitmap();
+	}
+
+	@Override
+	public void changeColor() {
+//		colorIndex = ((colorIndex == 0) ? 257 : 0);
+		LogUtils.d("当前颜色值："+colorIndex);
+//		colorIndex=colorIndex+10;
+
+//       new ColorPickerDialog(activity,Constants.colors)
+//                        .setTitle("Change Visualizer Color")
+//						.setDismissAfterClick(true)
+//                        .setOnColorChangedListener(new OnColorChangedListener() {
+//                            @Override
+//                            public void onColorChanged(int newColor) {
+//                                colorIndex=getColorIndexByColors(newColor);
+//                            }
+//
+//							@Override
+//							public void onClickOk() {
+//								SimpleVisualizerJni.commonSetColorIndex(colorIndex);
+//							}
+//						})
+//                        .build(6)
+//			   			.setCheckedColor(getColorByColorIndex(colorIndex))
+//                        .show();
+
+
+		new ColorPickerDialog(activity,
+				new ColorPickerDialog.OnColorChangedListener() {
+					public void colorChanged(int color) {
+						colorIndex=getColorIndexByColors(color);
+						SimpleVisualizerJni.commonSetColorIndex(colorIndex);
+					}
+				},
+				getColorByColorIndex(colorIndex)
+		).show();
+
+
+	}
+
+    /**
+     * 通过颜色值获取colorIndex
+     * @return
+     */
+	public int getColorIndexByColors(int color){
+
+        switch (color){
+            case Color.BLUE:
+                return Constants.colorsIndex[0];
+
+            case Color.RED:
+                return Constants.colorsIndex[1];
+
+            case Color.YELLOW:
+                return Constants.colorsIndex[2];
+
+            case Color.GREEN:
+                return Constants.colorsIndex[3];
+
+            case Color.GRAY:
+                return Constants.colorsIndex[4];
+        }
+
+        return Constants.colorsIndex[0];
+    }
+
+    /**
+     * 通过索引获取颜色值
+     * @return
+     */
+    public int getColorByColorIndex(int colorIndex){
+
+        switch (colorIndex){
+            case 0:
+                return Constants.colors[0];
+
+            case 70:
+                return Constants.colors[1];
+
+            case 190:
+                return Constants.colors[2];
+
+            case 257:
+                return Constants.colors[3];
+
+            case 600:
+                return Constants.colors[4];
+        }
+
+        return Constants.colors[0];
+    }
 }

@@ -42,6 +42,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.transitionseverywhere.utils.AnimatorUtils;
+import com.transitionseverywhere.utils.LogUtils;
 import com.transitionseverywhere.utils.ViewUtils;
 
 import java.util.ArrayList;
@@ -1454,6 +1455,7 @@ public abstract class Transition implements Cloneable {
     }
 
     /**
+     * 递归实现  捕获固定视图的值，以及它下层视图的值
      * Recursive method that captures values for the given view and the
      * hierarchy underneath it.
      * @param sceneRoot The root of the view hierarchy being captured
@@ -1461,6 +1463,8 @@ public abstract class Transition implements Cloneable {
      * false otherwise
      */
     void captureValues(@NonNull ViewGroup sceneRoot, boolean start) {
+        LogUtils.d("captureValues执行了");
+
         clearValues(start);
         if ((mTargetIds.size() > 0 || mTargets.size() > 0)
                 && (mTargetNames == null || mTargetNames.isEmpty())
