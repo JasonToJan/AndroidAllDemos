@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.coocent.visualizerlib.test.TestVisualizerActivity;
+
 import jan.jason.androidalldemos.R;
 import jan.jason.androidalldemos.databinding.ActivityVisualizerMainBinding;
 
@@ -26,7 +28,7 @@ public class VisualizerMainActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.avm_visualizer_btn1:
-                startActivity(new Intent(this,com.coocent.visualizerlib.test.VisualizerDemoActivity.class));
+                startActivity(new Intent(this,TestVisualizerActivity.class));
                // KeepToUtils.keepToVisualizerActivity(this,0);
                 break;
 

@@ -143,7 +143,7 @@
             android:stateNotNeeded="true"
             android:theme="@style/AppTheme" />
 
-        <activity android:name=".test.VisualizerDemoActivity"></activity>
+        <activity android:name=".test.TestVisualizerActivity"></activity>
 
         <activity android:name=".test.TestFragementActivity"></activity>
 

@@ -35,30 +35,48 @@ package com.coocent.visualizerlib;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.ListPopupWindow;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.coocent.visualizerlib.core.MainHandler;
+import com.coocent.visualizerlib.core.MenuData;
 import com.coocent.visualizerlib.core.VisualizerManager;
 import com.coocent.visualizerlib.core.VisualizerService;
+import com.coocent.visualizerlib.entity.MenuItem;
 import com.coocent.visualizerlib.inter.IControlVisualizer;
 import com.coocent.visualizerlib.inter.IVisualizer;
 import com.coocent.visualizerlib.ui.UI;
 import com.coocent.visualizerlib.utils.CommonUtils;
 import com.coocent.visualizerlib.utils.Constants;
+import com.coocent.visualizerlib.utils.ImageUtils;
 import com.coocent.visualizerlib.utils.LogUtils;
 import com.coocent.visualizerlib.utils.PermissionUtils;
+import com.coocent.visualizerlib.view.CustomPopWindow;
+
+import java.util.List;
 
 import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
 
@@ -69,7 +87,7 @@ import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
 public final class VisualizerSimpleActivity extends Activity implements
         VisualizerService.Observer,
         MainHandler.Callback,
-        IControlVisualizer {
+        IControlVisualizer,View.OnClickListener {
 
     //基本数据
     private boolean visualizerRequiresHiddenControls, visualizerPaused;
@@ -79,10 +97,13 @@ public final class VisualizerSimpleActivity extends Activity implements
     private static final int MSG_SYSTEM_UI_CHANGED = 0x0401;
     public static final int CAMERA_PERMISSION_CODE=1001;//照相机权限回调Code
     public static final int RECORD_PERMISSION_CODE=1002;//录音权限
+    public static final int CHOOSEIMAGE_CODE=10011;
 
     private IVisualizer visualizer;
     private VisualizerService visualizerService;
     private FrameLayout visualizerRoot;
+    private CustomPopWindow mListPopWindow;
+    private ImageView visualizerMenu;
 
 
     @SuppressLint("InlinedApi")
@@ -144,6 +165,15 @@ public final class VisualizerSimpleActivity extends Activity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==CHOOSEIMAGE_CODE){
+            if (resultCode == Activity.RESULT_OK){
+                Uri selectedUri = ((Intent)data).getData();
+                LogUtils.d("Simple返回图片URI为："+selectedUri);
+                if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
+                    VisualizerManager.getInstance().getVisualizerMenu().changeImageUri(selectedUri);
+                }
+            }
+        }
         final IVisualizer v = visualizer;
         if (v != null){
             v.onActivityResult(requestCode, resultCode, data);
@@ -166,22 +196,6 @@ public final class VisualizerSimpleActivity extends Activity implements
                 changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
             }
         }
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if(ev.getAction()==MotionEvent.ACTION_UP){
-            LogUtils.d("接收到点击事件，即将切换到下一个频谱页~");
-            if(VisualizerManager.getInstance().visualizerIndex
-                    ==VisualizerManager.getInstance().visualizerDataType.length-1){
-                VisualizerManager.getInstance().visualizerIndex=0;
-            }else{
-                VisualizerManager.getInstance().visualizerIndex++;
-            }
-
-            changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
-        }
-        return super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -301,21 +315,6 @@ public final class VisualizerSimpleActivity extends Activity implements
 
         visualizer = new OpenGLVisualizerJni(this, true, si);
 
-//        if (name != null) {
-//            try {
-//                final Class<?> clazz = Class.forName(name);
-//                if (clazz != null) {
-//                    try {
-//                        visualizer = (IVisualizer)clazz.getConstructor(Activity.class, boolean.class, Intent.class).newInstance(this, Constants.isLandscape, si);
-//                    } catch (Throwable ex) {
-//                        LogUtils.d("异常"+ex.getMessage());
-//                    }
-//                }
-//            } catch (Throwable ex) {
-//                LogUtils.d("异常"+ex.getMessage());
-//            }
-//        }
-
         final boolean visualizerRequiresThread;
         if (visualizer != null) {
             requiredOrientation = visualizer.requiredOrientation();
@@ -373,7 +372,10 @@ public final class VisualizerSimpleActivity extends Activity implements
     }
 
     private void initView(){
-        visualizerRoot=findViewById(R.id.av_activity_root);
+        visualizerRoot=findViewById(R.id.asv_activity_root);
+        visualizerMenu=findViewById(R.id.asv_visualizer_more_iv);
+
+        visualizerMenu.setOnClickListener(this);
     }
 
     /**
@@ -384,6 +386,14 @@ public final class VisualizerSimpleActivity extends Activity implements
             VisualizerManager.getInstance().visualizerIndex=0;//默认是水波纹
 
             visualizerRoot.addView((View)visualizer);
+
+            if(VisualizerManager.getInstance().getIsShowActivityMenu()
+                    &&VisualizerManager.getInstance().getCurrentTypeMenus(this).size()>0){
+                visualizerMenu.bringToFront();
+                visualizerMenu.setVisibility(View.VISIBLE);
+            }else{
+                visualizerMenu.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -439,6 +449,14 @@ public final class VisualizerSimpleActivity extends Activity implements
 
         if (visualizer != null) {
             visualizerRoot.addView((View)visualizer);
+
+            if(VisualizerManager.getInstance().getIsShowActivityMenu()
+                    &&VisualizerManager.getInstance().getCurrentTypeMenus(this).size()>0){
+                visualizerMenu.bringToFront();
+                visualizerMenu.setVisibility(View.VISIBLE);
+            }else{
+                visualizerMenu.setVisibility(View.GONE);
+            }
         }
 
         isFinishChange=true;
@@ -502,6 +520,99 @@ public final class VisualizerSimpleActivity extends Activity implements
         }
 
         return intent;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v==visualizerMenu){
+            showPopup(v);
+        }
+    }
+
+    public void showPopup(View view){
+
+        if(mListPopWindow!=null){
+            mListPopWindow.dissmiss();
+            mListPopWindow=null;
+        }
+
+        View contentView = LayoutInflater.from(this).inflate(R.layout.pop_list_visualizer_menu,null);
+        handleListView(contentView);
+        mListPopWindow= new CustomPopWindow.PopupWindowBuilder(this)
+                .setView(contentView)
+                .setOutsideTouchable(true)
+                .size(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT)//显示大小
+                .create()
+                .showAsDropDown(view,0,20);
+
+    }
+
+    private void handleListView(View contentView){
+        RecyclerView recyclerView = (RecyclerView) contentView.findViewById(R.id.recyclerView);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(manager);
+        MyAdapter adapter = new MyAdapter(this,VisualizerManager.getInstance().getCurrentTypeMenus(this));
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+    }
+
+    public class MyAdapter extends RecyclerView.Adapter{
+
+        private List<MenuItem> mData;
+        private Context mContext;
+
+        public MyAdapter(Context mContext,List<MenuItem> datas) {
+            mData = datas;
+            this.mContext = mContext;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_fragment_pop_menu,null));
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+            ViewHolder viewHolder = (ViewHolder) holder;
+            ((ViewHolder) holder).itemTextView.setText(mData.get(position).getDescription());
+            ((ViewHolder) holder).root.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mData.get(position).getMenuCode()==MenuData.CHOOSEIMAGE){
+                        if(mListPopWindow!=null){
+                            mListPopWindow.dissmiss();
+                        }
+                        ImageUtils.getImageBySystemInActivity(VisualizerSimpleActivity.this,CHOOSEIMAGE_CODE);
+
+                    }else if(mData.get(position).getMenuCode()==MenuData.CHANGECOLOR){
+                        if(mListPopWindow!=null){
+                            mListPopWindow.dissmiss();
+                        }
+                        if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
+                            VisualizerManager.getInstance().getVisualizerMenu().changeColor();
+                        }
+                    }
+                }
+            });
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return mData == null ? 0:mData.size();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder{
+            TextView itemTextView;
+            RelativeLayout root;
+            public ViewHolder(View itemView) {
+                super(itemView);
+                itemTextView = (TextView) itemView.findViewById(R.id.list_pop_tv);
+                root=itemView.findViewById(R.id.list_pop_rl);
+            }
+        }
     }
 
 }

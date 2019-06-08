@@ -9,7 +9,7 @@ import com.coocent.visualizerlib.R;
 import com.coocent.visualizerlib.utils.KeepToUtils;
 
 
-public class VisualizerDemoActivity extends AppCompatActivity implements View.OnClickListener{
+public class TestVisualizerActivity extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +30,11 @@ public class VisualizerDemoActivity extends AppCompatActivity implements View.On
         if(v.getId()==R.id.avd_visualizer_btn1){
 
         }else if(v.getId()==R.id.avd_visualizer_btn2){
-            KeepToUtils.keepToVisualizerActivity(VisualizerDemoActivity.this,0);
+            KeepToUtils.keepToVisualizerActivity(TestVisualizerActivity.this,0);
         }else if(v.getId()==R.id.avd_visualizer_btn3){
-            KeepToUtils.keepToSimpleVisualizerActivity(VisualizerDemoActivity.this,0);
+            KeepToUtils.keepToSimpleVisualizerActivity(TestVisualizerActivity.this,0);
         }else if(v.getId()==R.id.avd_visualizer_btn4){
-            KeepToUtils.keepToVisualizerFragment(VisualizerDemoActivity.this,0);
+            KeepToUtils.keepToVisualizerFragment(TestVisualizerActivity.this,0);
         }
     }
 }

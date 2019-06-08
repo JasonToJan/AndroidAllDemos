@@ -35,6 +35,7 @@ package br.com.carlosrafaelgn.fplay.visualizer;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -48,16 +49,20 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.DynamicDrawableSpan;
 import android.text.style.ImageSpan;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Surface;
 import android.view.SurfaceHolder;
+import android.view.View;
 import android.view.ViewDebug.ExportedProperty;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.coocent.visualizerlib.R;
@@ -67,9 +72,9 @@ import com.coocent.visualizerlib.core.VisualizerManager;
 import com.coocent.visualizerlib.entity.SongInfo;
 import com.coocent.visualizerlib.inter.IVisualizer;
 import com.coocent.visualizerlib.inter.IVisualizerMenu;
-import com.coocent.visualizerlib.ui.ColorPickerDialog;
 import com.coocent.visualizerlib.ui.UI;
 import com.coocent.visualizerlib.utils.Constants;
+import com.coocent.visualizerlib.utils.CustomColorPickDialogUtils;
 import com.coocent.visualizerlib.utils.LogUtils;
 import com.coocent.visualizerlib.view.ColorDrawable;
 import com.coocent.visualizerlib.view.TextIconDrawable;
@@ -1139,39 +1144,15 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 	@Override
 	public void changeColor() {
 //		colorIndex = ((colorIndex == 0) ? 257 : 0);
-		LogUtils.d("当前颜色值："+colorIndex);
 //		colorIndex=colorIndex+10;
 
-//       new ColorPickerDialog(activity,Constants.colors)
-//                        .setTitle("Change Visualizer Color")
-//						.setDismissAfterClick(true)
-//                        .setOnColorChangedListener(new OnColorChangedListener() {
-//                            @Override
-//                            public void onColorChanged(int newColor) {
-//                                colorIndex=getColorIndexByColors(newColor);
-//                            }
-//
-//							@Override
-//							public void onClickOk() {
-//								SimpleVisualizerJni.commonSetColorIndex(colorIndex);
-//							}
-//						})
-//                        .build(6)
-//			   			.setCheckedColor(getColorByColorIndex(colorIndex))
-//                        .show();
-
-
-		new ColorPickerDialog(activity,
-				new ColorPickerDialog.OnColorChangedListener() {
-					public void colorChanged(int color) {
-						colorIndex=getColorIndexByColors(color);
-						SimpleVisualizerJni.commonSetColorIndex(colorIndex);
-					}
-				},
-				getColorByColorIndex(colorIndex)
-		).show();
-
-
+		CustomColorPickDialogUtils.showColorPickDialog(activity,getColorByColorIndex(colorIndex),new CustomColorPickDialogUtils.DialogOKOrCancel() {
+			@Override
+			public void onClickOK(int colorPosition) {
+				colorIndex=Constants.colorsIndex[colorPosition];
+				SimpleVisualizerJni.commonSetColorIndex(colorIndex);
+			}
+		});
 	}
 
     /**

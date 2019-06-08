@@ -49,13 +49,13 @@ public class VisualizerManager {
      */
     public boolean isLandscape;
     /**
-     * 频谱颜色，是否是绿色
+     * Fragment是否展示菜单
      */
-    public boolean isGreen;
+    public boolean isShowFragmentMenu=true;
     /**
-     * 当前频谱颜色
+     * Activity是否展示菜单
      */
-    public int currentColor;
+    public boolean isShowActivityMenu=true;
 
 
     //实际的展示频谱类型，如果要增加在这里面增加即可
@@ -180,4 +180,19 @@ public class VisualizerManager {
         return MenuData.getCurrentMenus(context);
     }
 
+    public void setIsShowFragmentMenu(boolean isShowFragmentMenu){
+        this.isShowFragmentMenu=isShowFragmentMenu;
+    }
+
+    public boolean getIsShowFragmentMenu(){
+        return isShowFragmentMenu;
+    }
+
+    public void setIsShowActivityMenu(boolean isShowActivityMenu){
+        this.isShowActivityMenu=isShowActivityMenu;
+    }
+
+    public boolean getIsShowActivityMenu(){
+        return isShowActivityMenu;
+    }
 }
