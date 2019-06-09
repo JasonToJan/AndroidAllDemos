@@ -15,7 +15,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center_vertical"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimaryDarkMain"
         android:layout_marginHorizontal="5dp"
         android:scaleType="fitXY"/>
 

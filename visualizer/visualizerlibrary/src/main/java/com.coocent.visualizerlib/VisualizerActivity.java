@@ -85,7 +85,8 @@ import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
 
 
 /**
- * 频谱主页
+ * 频谱主页,基本所有的功能都加进去了
+ * 适合Music5,Music8，详情参考项目，或直接跳转到testVisualizerActivity查看效果
  */
 public final class VisualizerActivity extends Activity implements
 		VisualizerService.Observer,

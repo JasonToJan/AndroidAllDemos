@@ -864,8 +864,11 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 		final int id = item.getItemId();
 		switch (id) {
 		case MNU_COLOR:
-			colorIndex = ((colorIndex == 0) ? 257 : 0);
-			SimpleVisualizerJni.commonSetColorIndex(colorIndex);
+//			colorIndex = ((colorIndex == 0) ? 257 : 0);
+//			SimpleVisualizerJni.commonSetColorIndex(colorIndex);
+
+			changeColor();
+
 			break;
 		case MNU_SPEED0:
 		case MNU_SPEED1:
@@ -980,9 +983,14 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 			break;
 		default:
 			itemsAdded = true;
-			menu.add(1, MNU_COLOR, 1, (colorIndex == 0) ? R.string.green : R.string.blue)
-				.setOnMenuItemClickListener(this)
-				.setIcon(new TextIconDrawable(UI.ICON_PALETTE));
+//			menu.add(1, MNU_COLOR, 1, (colorIndex == 0) ? R.string.green : R.string.blue)
+//				.setOnMenuItemClickListener(this)
+//				.setIcon(new TextIconDrawable(UI.ICON_PALETTE));
+
+			menu.add(1, MNU_COLOR, 1, R.string.change_color)
+					.setOnMenuItemClickListener(this)
+					.setIcon(new TextIconDrawable(UI.ICON_PALETTE));
+
 			break;
 		}
 		if (itemsAdded)

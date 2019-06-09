@@ -1,6 +1,8 @@
 
 ### 频谱库 使用说明书
 
+
+
     1.在自己的音乐服务类 或者 某个Activity中 实现接口 MusicVisualizerInter
 
           //主要实现如下方法

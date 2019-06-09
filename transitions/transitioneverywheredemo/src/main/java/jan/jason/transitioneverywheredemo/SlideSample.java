@@ -29,6 +29,7 @@ import com.transitionseverywhere.TransitionManager;
 
 
 /**
+ * 点击按钮实现文字侧滑
  * Created by Andrey Kulikov on 20/03/16.
  */
 public class SlideSample extends Fragment {

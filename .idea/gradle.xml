@@ -9,6 +9,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/popupwindow" />
+            <option value="$PROJECT_DIR$/popupwindow/popupwindowdemo" />
             <option value="$PROJECT_DIR$/transitions" />
             <option value="$PROJECT_DIR$/transitions/transitionEverywhere" />
             <option value="$PROJECT_DIR$/transitions/transitioneverywheredemo" />

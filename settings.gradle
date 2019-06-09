@@ -3,3 +3,5 @@ include ':app'
 include ':transitions:transitionEverywhere',':transitions:transitionEverywhereDemo'
 //频谱相关
 include ':visualizer:visualizerlib',':visualizer:visualizerlibrary',':visualizer:visualizerlib2'
+//popupwindow
+include ':popupwindow:popupwindowdemo'
