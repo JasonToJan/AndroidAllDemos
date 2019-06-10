@@ -357,6 +357,7 @@ public final class UI implements Animation.AnimationListener, Interpolator {
         colorState_text_visualizer_reactive=new BgColorStateList(Color.WHITE,Color.GREEN);
         color_text_selected=Color.WHITE;
 		colorState_text_visualizer_static=new BgColorStateList(Color.WHITE);
+		colorState_text_highlight_static=new BgColorStateList(Color.GRAY);
 	}
 
 	public static final class DisplayInfo {

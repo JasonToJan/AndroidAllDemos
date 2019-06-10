@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PaintFlagsDrawFilter;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -16,6 +16,7 @@ import java.util.List;
 
 public class CircleView extends View {
     private Paint mTextPain;                        //初始化画笔
+    private Paint mCirclePain;                        //初始化画笔
     private String mText = "";                      //初始化文字
     private int radius;                             //当前View的半径
     private int color;
@@ -24,6 +25,7 @@ public class CircleView extends View {
     private Point point1=new Point();
     private Point point2=new Point();
     private Point point3=new Point();
+    private Path mCheckPath = new Path();
 
 
     public CircleView(Context context) {
@@ -44,6 +46,12 @@ public class CircleView extends View {
         mTextPain.setColor(Color.WHITE);            //设置画笔颜色为白色
         mTextPain.setAntiAlias(true);               //开启抗锯齿，平滑文字和圆弧的边缘
         mTextPain.setTextAlign(Paint.Align.CENTER); //设置文本位于相对于原点的中间
+
+        mCirclePain = new Paint();
+        mCirclePain.setColor(Color.WHITE);            //设置画笔颜色为白色
+        mCirclePain.setAntiAlias(true);               //开启抗锯齿，平滑文字和圆弧的边缘
+        mCirclePain.setStrokeWidth(10);
+        mCirclePain.setStyle(Paint.Style.STROKE);
     }
 
     @Override
@@ -93,11 +101,14 @@ public class CircleView extends View {
         point1.set((int)(getWidth()/2-radius/2),getHeight()/2);
         point2.set((int)(getWidth()/2),getHeight()/2+radius/2);
         point3.set((int)(getWidth()/2+radius*3/5),getHeight()/2-radius*3/5);
-        mTextPain.setStrokeWidth(10);
-        mTextPain.setAntiAlias(true);
 
-        canvas.drawLine(point1.x,point1.y,point2.x,point2.y,mTextPain);
-        canvas.drawLine(point2.x,point2.y,point3.x,point3.y,mTextPain);
+        mCheckPath.moveTo(point1.x,point1.y);
+        mCheckPath.lineTo(point2.x,point2.y);
+        mCheckPath.lineTo(point3.x,point3.y);
+        canvas.drawPath(mCheckPath,mCirclePain);
+
+//        canvas.drawLine(point1.x,point1.y,point2.x,point2.y,mTextPain);
+//        canvas.drawLine(point2.x,point2.y,point3.x,point3.y,mTextPain);
     }
 
     /**
