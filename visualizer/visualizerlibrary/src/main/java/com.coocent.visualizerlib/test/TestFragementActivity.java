@@ -98,9 +98,9 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
     public void onClick(View v) {
         if(VisualizerManager.getInstance().getControlVisualizer()==null) return;
         if(v==previousBtn){
-            VisualizerManager.getInstance().getControlVisualizer().nextVisualizer();
-        }else if(v==nextBtn){
             VisualizerManager.getInstance().getControlVisualizer().previousVisualizer();
+        }else if(v==nextBtn){
+            VisualizerManager.getInstance().getControlVisualizer().nextVisualizer();
         }else if(v==goBtn){
             if(!TextUtils.isEmpty(typeChooseEt.getText().toString().trim())){
                 try{

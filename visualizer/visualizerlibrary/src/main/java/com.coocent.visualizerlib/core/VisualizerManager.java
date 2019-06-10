@@ -67,7 +67,7 @@ public class VisualizerManager {
             PARTICLE_TYPE,
             SPIN_TYPE,
             PARTICLE_IMMERSIVE,
-            PARTICLE_VR,
+//            PARTICLE_VR,
             LIQUID_POWER_SAVER
     };
 
