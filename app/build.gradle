@@ -46,6 +46,7 @@ dependencies {
 //    implementation project(':visualizer:visualizerlib2')
     implementation project(':visualizer:visualizerlibrary')
     implementation project(':popupwindow:popupwindowdemo')
+    implementation project(':transitions:easyanimationsdemo')
 
 
 }

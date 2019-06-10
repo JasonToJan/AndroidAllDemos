@@ -10,9 +10,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        tools:replace="android:theme"
-        android:theme="@style/AppThemeMain">
-        
+        android:theme="@style/AppThemeMain"
+        tools:replace="android:theme">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,22 +19,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".transitions.TransitionMainActivity" />
-
         <activity android:name=".visualizer.VisualizerMainActivity" />
-
         <activity android:name=".visualizer.VisualizerDemoActivity" />
-
         <activity
             android:name=".visualizer.VisualizerMusicDetailActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-
         <activity
             android:name=".visualizer.VisualizerMusicDetailActivity2"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-
-
+        <activity android:name=".transitions.activitytransition.TransitionStyleActivity"
+            android:theme="@style/styleActivity" />
+        <activity android:name=".transitions.activitytransition.TransitionOverridePendingActivity" />
+        <activity android:name=".transitions.activitytransition.TransitionOptionsActivity" />
+        <activity android:name=".transitions.activitytransition.TransitionOptionsMoreActivity" />
+        <activity android:name=".transitions.activitytransition.TransitionDemoActivity"></activity>
     </application>
 
 </manifest>
