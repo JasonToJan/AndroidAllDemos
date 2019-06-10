@@ -1,6 +1,9 @@
 include ':app'
 //转场动画相关
-include ':transitions:transitionEverywhere',':transitions:transitionEverywhereDemo',':transitions:easyanimations', ':transitions:easyanimationsdemo'
+include ':transitions:transitionEverywhere',':transitions:transitionEverywhereDemo',
+        ':transitions:easyanimations', ':transitions:easyanimationsdemo',
+        ':transtions:mtransition', ':transitions:mtransitiondemo'
+
 //频谱相关
 include ':visualizer:visualizerlib',':visualizer:visualizerlibrary',':visualizer:visualizerlib2'
 //popupwindow
