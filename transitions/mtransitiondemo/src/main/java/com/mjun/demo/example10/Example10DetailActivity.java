@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import com.mjun.demo.R;
+import com.mjun.demo.example10.com.view.jameson.util.ScreenUtil;
 import com.mjun.mtransition.ITransitPrepareListener;
 import com.mjun.mtransition.MTransition;
 import com.mjun.mtransition.MTransitionManager;
@@ -14,7 +15,6 @@ import com.mjun.mtransition.MTransitionView;
 
 import com.mjun.mtransition.MTranstionUtil;
 import com.mjun.mtransition.TransitListenerAdapter;
-import jameson.io.library.util.ScreenUtil;
 
 /**
  * Created by huijun on 2018/4/8.

@@ -10,11 +10,10 @@
 
 
     <!-- In favor of gradle -->
-    <!--
-         <uses-sdk
-        android:minSdkVersion="10"
-        android:targetSdkVersion="23" />
-    -->
+
+         <!--<uses-sdk-->
+        <!--android:minSdkVersion="15"-->
+        <!--android:targetSdkVersion="28" />-->
 
 
     <!-- http://developer.android.com/guide/topics/manifest/supports-screens-element.html -->
@@ -28,15 +27,15 @@
     <!-- For Google Drive -->
     <!-- uses-permission android:name="android.permission.GET_ACCOUNTS" -->
     <!-- For http playback -->
-    <!--<uses-permission android:name="android.permission.INTERNET" />-->
+    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
     <!-- To check the connection state -->
-    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
-    <!--<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />-->
+    <!-- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- See this: http://developer.android.com/reference/android/bluetooth/BluetoothHeadset.html#ACTION_AUDIO_STATE_CHANGED -->
-    <!--<uses-permission android:name="android.permission.BLUETOOTH" />-->
+    <!-- <uses-permission android:name="android.permission.BLUETOOTH" /> -->
     <!-- For scanning bluetooth devices -->
-    <!--<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />-->
+    <!-- <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> -->
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <!-- Apparently, a few devices require this.... (not only to make android.media.audiofx.PresetReverb work, but to control volume and other settings) -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -142,12 +141,11 @@
             android:resizeableActivity="true"
             android:stateNotNeeded="true"
             android:theme="@style/AppTheme" />
-
-        <activity android:name=".test.TestVisualizerActivity"></activity>
-
-        <activity android:name=".test.TestFragementActivity"></activity>
-
-        <activity android:name=".VisualizerSimpleActivity"/>
+        <activity android:name=".test.TestVisualizerActivity" />
+        <activity android:name=".test.TestFragementActivity" />
+        <activity android:name=".VisualizerSimpleActivity" />
+        <activity android:name=".test.TestSegmentTabActivity" />
+        <activity android:name=".test.TestEmptyActivity"></activity>
     </application>
 
 </manifest>

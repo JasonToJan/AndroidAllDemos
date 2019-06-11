@@ -39,6 +39,7 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
     private Button menuBtn;
     private EditText typeChooseEt;
     private Button goBtn;
+    private Button otherBtn;
     private Fragment fragment;
     private ListPopupWindow mListPop;
     private ArrayList<MenuItem> currentMeuns;
@@ -48,6 +49,7 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_fragment);
+
         initView();
 
         setFragment();
@@ -59,19 +61,21 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
         typeChooseEt=findViewById(R.id.atf_type_choose_et);
         goBtn=findViewById(R.id.atf_go_btn);
         menuBtn=findViewById(R.id.atf_visualizer_menu);
+        otherBtn=findViewById(R.id.atf_visualizer_some_activity);
 
         nextBtn.setOnClickListener(this);
         previousBtn.setOnClickListener(this);
         goBtn.setOnClickListener(this);
         menuBtn.setOnClickListener(this);
+        otherBtn.setOnClickListener(this);
     }
 
     private void setFragment(){
-        fragment=new VisualizerFragment();
+        fragment=new TestFragment();
 
         //组装传递参数，详情查看VisualizerManager中的频谱类型
-        Bundle bundle = new Bundle();
-        bundle.putInt(Constants.FRAGMENT_ARGUMENTS_INDEX, 0);
+//        Bundle bundle = new Bundle();
+//        bundle.putInt(Constants.FRAGMENT_ARGUMENTS_INDEX, 0);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.atf_visualizer_test_fl, fragment)
@@ -96,7 +100,7 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
-        if(VisualizerManager.getInstance().getControlVisualizer()==null) return;
+//        if(VisualizerManager.getInstance().getControlVisualizer()==null) return;
         if(v==previousBtn){
             VisualizerManager.getInstance().getControlVisualizer().previousVisualizer();
         }else if(v==nextBtn){
@@ -112,7 +116,11 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
             }
         }else if(v==menuBtn){
             showPopup(v);
+        }else if(v==otherBtn){
+            LogUtils.d("测试###监听到点击");
+           startActivity(new Intent(this,TestSegmentTabActivity.class));
         }
+
     }
 
     public void showPopup(View view){

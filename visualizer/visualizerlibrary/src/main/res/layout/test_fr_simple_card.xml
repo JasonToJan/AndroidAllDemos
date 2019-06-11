@@ -1,0 +1,23 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/card_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:text="1234"
+        android:background="@drawable/background_card"
+        android:gravity="top"
+        android:textSize="18sp"/>
+
+    <com.coocent.visualizerlib.test.renderer.VisualizerView
+        android:id="@+id/test_fragment_visualizerView"
+        android:background="@android:color/darker_gray"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>

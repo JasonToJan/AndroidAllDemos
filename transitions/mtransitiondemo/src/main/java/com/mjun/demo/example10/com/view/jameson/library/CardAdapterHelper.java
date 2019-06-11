@@ -3,7 +3,8 @@ package com.mjun.demo.example10.com.view.jameson.library;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import jameson.io.library.util.ScreenUtil;
+
+import com.mjun.demo.example10.com.view.jameson.util.ScreenUtil;
 
 /**
  * adapter中调用onCreateViewHolder, onBindViewHolder

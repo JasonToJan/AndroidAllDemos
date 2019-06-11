@@ -8,7 +8,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Interpolator;
 import com.mjun.mtransition.anim.Transition;
 import com.mjun.mtransition.view.CloneView;
-import junit.framework.Assert;
 
 /**
  * @author huijun.zhj
@@ -61,7 +60,6 @@ public class MTransitionView implements ITransitional {
     MTransitionPage mBelongPage;
 
     public MTransitionView(View source) {
-        Assert.assertNotNull(source);
         mSourceView = source;
         mContent = new CloneView(source.getContext());
         // TODO:处理有replace的情况

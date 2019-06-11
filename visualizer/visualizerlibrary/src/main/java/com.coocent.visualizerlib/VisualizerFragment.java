@@ -13,12 +13,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,7 +28,7 @@ import com.coocent.visualizerlib.core.VisualizerService;
 import com.coocent.visualizerlib.entity.MenuItem;
 import com.coocent.visualizerlib.inter.IControlVisualizer;
 import com.coocent.visualizerlib.inter.IVisualizer;
-import com.coocent.visualizerlib.test.TestFragementActivity;
+import com.coocent.visualizerlib.test.LazyFragment;
 import com.coocent.visualizerlib.ui.UI;
 import com.coocent.visualizerlib.utils.CommonUtils;
 import com.coocent.visualizerlib.utils.Constants;
@@ -49,7 +47,7 @@ import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
  * user: JasonJan 1211241203@qq.com
  * time: 2019/6/5 13:36
  **/
-public class VisualizerFragment extends Fragment implements
+public class VisualizerFragment extends LazyFragment implements
         VisualizerService.Observer,
         MainHandler.Callback,
         IControlVisualizer,
@@ -57,6 +55,7 @@ public class VisualizerFragment extends Fragment implements
 
     //基本数据
     private boolean visualizerPaused;
+    private boolean isFragmentVisible;
     private boolean isFinishChange=true;//是否已经完成了改变，重复调用会猜测会异常
     public static final int CAMERA_PERMISSION_CODE=1001;//照相机权限回调Code
     public static final int RECORD_AUDIO_CODE = 1002;//录音权限回调Code
@@ -65,6 +64,8 @@ public class VisualizerFragment extends Fragment implements
     private IVisualizer visualizer;
     private VisualizerService visualizerService;
     private RelativeLayout visualizerRoot;
+    private RelativeLayout visualizerRootll;
+    private View viewClick;
     private ImageView visualizerMenu;
     private CustomPopWindow mListPopWindow;
 
@@ -83,8 +84,10 @@ public class VisualizerFragment extends Fragment implements
 
         visualizerRoot=rootView.findViewById(R.id.flv_visualizer_root);
         visualizerMenu=rootView.findViewById(R.id.flv_visualizer_more_iv);
+        viewClick=rootView.findViewById(R.id.flv_visualizer_click_view);
 
         visualizerMenu.setOnClickListener(this);
+        viewClick.setOnClickListener(this);
 
         Bundle bundle = getArguments();
         if(bundle!=null){
@@ -100,25 +103,29 @@ public class VisualizerFragment extends Fragment implements
 
     @Override
     public void onResume() {
-        if (visualizerService != null){
-            visualizerService.resetAndResume();
-        }
-        if (visualizer != null && visualizerPaused) {
-            visualizerPaused = false;
-            visualizer.onActivityResume();
-        }
+//        if (visualizerService != null){
+//            visualizerService.resetAndResume();
+//        }
+//        if (visualizer != null && visualizerPaused) {
+//            visualizerPaused = false;
+//            visualizer.onActivityResume();
+//        }
+//        if(isFragmentVisible){
+//            changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
+//        }
+
         super.onResume();
     }
 
     @Override
     public void onStop() {
-        if (visualizer != null && !visualizerPaused) {
-            visualizerPaused = true;
-            visualizer.onActivityPause();
-        }
-        if (visualizerService != null){
-            visualizerService.pause();
-        }
+//        if (visualizer != null && !visualizerPaused) {
+//            visualizerPaused = true;
+//            visualizer.onActivityPause();
+//        }
+//        if (visualizerService != null){
+//            visualizerService.pause();
+//        }
         super.onStop();
     }
 
@@ -172,6 +179,11 @@ public class VisualizerFragment extends Fragment implements
     public void onClick(View v) {
         if(v==visualizerMenu){
             showPopup(v);
+        }else if(v==viewClick){
+            LogUtils.d("是否监听到点击");
+            if(VisualizerManager.getInstance().isClickNextForFragment){
+                nextVisualizer();
+            }
         }
     }
 
@@ -461,6 +473,11 @@ public class VisualizerFragment extends Fragment implements
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
+    }
+
+    @Override
+    protected void lazyLoad() {
+        changeVisualizer( VisualizerManager.getInstance().visualizerIndex);
     }
 
     public class MyAdapter extends RecyclerView.Adapter{

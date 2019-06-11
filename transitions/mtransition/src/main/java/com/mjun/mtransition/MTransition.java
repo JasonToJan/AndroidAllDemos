@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import com.mjun.mtransition.bundle.MTransitionBundle;
 import com.mjun.mtransition.view.CloneView;
-import junit.framework.Assert;
 
 /**
  * @author huijun.zhj
@@ -441,7 +440,7 @@ public class MTransition implements ITransitPrepareListener {
         @Override
         public void onAnimationStart(Animator animation) {
             Log.e("lifecycle", "onAnimationStart : " + ((ValueAnimator)animation).getAnimatedValue());
-            Assert.assertNotNull(mWrapperView);
+
             mToPage.onTransitStart();
             mFromPage.onTransitStart();
             if (mListener != null) {

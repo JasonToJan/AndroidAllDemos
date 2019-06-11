@@ -56,6 +56,10 @@ public class VisualizerManager {
      * Activity是否展示菜单
      */
     public boolean isShowActivityMenu=true;
+    /**
+     * Fragment点击是否到下一个频谱
+     */
+    public boolean isClickNextForFragment=true;
 
 
     //实际的展示频谱类型，如果要增加在这里面增加即可

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="pink_size">12dp</dimen>
+    <dimen name="pink_circle_size">24dp</dimen>
+    <dimen name="rotate_size">24dp</dimen>
+</resources>

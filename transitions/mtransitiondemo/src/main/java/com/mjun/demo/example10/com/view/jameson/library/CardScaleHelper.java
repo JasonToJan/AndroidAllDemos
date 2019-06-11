@@ -3,8 +3,10 @@ package com.mjun.demo.example10.com.view.jameson.library;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import jameson.io.library.util.LogUtils;
-import jameson.io.library.util.ScreenUtil;
+
+import com.mjun.demo.example10.com.view.jameson.util.LogUtils;
+import com.mjun.demo.example10.com.view.jameson.util.ScreenUtil;
+
 
 /**
  * Created by jameson on 8/30/16.
@@ -29,7 +31,6 @@ public class CardScaleHelper {
 
     public void attachToRecyclerView(final RecyclerView mRecyclerView) {
         // 开启log会影响滑动体验, 调试时才开启
-        LogUtils.mLogEnable = false;
         this.mRecyclerView = mRecyclerView;
         mContext = mRecyclerView.getContext();
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
