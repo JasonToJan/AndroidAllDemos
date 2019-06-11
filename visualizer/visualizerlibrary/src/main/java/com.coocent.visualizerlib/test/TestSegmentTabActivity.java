@@ -13,6 +13,7 @@ import android.widget.Button;
 
 import com.coocent.visualizerlib.R;
 import com.coocent.visualizerlib.VisualizerFragment;
+import com.coocent.visualizerlib.core.VisualizerManager;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.flyco.tablayout.widget.MsgView;

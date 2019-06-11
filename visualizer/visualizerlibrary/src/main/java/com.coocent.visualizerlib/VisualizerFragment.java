@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -55,7 +54,6 @@ public class VisualizerFragment extends LazyFragment implements
 
     //基本数据
     private boolean visualizerPaused;
-    private boolean isFragmentVisible;
     private boolean isFinishChange=true;//是否已经完成了改变，重复调用会猜测会异常
     public static final int CAMERA_PERMISSION_CODE=1001;//照相机权限回调Code
     public static final int RECORD_AUDIO_CODE = 1002;//录音权限回调Code
@@ -70,18 +68,53 @@ public class VisualizerFragment extends LazyFragment implements
     private CustomPopWindow mListPopWindow;
 
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        LogUtils.d("VisualizerFragment 中执行了onCreate");
+//
+//    }
 
-        init();
+//    @Override
+//    public void onResume() {
+////        if (visualizerService != null){
+////            visualizerService.resetAndResume();
+////        }
+////        if (visualizer != null && visualizerPaused) {
+////            visualizerPaused = false;
+////            visualizer.onActivityResume();
+////        }
+//        LogUtils.d("VisualizerFragmetn中onResume执行完毕！");
+//        super.onResume();
+//    }
+//
+//    @Override
+//    public void onStop() {
+////        if (visualizer != null && !visualizerPaused) {
+////            visualizerPaused = true;
+////            visualizer.onActivityPause();
+////        }
+//        if (visualizerService != null){
+//            visualizerService.pause();
+//        }
+//        LogUtils.d("VisualizerFragmetn中onStop执行完毕！");
+//        super.onStop();
+//    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        finalCleanup();
+        LogUtils.d("VisualizerFragmetn中onDestroyView执行完毕！");
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_layout_visualizer, container, false);
+    protected int getLayoutRes() {
+        return R.layout.fragment_layout_visualizer;
+    }
 
+    @Override
+    protected void initView(View rootView) {
         visualizerRoot=rootView.findViewById(R.id.flv_visualizer_root);
         visualizerMenu=rootView.findViewById(R.id.flv_visualizer_more_iv);
         viewClick=rootView.findViewById(R.id.flv_visualizer_click_view);
@@ -94,50 +127,42 @@ public class VisualizerFragment extends LazyFragment implements
             VisualizerManager.getInstance().visualizerIndex=bundle.getInt(Constants.FRAGMENT_ARGUMENTS_INDEX,0);
             LogUtils.d("Fragment中拿到数据为："+ VisualizerManager.getInstance().visualizerIndex);
         }
-
-        initVisualizer();
-        addVisualizerView();
-
-        return rootView;
-    }
-
-    @Override
-    public void onResume() {
-//        if (visualizerService != null){
-//            visualizerService.resetAndResume();
-//        }
-//        if (visualizer != null && visualizerPaused) {
-//            visualizerPaused = false;
-//            visualizer.onActivityResume();
-//        }
-//        if(isFragmentVisible){
-//            changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
-//        }
-
-        super.onResume();
-    }
-
-    @Override
-    public void onStop() {
-//        if (visualizer != null && !visualizerPaused) {
-//            visualizerPaused = true;
-//            visualizer.onActivityPause();
-//        }
-//        if (visualizerService != null){
-//            visualizerService.pause();
-//        }
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroyView() {
-        finalCleanup();
-        super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onFragmentFirstVisible() {
+        super.onFragmentFirstVisible();
+        init();
+        initVisualizer();
+        addVisualizerView();
+
+        if(visualizer!=null){
+            visualizer.onActivityResume();
+        }
+        if(visualizerService!=null){
+            visualizerService.resetAndResume();
+        }
+    }
+
+    @Override
+    public void onFragmentPause() {
+        super.onFragmentPause();
+        if(visualizerService!=null){
+            visualizerService.pause();
+        }
+    }
+
+    @Override
+    public void onFragmentResume() {
+        super.onFragmentResume();
+        if(visualizerService!=null){
+           visualizerService.resetAndResume();
+        }
     }
 
     @Override
@@ -475,10 +500,6 @@ public class VisualizerFragment extends LazyFragment implements
 
     }
 
-    @Override
-    protected void lazyLoad() {
-        changeVisualizer( VisualizerManager.getInstance().visualizerIndex);
-    }
 
     public class MyAdapter extends RecyclerView.Adapter{
 

@@ -4,6 +4,7 @@ package com.coocent.visualizerlib.core;
 import android.app.Application;
 import android.content.Context;
 
+import com.coocent.visualizerlib.VisualizerFragment;
 import com.coocent.visualizerlib.entity.MenuItem;
 import com.coocent.visualizerlib.inter.IControlVisualizer;
 import com.coocent.visualizerlib.inter.IVisualizerMenu;
@@ -199,4 +200,5 @@ public class VisualizerManager {
     public boolean getIsShowActivityMenu(){
         return isShowActivityMenu;
     }
+
 }

@@ -212,6 +212,10 @@ public final class Timer implements Handler.Callback {
 			}
 		}
 	}
+
+	public void resume2(){
+		MainHandler.sendMessage(this,MSG_INTERVAL);
+	}
 	
 	public void stop() {
 		paused = false;

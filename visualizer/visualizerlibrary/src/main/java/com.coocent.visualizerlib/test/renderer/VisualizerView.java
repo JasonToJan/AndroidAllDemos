@@ -76,17 +76,17 @@ public class VisualizerView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        LogUtils.d("测试，执行了VisualizerView onDraw 1");
+//        LogUtils.d("测试，执行了VisualizerView onDraw 1");
         this.mCanvas = canvas;
         mRect.set(0, 0, getWidth(), getHeight());
 
         try {
             if (mBytes != null) {
                 // Render all audio renderers
-                LogUtils.d("测试，执行了VisualizerView onDraw 2 长度："+mRenderers.size());
+//                LogUtils.d("测试，执行了VisualizerView onDraw 2 长度："+mRenderers.size());
 
                 for (Renderer r : mRenderers) {
-                    LogUtils.d("测试，执行了VisualizerView onDraw 3");
+//                    LogUtils.d("测试，执行了VisualizerView onDraw 3");
                     r.audioRender(canvas, mBytes, mRect);
                 }
 
