@@ -14,11 +14,12 @@
             <option value="$PROJECT_DIR$/transitions" />
             <option value="$PROJECT_DIR$/transitions/easyanimations" />
             <option value="$PROJECT_DIR$/transitions/easyanimationsdemo" />
+            <option value="$PROJECT_DIR$/transitions/materialanimationdemo" />
+            <option value="$PROJECT_DIR$/transitions/materialtransitions" />
+            <option value="$PROJECT_DIR$/transitions/mtransition" />
             <option value="$PROJECT_DIR$/transitions/mtransitiondemo" />
             <option value="$PROJECT_DIR$/transitions/transitionEverywhere" />
             <option value="$PROJECT_DIR$/transitions/transitioneverywheredemo" />
-            <option value="$PROJECT_DIR$/transtions" />
-            <option value="$PROJECT_DIR$/transtions/mtransition" />
             <option value="$PROJECT_DIR$/visualizer" />
             <option value="$PROJECT_DIR$/visualizer/visualizerlib" />
             <option value="$PROJECT_DIR$/visualizer/visualizerlib2" />

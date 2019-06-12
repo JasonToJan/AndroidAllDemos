@@ -6,6 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.lgvalle.material_animations.MaterialMainActivity;
+import com.mjun.demo.EnterActivity;
+import com.toddway.sandbox.TransitionMaterialBaseActivity;
+
 import jan.jason.androidalldemos.R;
 import jan.jason.androidalldemos.databinding.ActivityTransitionMainBinding;
 import jan.jason.androidalldemos.transitions.activitytransition.TransitionDemoActivity;
@@ -24,6 +28,9 @@ public class TransitionMainActivity extends AppCompatActivity implements View.On
         mainBinding.atmEverywhereBtn1.setOnClickListener(this);
         mainBinding.atmTransitionBtn2.setOnClickListener(this);
         mainBinding.atmTransitionBtn3.setOnClickListener(this);
+        mainBinding.atmTransitionBtn4.setOnClickListener(this);
+        mainBinding.atmTransitionBtn5.setOnClickListener(this);
+        mainBinding.atmTransitionBtn6.setOnClickListener(this);
     }
 
     @Override
@@ -39,6 +46,18 @@ public class TransitionMainActivity extends AppCompatActivity implements View.On
 
             case R.id.atm_transition_btn3:
                 startActivity(new Intent(this,AnimationListActivity.class));
+                break;
+
+            case R.id.atm_transition_btn4:
+                startActivity(new Intent(this,EnterActivity.class));
+                break;
+
+            case R.id.atm_transition_btn5:
+                startActivity(new Intent(this,MaterialMainActivity.class));
+                break;
+
+            case R.id.atm_transition_btn6:
+                startActivity(new Intent(this,TransitionMaterialBaseActivity.class));
                 break;
         }
     }

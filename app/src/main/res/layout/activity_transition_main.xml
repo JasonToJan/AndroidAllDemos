@@ -33,6 +33,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/atm_transition_btn4"
+            android:text="MTransition Demo"
+            android:textAllCaps="false"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/atm_transition_btn5"
+            android:text="MaterialAnimation Demo"
+            android:textAllCaps="false"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/atm_transition_btn6"
+            android:text="MaterialTransitons Demo"
+            android:textAllCaps="false"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
 </layout>

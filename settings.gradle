@@ -2,7 +2,8 @@ include ':app'
 //转场动画相关
 include ':transitions:transitionEverywhere',':transitions:transitionEverywhereDemo',
         ':transitions:easyanimations', ':transitions:easyanimationsdemo',
-        ':transitions:mtransition', ':transitions:mtransitiondemo'
+        ':transitions:mtransition', ':transitions:mtransitiondemo',
+        ':transitions:materialanimationdemo',':transitions:materialtransitions'
 
 //频谱相关
 include ':visualizer:visualizerlib',':visualizer:visualizerlibrary',':visualizer:visualizerlib2'
