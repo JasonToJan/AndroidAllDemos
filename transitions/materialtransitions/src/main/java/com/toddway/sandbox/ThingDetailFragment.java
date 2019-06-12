@@ -13,14 +13,14 @@ import android.widget.TextView;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class ThingDetailFragment extends TransitionHelper.BaseFragment {
 
-    @InjectView(R.id.detail_title) TextView titleTextView;
-    @InjectView(R.id.detail_body) TextView detailBodyTextView;
-    @InjectView(R.id.overscroll_view) OverScrollView scrollView;
+    @BindView(R2.id.detail_title) TextView titleTextView;
+    @BindView(R2.id.detail_body) TextView detailBodyTextView;
+    @BindView(R2.id.overscroll_view) OverScrollView scrollView;
 
     public static ThingDetailFragment create() {
         ThingDetailFragment f = new ThingDetailFragment();
@@ -32,7 +32,7 @@ public class ThingDetailFragment extends TransitionHelper.BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_thing_detail, container, false);
-        ButterKnife.inject(this, rootView);
+        ButterKnife.bind(this, rootView);
         String itemText = getActivity().getIntent().getStringExtra("item_text");
         titleTextView.setText(itemText);
 

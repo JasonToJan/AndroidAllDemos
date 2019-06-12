@@ -19,20 +19,20 @@ import android.widget.TextView;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class OverlayFragment extends TransitionHelper.BaseFragment {
 
-    @InjectView(R.id.overlay) RelativeLayout overlayLayout;
-    @InjectView(R.id.text_view) TextView textView;
+    @BindView(R2.id.overlay) RelativeLayout overlayLayout;
+    @BindView(R2.id.text_view) TextView textView;
 
     public OverlayFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_overaly, container, false);
-        ButterKnife.inject(this, rootView);
+        ButterKnife.bind(this, rootView);
         initBodyText();
         return rootView;
     }

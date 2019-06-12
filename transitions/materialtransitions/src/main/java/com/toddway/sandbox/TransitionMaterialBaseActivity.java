@@ -17,33 +17,33 @@ import android.widget.TextView;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuView;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class TransitionMaterialBaseActivity extends TransitionHelper.BaseActivity {
     protected static String BASE_FRAGMENT = "base_fragment";
-    public @InjectView(R.id.toolbar) Toolbar toolbar;
-    public @InjectView(R.id.material_menu_button) MaterialMenuView homeButton;
-    public @InjectView(R.id.toolbar_title) TextView toolbarTitle;
-    public @InjectView(R.id.fab) Button fab;
-    public @InjectView(R.id.drawerLayout) DrawerLayout drawerLayout;
-    public @InjectView(R.id.base_fragment_background) View fragmentBackround;
+    public @BindView(R2.id.toolbar) Toolbar toolbar;
+    public @BindView(R2.id.material_menu_button) MaterialMenuView homeButton;
+    public @BindView(R2.id.toolbar_title) TextView toolbarTitle;
+    public @BindView(R2.id.fab) Button fab;
+    public @BindView(R2.id.drawerLayout) DrawerLayout drawerLayout;
+    public @BindView(R2.id.base_fragment_background) View fragmentBackround;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResource());
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         initToolbar();
         initBaseFragment(savedInstanceState);
     }
 
     private void initToolbar() {
         if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            getSupportActionBar().setTitle("");
+//            setSupportActionBar(toolbar);
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//            getSupportActionBar().setTitle("");
             homeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -74,12 +74,12 @@ public class TransitionMaterialBaseActivity extends TransitionHelper.BaseActivit
     protected Fragment getBaseFragment() {
         int fragmentResourceId = getIntent().getIntExtra("fragment_resource_id", R.layout.fragment_thing_list);
         switch (fragmentResourceId) {
-            case R.layout.fragment_thing_list:
+            case R2.layout.fragment_thing_list:
             default:
                 return new ThingListFragment();
-            case R.layout.fragment_thing_detail:
+            case R2.layout.fragment_thing_detail:
                 return ThingDetailFragment.create();
-            case R.layout.fragment_overaly:
+            case R2.layout.fragment_overaly:
                 return new OverlayFragment();
         }
     }
