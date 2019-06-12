@@ -41,6 +41,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
 
     <!--
      These three permissions are not classified as PROTECTION_NORMAL in Android M API 23
@@ -112,6 +113,16 @@
         <uses-library
             android:name="com.sec.android.app.multiwindow"
             android:required="false" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.android7.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <meta-data
             android:name="com.sec.android.support.multiwindow"

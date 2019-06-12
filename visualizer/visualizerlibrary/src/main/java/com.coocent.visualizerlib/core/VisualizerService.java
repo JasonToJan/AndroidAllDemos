@@ -189,9 +189,9 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 
 	@Override
 	public void handleTimer(Timer timer, Object param) {
-		LogUtils.d("执行了VisualizerService#handleTimer中。。。");
+//		LogUtils.d("执行了VisualizerService#handleTimer中。。。");
 		if (alive) {
-			LogUtils.d("执行了VisualizerService#alive1。。。");
+//			LogUtils.d("执行了VisualizerService#alive1。。。");
 			if (paused) {
 				try {
 					if (fxVisualizer != null)
@@ -203,12 +203,12 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 				timer.pause();
 				return;
 			}
-			LogUtils.d("初始化开始！"+"reset="+reset);
+//			LogUtils.d("初始化开始！"+"reset="+reset);
 			if (reset || fxVisualizer == null) {
 				reset = false;
-				LogUtils.d("初始化开始！"+visualizerReady+" "+alive+" "+(visualizer==null));
+//				LogUtils.d("初始化开始！"+visualizerReady+" "+alive+" "+(visualizer==null));
 				if (!initialize()) {
-					LogUtils.d("初始化未完成！");
+//					LogUtils.d("初始化未完成！");
 					if (hasEverBeenAlive) {
 						//the player may be undergoing an unstable condition, such as successive
 						//fast track changes... try again later
@@ -219,7 +219,7 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 						alive = false;
 					}
 				} else if (!visualizerReady && alive && visualizer != null) {
-					LogUtils.d("初始化一完成！");
+//					LogUtils.d("初始化一完成！");
 					hasEverBeenAlive = true;
 					visualizer.load();
 					visualizerReady = true;
@@ -229,16 +229,16 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 				//WE MUST NEVER call any method from visualizer
 				//while the player is not actually playing
 				if (playing){
-					LogUtils.d("执行了VisualizerService#handleTimer中的getWaveForm方法..."+fxVisualizer.getCaptureSize()+" "+fxVisualizer.getEnabled());
+//					LogUtils.d("执行了VisualizerService#handleTimer中的getWaveForm方法..."+fxVisualizer.getCaptureSize()+" "+fxVisualizer.getEnabled());
 					fxVisualizer.setEnabled(true);
 					fxVisualizer.getWaveForm(waveform);
 				}
-				LogUtils.d("执行了VisualizerService#handleTimer中的processFrame方法...");
+//				LogUtils.d("执行了VisualizerService#handleTimer中的processFrame方法...");
 				visualizer.processFrame(playing, waveform);
 			}
 		}
 		if (!alive) {
-			LogUtils.d("执行了VisualizerService#alive2。。。");
+//			LogUtils.d("执行了VisualizerService#alive2。。。");
 			timer.release();
 			if (visualizer != null)
 				visualizer.release();

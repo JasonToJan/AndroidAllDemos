@@ -75,7 +75,9 @@ import com.coocent.visualizerlib.inter.IVisualizerMenu;
 import com.coocent.visualizerlib.ui.UI;
 import com.coocent.visualizerlib.utils.Constants;
 import com.coocent.visualizerlib.utils.CustomColorPickDialogUtils;
+import com.coocent.visualizerlib.utils.FileUtils;
 import com.coocent.visualizerlib.utils.LogUtils;
+import com.coocent.visualizerlib.utils.SharedPreferencesUtils;
 import com.coocent.visualizerlib.view.ColorDrawable;
 import com.coocent.visualizerlib.view.TextIconDrawable;
 
@@ -211,6 +213,16 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 		setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 			setPreserveEGLContext();
+
+		if(type==TYPE_LIQUID){
+			String path=(String)SharedPreferencesUtils.getParam(activity,"selectedUri","");
+			try{
+				selectedUri=FileUtils.getUriByFile(activity,path);
+			}catch (Exception e){
+				LogUtils.d("异常"+e.getMessage());
+			}
+			//LogUtils.d("这里在构造函数中获取到记录的uri="+selectedUri.toString());
+		}
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -718,9 +730,9 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 
 	@SuppressWarnings("deprecation")
 	private void loadBitmap() {
-		if (selectedUri == null)
+		if (selectedUri == null||selectedUri.toString().equals(""))
 			return;
-
+		LogUtils.d("loadBitmap中 selectedUri为"+selectedUri.toString());
 		/*String path = null;
 		int orientation = 1;
 
@@ -773,6 +785,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 			opts.inDither = true;
 			bitmap = BitmapFactory.decodeStream(input, null, opts);
 
+			LogUtils.d("loadBitmap中成功获取到bitmap");
 			if (bitmap != null) {
 				if (opts.outWidth != opts.outHeight && ((opts.outWidth > opts.outHeight) != (viewWidth > viewHeight))) {
 					//rotate the image 90 degress
@@ -785,10 +798,13 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 					}
 					System.gc();
 				}
+
+				LogUtils.d("执行到SimpleVisualizerJni执行图片绘制");
 				SimpleVisualizerJni.glLoadBitmapFromJava(bitmap);
 			}
 		} catch (Throwable ex) {
 			ex.printStackTrace();
+			LogUtils.d("异常 绘制图片异常"+ex.getMessage());
 		} finally {
 			if (input != null) {
 				try {
@@ -1145,6 +1161,10 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 	public void changeImageUri(Uri selectedUri1) {
 		if(selectedUri1!=null){
 			selectedUri=selectedUri1;
+
+			String path=FileUtils.getFilePathByUri(activity,selectedUri1);
+			LogUtils.d("这里真的记录了uri的"+path);
+			SharedPreferencesUtils.setParam(activity,"selectedUri",path);
 		}
 		loadBitmap();
 	}
