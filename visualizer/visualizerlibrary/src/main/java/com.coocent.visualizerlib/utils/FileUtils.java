@@ -121,9 +121,36 @@ public final class FileUtils {
             resultUri = FileProvider7.getUriForFile(context, file);
         }
 
-        LogUtils.d("最终生成的Uri="+resultUri.toString());
+        //LogUtils.d("最终生成的Uri="+resultUri.toString());
 
         return resultUri;
+    }
+
+    /***
+     * 将指定路径的图片转uri
+     * @param context
+     * @param path ，指定图片(或文件)的路径
+     * @return
+     */
+    public static Uri getMediaUriFromPath(Context context, String path) {
+        Uri mediaUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        Cursor cursor = context.getContentResolver().query(mediaUri,
+                null,
+                MediaStore.Images.Media.DISPLAY_NAME + "= ?",
+                new String[] {path.substring(path.lastIndexOf("/") + 1)},
+                null);
+
+        Uri uri = null;
+        if(cursor.moveToFirst()) {
+            uri = ContentUris.withAppendedId(mediaUri,
+                    cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID)));
+        }
+
+        if(uri!=null){
+            LogUtils.d("最终，生成的Uri为："+uri.toString());
+        }
+        cursor.close();
+        return uri;
     }
 
 }

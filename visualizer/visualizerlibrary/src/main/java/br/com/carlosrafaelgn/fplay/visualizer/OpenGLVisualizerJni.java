@@ -217,7 +217,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 		if(type==TYPE_LIQUID){
 			String path=(String)SharedPreferencesUtils.getParam(activity,"selectedUri","");
 			try{
-				selectedUri=FileUtils.getUriByFile(activity,path);
+				selectedUri=FileUtils.getMediaUriFromPath(activity,path);
 			}catch (Exception e){
 				LogUtils.d("异常"+e.getMessage());
 			}

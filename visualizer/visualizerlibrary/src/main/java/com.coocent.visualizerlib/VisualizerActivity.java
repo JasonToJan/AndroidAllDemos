@@ -906,6 +906,13 @@ public final class VisualizerActivity extends Activity implements
 		nextVisualizerIb.setOnClickListener(this);
 		prevVisualizerIb.setOnClickListener(this);
 
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(nextVisualizerIb.getLayoutParams());
+		lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
+		lp.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
+		lp.rightMargin=20;
+		nextVisualizerIb.setLayoutParams(lp);
+
+
 		updateTrackInfo();
 		setPauseButtonImage();
 	}
