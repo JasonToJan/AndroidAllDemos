@@ -60,7 +60,7 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 		playing = true;
 		waveform = new byte[IVisualizer.CAPTURE_SIZE];
 		timer = new Timer(this, "Visualizer Thread", false, false, true);
-		timer.start(16);
+		timer.start(50);//16
 	}
 
 	@Override
@@ -84,7 +84,6 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 	@Override
 	public void resetAndResume() {
 		if (timer != null) {
-			LogUtils.d("VisualizerService#resetAndResume");
 			reset = true;
 			paused = false;
 			timer.resume();
@@ -114,7 +113,7 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 			}else{
 				g=VisualizerManager.getInstance().getSessionId();
 			}
-			LogUtils.d("当前歌曲的sessionId="+g);
+			//LogUtils.d("当前歌曲的sessionId="+g);
 
 			if (g < 0)
 				return true;
@@ -131,7 +130,7 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 					fxVisualizer.release();
 				} catch (Throwable ex) {
 					fxVisualizer = null;
-					LogUtils.d("异常+执行了VisualizerService#initialize中fxVisualizer.release()");
+					ex.printStackTrace();
 				}
 			}
 			fxVisualizer = new android.media.audiofx.Visualizer(g);
@@ -140,23 +139,18 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 			failed = true;
 			fxVisualizer = null;
 			audioSessionId = -1;
-			LogUtils.d("异常+执行了VisualizerService#initialize1中"+ex.getMessage());
 			return false;
 		}
 		try {
-//			LogUtils.d("fxVisualizer中的缓存："+fxVisualizer.getCaptureSize());
+			fxVisualizer.setEnabled(false);
 			fxVisualizer.setCaptureSize(IVisualizer.CAPTURE_SIZE);
 			fxVisualizer.setEnabled(true);
 		} catch (Throwable ex) {
-			try{
-				fxVisualizer.setEnabled(true);
-			}catch (Throwable ex1){
-				failed = true;
-				fxVisualizer.release();
-				fxVisualizer = null;
-				audioSessionId = -1;
-				LogUtils.d("异常+执行了VisualizerService#initialize2中"+ex.getMessage());
-			}
+
+			failed = true;
+			fxVisualizer.release();
+			fxVisualizer = null;
+			audioSessionId = -1;
 		}
 		if (fxVisualizer != null && visualizer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			try {
@@ -164,7 +158,6 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 				fxVisualizer.setScalingMode(android.media.audiofx.Visualizer.SCALING_MODE_NORMALIZED);
 			} catch (Throwable ex) {
 				ex.printStackTrace();
-				LogUtils.d("异常+执行了VisualizerService#initialize3中"+ex.getMessage());
 			}
 			return true;
 		}
@@ -173,6 +166,7 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 
 	@Override
 	public void run() {
+		//LogUtils.e("nsc"," handleTimer run======");
 		if (failed) {
 			failed = false;
 			if (observer != null)
@@ -189,26 +183,21 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 
 	@Override
 	public void handleTimer(Timer timer, Object param) {
-//		LogUtils.d("执行了VisualizerService#handleTimer中。。。");
+		//LogUtils.e("nsc"," handleTimer paused======"+paused + " reset="+reset + " alive ="+alive);
 		if (alive) {
-//			LogUtils.d("执行了VisualizerService#alive1。。。");
 			if (paused) {
 				try {
 					if (fxVisualizer != null)
 						fxVisualizer.setEnabled(false);
 				} catch (Throwable ex) {
 					ex.printStackTrace();
-					LogUtils.d("异常+执行了VisualizerService#fxVisualizer1"+ex.getMessage());
 				}
 				timer.pause();
 				return;
 			}
-//			LogUtils.d("初始化开始！"+"reset="+reset);
 			if (reset || fxVisualizer == null) {
 				reset = false;
-//				LogUtils.d("初始化开始！"+visualizerReady+" "+alive+" "+(visualizer==null));
 				if (!initialize()) {
-//					LogUtils.d("初始化未完成！");
 					if (hasEverBeenAlive) {
 						//the player may be undergoing an unstable condition, such as successive
 						//fast track changes... try again later
@@ -219,7 +208,6 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 						alive = false;
 					}
 				} else if (!visualizerReady && alive && visualizer != null) {
-//					LogUtils.d("初始化一完成！");
 					hasEverBeenAlive = true;
 					visualizer.load();
 					visualizerReady = true;
@@ -228,17 +216,15 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 			if (visualizer != null) {
 				//WE MUST NEVER call any method from visualizer
 				//while the player is not actually playing
-				if (playing){
-//					LogUtils.d("执行了VisualizerService#handleTimer中的getWaveForm方法..."+fxVisualizer.getCaptureSize()+" "+fxVisualizer.getEnabled());
-					fxVisualizer.setEnabled(true);
+				if (playing) {
 					fxVisualizer.getWaveForm(waveform);
+					//LogUtils.e("nsc"," handleTimer paused======"+paused + " reset="+reset + " alive ="+alive);
 				}
-//				LogUtils.d("执行了VisualizerService#handleTimer中的processFrame方法...");
+				//LogUtils.e("nsc"," handleTimer paused2======"+paused + " reset="+reset + " alive ="+alive);
 				visualizer.processFrame(playing, waveform);
 			}
 		}
 		if (!alive) {
-//			LogUtils.d("执行了VisualizerService#alive2。。。");
 			timer.release();
 			if (visualizer != null)
 				visualizer.release();
@@ -247,13 +233,11 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 					fxVisualizer.setEnabled(false);
 				} catch (Throwable ex) {
 					ex.printStackTrace();
-					LogUtils.d("异常+执行了VisualizerService#fxVisualizer2"+ex.getMessage());
 				}
 				try {
 					fxVisualizer.release();
 				} catch (Throwable ex) {
 					ex.printStackTrace();
-					LogUtils.d("异常+执行了VisualizerService#fxVisualizer3"+ex.getMessage());
 				}
 				fxVisualizer = null;
 			}

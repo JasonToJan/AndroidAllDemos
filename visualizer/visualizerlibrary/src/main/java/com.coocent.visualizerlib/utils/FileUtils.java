@@ -106,26 +106,6 @@ public final class FileUtils {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
-    public static Uri getUriByFile(Context context,String path){
-        Uri resultUri=null;
-        if(Build.VERSION.SDK_INT<24){
-            LogUtils.d("这里传的path为："+path);
-            File file=new File(path);
-            if(file!=null&&file.exists()){
-                resultUri=Uri.fromFile(file);
-            }else{
-                LogUtils.d("糟了，这里的File不存在哦！");
-            }
-        }else{
-            File file=new File(path);
-            resultUri = FileProvider7.getUriForFile(context, file);
-        }
-
-        //LogUtils.d("最终生成的Uri="+resultUri.toString());
-
-        return resultUri;
-    }
-
     /***
      * 将指定路径的图片转uri
      * @param context

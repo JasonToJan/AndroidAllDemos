@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,7 +28,6 @@ import com.coocent.visualizerlib.core.VisualizerService;
 import com.coocent.visualizerlib.entity.MenuItem;
 import com.coocent.visualizerlib.inter.IControlVisualizer;
 import com.coocent.visualizerlib.inter.IVisualizer;
-import com.coocent.visualizerlib.test.LazyFragment;
 import com.coocent.visualizerlib.ui.UI;
 import com.coocent.visualizerlib.utils.CommonUtils;
 import com.coocent.visualizerlib.utils.Constants;
@@ -46,7 +46,7 @@ import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
  * user: JasonJan 1211241203@qq.com
  * time: 2019/6/5 13:36
  **/
-public class VisualizerFragment extends LazyFragment implements
+public class VisualizerFragment extends Fragment implements
         VisualizerService.Observer,
         MainHandler.Callback,
         IControlVisualizer,
@@ -58,63 +58,28 @@ public class VisualizerFragment extends LazyFragment implements
     public static final int CAMERA_PERMISSION_CODE=1001;//照相机权限回调Code
     public static final int RECORD_AUDIO_CODE = 1002;//录音权限回调Code
     public static final int CHOOSEIMAGE_CODE=10011;
+    public static final int READ_WRITE_PERMISSION_CODE=10012;
 
     private IVisualizer visualizer;
     private VisualizerService visualizerService;
     private RelativeLayout visualizerRoot;
-    private RelativeLayout visualizerRootll;
     private View viewClick;
     private ImageView visualizerMenu;
     private CustomPopWindow mListPopWindow;
 
 
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        LogUtils.d("VisualizerFragment 中执行了onCreate");
-//
-//    }
-
-//    @Override
-//    public void onResume() {
-////        if (visualizerService != null){
-////            visualizerService.resetAndResume();
-////        }
-////        if (visualizer != null && visualizerPaused) {
-////            visualizerPaused = false;
-////            visualizer.onActivityResume();
-////        }
-//        LogUtils.d("VisualizerFragmetn中onResume执行完毕！");
-//        super.onResume();
-//    }
-//
-//    @Override
-//    public void onStop() {
-////        if (visualizer != null && !visualizerPaused) {
-////            visualizerPaused = true;
-////            visualizer.onActivityPause();
-////        }
-//        if (visualizerService != null){
-//            visualizerService.pause();
-//        }
-//        LogUtils.d("VisualizerFragmetn中onStop执行完毕！");
-//        super.onStop();
-//    }
-
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        finalCleanup();
-        LogUtils.d("VisualizerFragmetn中onDestroyView执行完毕！");
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        init();
     }
 
+    @Nullable
     @Override
-    protected int getLayoutRes() {
-        return R.layout.fragment_layout_visualizer;
-    }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_layout_visualizer, container, false);
 
-    @Override
-    protected void initView(View rootView) {
         visualizerRoot=rootView.findViewById(R.id.flv_visualizer_root);
         visualizerMenu=rootView.findViewById(R.id.flv_visualizer_more_iv);
         viewClick=rootView.findViewById(R.id.flv_visualizer_click_view);
@@ -127,6 +92,42 @@ public class VisualizerFragment extends LazyFragment implements
             VisualizerManager.getInstance().visualizerIndex=bundle.getInt(Constants.FRAGMENT_ARGUMENTS_INDEX,0);
             LogUtils.d("Fragment中拿到数据为："+ VisualizerManager.getInstance().visualizerIndex);
         }
+
+        initVisualizer();
+        addVisualizerView();
+
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+//        if (visualizerService != null){
+//            visualizerService.resetAndResume();
+//        }
+//        if (visualizer != null && visualizerPaused) {
+//            visualizerPaused = false;
+//            visualizer.onActivityResume();
+//        }
+
+        super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+//        if (visualizer != null && !visualizerPaused) {
+//            visualizerPaused = true;
+//            visualizer.onActivityPause();
+//        }
+//        if (visualizerService != null){
+//            visualizerService.pause();
+//        }
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        finalCleanup();
+        super.onDestroyView();
     }
 
     @Override
@@ -134,36 +135,6 @@ public class VisualizerFragment extends LazyFragment implements
         super.onDestroy();
     }
 
-    @Override
-    public void onFragmentFirstVisible() {
-        super.onFragmentFirstVisible();
-        init();
-        initVisualizer();
-        addVisualizerView();
-
-        if(visualizer!=null){
-            visualizer.onActivityResume();
-        }
-        if(visualizerService!=null){
-            visualizerService.resetAndResume();
-        }
-    }
-
-    @Override
-    public void onFragmentPause() {
-        super.onFragmentPause();
-        if(visualizerService!=null){
-            visualizerService.pause();
-        }
-    }
-
-    @Override
-    public void onFragmentResume() {
-        super.onFragmentResume();
-        if(visualizerService!=null){
-           visualizerService.resetAndResume();
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -172,6 +143,10 @@ public class VisualizerFragment extends LazyFragment implements
             if(PermissionUtils.hasRecordPermission(getActivity())){
                 LogUtils.d("Fragment权限请求成功");
                 changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
+            }
+        }else if(requestCode==READ_WRITE_PERMISSION_CODE){
+            if(PermissionUtils.hasWriteAndReadPermission(getActivity())){
+                ImageUtils.getImageBySystemInFragment(VisualizerFragment.this,CHOOSEIMAGE_CODE);
             }
         }
     }
@@ -205,7 +180,6 @@ public class VisualizerFragment extends LazyFragment implements
         if(v==visualizerMenu){
             showPopup(v);
         }else if(v==viewClick){
-            LogUtils.d("是否监听到点击");
             if(VisualizerManager.getInstance().isClickNextForFragment){
                 nextVisualizer();
             }
@@ -356,7 +330,6 @@ public class VisualizerFragment extends LazyFragment implements
 
         if(!isFinishChange) return;
         if(getActivity()==null) return;
-        LogUtils.d("当前选择的频谱类型为："+type+" 名称为："+VisualizerManager.getInstance().visualizerDataType[type]);
 
         isFinishChange=false;
 
@@ -410,7 +383,6 @@ public class VisualizerFragment extends LazyFragment implements
 
 
         isFinishChange=true;
-        LogUtils.d("当前选择的频谱类型 切换成功结束！！！");
     }
 
     /**
@@ -500,7 +472,6 @@ public class VisualizerFragment extends LazyFragment implements
 
     }
 
-
     public class MyAdapter extends RecyclerView.Adapter{
 
         private List<MenuItem> mData;
@@ -527,7 +498,12 @@ public class VisualizerFragment extends LazyFragment implements
                         if(mListPopWindow!=null){
                             mListPopWindow.dissmiss();
                         }
-                        ImageUtils.getImageBySystemInFragment(VisualizerFragment.this,CHOOSEIMAGE_CODE);
+                        //判断有没有权限
+                        if(PermissionUtils.hasWriteAndReadPermission(getActivity())){
+                            ImageUtils.getImageBySystemInFragment(VisualizerFragment.this,CHOOSEIMAGE_CODE);
+                        }else{
+                            PermissionUtils.requestWriteAndReadPermissionInFragment(VisualizerFragment.this,READ_WRITE_PERMISSION_CODE);
+                        }
 
                     }else if(mData.get(position).getMenuCode()==MenuData.CHANGECOLOR){
                         if(mListPopWindow!=null){
@@ -535,6 +511,14 @@ public class VisualizerFragment extends LazyFragment implements
                         }
                         if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
                             VisualizerManager.getInstance().getVisualizerMenu().changeColor();
+                        }
+                    }else if(mData.get(position).getMenuCode()==MenuData.CLEARIMAGE){
+                        //清除图片
+                        if(mListPopWindow!=null){
+                            mListPopWindow.dissmiss();
+                        }
+                        if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
+                            VisualizerManager.getInstance().getVisualizerMenu().changeImageUri(null);
                         }
                     }
                 }

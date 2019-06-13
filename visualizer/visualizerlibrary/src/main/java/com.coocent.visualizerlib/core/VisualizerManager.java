@@ -4,12 +4,14 @@ package com.coocent.visualizerlib.core;
 import android.app.Application;
 import android.content.Context;
 
-import com.coocent.visualizerlib.VisualizerFragment;
 import com.coocent.visualizerlib.entity.MenuItem;
 import com.coocent.visualizerlib.inter.IControlVisualizer;
 import com.coocent.visualizerlib.inter.IVisualizerMenu;
 import com.coocent.visualizerlib.inter.MusicVisualizerInter;
+import com.coocent.visualizerlib.utils.Constants;
+import com.coocent.visualizerlib.utils.FileUtils;
 import com.coocent.visualizerlib.utils.LogUtils;
+import com.coocent.visualizerlib.utils.VisualizerSharePareUtils;
 
 import java.util.List;
 
@@ -61,19 +63,29 @@ public class VisualizerManager {
      * Fragment点击是否到下一个频谱
      */
     public boolean isClickNextForFragment=true;
+    /**
+     * 记录类型1选择的url
+     */
+    public String liquidType1Url="";
+    /**
+     * 记录类型2选择的url
+     */
+    public String liquidType2Url="";
 
 
     //实际的展示频谱类型，如果要增加在这里面增加即可
     public String[] visualizerDataType={
             LIQUID_TYPE,
-            SPECTRUM2_TYPE,
             COLOR_WAVES_TYPE,
+            PARTICLE_IMMERSIVE,
+            SPECTRUM2_TYPE,
             NORMAL_TYPE,
             PARTICLE_TYPE,
-            SPIN_TYPE,
-            PARTICLE_IMMERSIVE,
+            LIQUID_POWER_SAVER,
+            SPIN_TYPE
+
 //            PARTICLE_VR,
-            LIQUID_POWER_SAVER
+
     };
 
     //所有类型
@@ -201,4 +213,73 @@ public class VisualizerManager {
         return isShowActivityMenu;
     }
 
+    /**
+     * 外部设置频谱类型，以及默认索引
+     * @param visualizerDataType
+     * @param defaultIndex
+     */
+    public void setVisualizerDataType(String[] visualizerDataType,int defaultIndex){
+        this.visualizerDataType=visualizerDataType;
+        this.visualizerIndex=defaultIndex;
+    }
+
+    /**
+     * 获取液体类型1选择的url
+     * @return
+     */
+    public String getLiquidType1Url() {
+         if(liquidType1Url!=null&&liquidType1Url.equals("")){
+             //第一次进来，默认为“”，读一下sp
+             if(VisualizerManager.getInstance().getApplication()!=null){
+                 liquidType1Url=(String)VisualizerSharePareUtils.getParam(VisualizerManager.getInstance().getApplication(),
+                         VisualizerSharePareUtils.URL_FOR_LIQUID_TYPE,Constants.DEFUALUT_URL_EMPTY);
+
+                 if(liquidType1Url.equals(Constants.DEFUALUT_URL_EMPTY)) liquidType1Url=null;
+
+                 return liquidType1Url;
+             }
+         }
+
+         return liquidType1Url;
+    }
+
+    public void setLiquidType1Url(String liquidType1Url) {
+        this.liquidType1Url = liquidType1Url;
+        //记录到文件
+        if(VisualizerManager.getInstance().getApplication()!=null&&liquidType1Url!=null){
+
+            VisualizerSharePareUtils.setParam(VisualizerManager.getInstance().getApplication(),
+                    VisualizerSharePareUtils.URL_FOR_LIQUID_TYPE,(String)liquidType1Url);
+        }
+    }
+
+    /**
+     * 获取液体类型2选择的url
+     * @return
+     */
+    public String getLiquidType2Url() {
+        if(liquidType2Url!=null&&liquidType2Url.equals("")){
+            //第一次进来，默认为“”，读一下sp
+            if(VisualizerManager.getInstance().getApplication()!=null){
+                liquidType2Url=(String)VisualizerSharePareUtils.getParam(VisualizerManager.getInstance().getApplication(),
+                        VisualizerSharePareUtils.URL_FOR_LIQUID_POWER_SAVER,Constants.DEFUALUT_URL_EMPTY);
+
+                if(liquidType2Url.equals(Constants.DEFUALUT_URL_EMPTY)) liquidType2Url=null;
+
+                return liquidType2Url;
+            }
+        }
+
+        return liquidType2Url;
+    }
+
+    public void setLiquidType2Url(String liquidType2Url) {
+        this.liquidType2Url = liquidType2Url;
+        //记录到文件
+        if(VisualizerManager.getInstance().getApplication()!=null&&liquidType2Url!=null){
+            VisualizerSharePareUtils.setParam(VisualizerManager.getInstance().getApplication(),
+                    VisualizerSharePareUtils.URL_FOR_LIQUID_POWER_SAVER,(String)liquidType2Url);
+        }
+
+    }
 }

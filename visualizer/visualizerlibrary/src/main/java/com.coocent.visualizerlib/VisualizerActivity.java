@@ -45,11 +45,13 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -59,6 +61,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -69,9 +72,11 @@ import com.coocent.visualizerlib.common.Timer;
 import com.coocent.visualizerlib.core.MainHandler;
 import com.coocent.visualizerlib.core.VisualizerManager;
 import com.coocent.visualizerlib.core.VisualizerService;
+import com.coocent.visualizerlib.inter.IControlVisualizer;
 import com.coocent.visualizerlib.inter.IVisualizer;
 import com.coocent.visualizerlib.ui.UI;
 import com.coocent.visualizerlib.utils.CommonUtils;
+import com.coocent.visualizerlib.utils.ImageUtils;
 import com.coocent.visualizerlib.utils.LogUtils;
 import com.coocent.visualizerlib.utils.PermissionUtils;
 import com.coocent.visualizerlib.view.BgButton;
@@ -88,14 +93,14 @@ import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
  * 频谱主页,基本所有的功能都加进去了
  * 适合Music5,Music8，详情参考项目，或直接跳转到testVisualizerActivity查看效果
  */
-public final class VisualizerActivity extends Activity implements
+public final class VisualizerActivity extends AppCompatActivity implements
 		VisualizerService.Observer,
 		MainHandler.Callback,
 		View.OnClickListener,
 		MenuItem.OnMenuItemClickListener,
 		OnCreateContextMenuListener,
 		View.OnTouchListener,
-		Timer.TimerHandler {
+		Timer.TimerHandler,IControlVisualizer {
 
 	//基本数据
 	private boolean visualizerViewFullscreen,
@@ -119,6 +124,7 @@ public final class VisualizerActivity extends Activity implements
 	private ImageView btnPlay, btnNext;
 	private TextView titleTv,artistTv;
 	private ImageButton nextVisualizerIb,prevVisualizerIb;
+	private RelativeLayout nextprevRl;
 	private InterceptableLayout panelControls;
 	private RelativeLayout panelTop;
 	private BgColorStateList buttonColor, lblColor;
@@ -131,6 +137,8 @@ public final class VisualizerActivity extends Activity implements
 	private Object systemUIObserver;
 	private Timer uiAnimTimer;
 
+	private int statusHeight;//状态栏高度
+
 	@SuppressLint("InlinedApi")
 	@SuppressWarnings("deprecation")
 	@Override
@@ -142,6 +150,7 @@ public final class VisualizerActivity extends Activity implements
 		//初始化相关
 		init();
 		setContentView(R.layout.activity_visualizer);
+
 
 		initView();
 		addVisualizerView();
@@ -229,13 +238,16 @@ public final class VisualizerActivity extends Activity implements
 				LogUtils.d("Activity权限请求成功");
 				changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
 			}
-		}
+		}else if(requestCode==OpenGLVisualizerJni.READ_AND_WEITE_PERMISSION_CODE){
+            ImageUtils.getImageBySystemInActivity(this,OpenGLVisualizerJni.ACTIVITY_CHOOSE_IMAGE);
+        }
 	}
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
-		if (info == null)
+		if (info == null){
 			return;
+		}
 		if (UI.forcedLocale != UI.LOCALE_NONE){
 			UI.reapplyForcedLocale(this);
 		}
@@ -275,15 +287,54 @@ public final class VisualizerActivity extends Activity implements
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		if (btnMenu != null){
-			CustomContextMenu.openContextMenu(btnMenu, this);
-		}
+//		if(Build.VERSION.SDK_INT>=28){
+//			if(isFirstForAndroidNine){
+//				isFirstForAndroidNine=false;//第一次不设置
+//			}else{
+//				if (btnMenu != null){
+//					CustomContextMenu.openContextMenu(btnMenu, this);
+//				}
+//			}
+//		}else{
+//			if (btnMenu != null){
+//				CustomContextMenu.openContextMenu(btnMenu, this);
+//			}
+//		}
+
+        if (btnMenu != null){
+            CustomContextMenu.openContextMenu(btnMenu, this);
+        }
+
 		return false;
 	}
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
+		if(newConfig.orientation == 1){
+			//竖屏
+		}else if(newConfig.orientation == 2){
+			//横屏
+			int navigationBarHeight=CommonUtils.getNavigationBarHeight(this);
+			if(navigationBarHeight>0){
+				try{
+					RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
+					lp.setMargins(0,0,navigationBarHeight,0);
+					panelTop.setLayoutParams(lp);
+
+                    RelativeLayout.LayoutParams nextprevlp = new RelativeLayout.LayoutParams(nextVisualizerIb.getLayoutParams());
+                    nextprevlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
+                    nextprevlp.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
+                    nextprevlp.rightMargin=navigationBarHeight;
+                    nextVisualizerIb.setLayoutParams(nextprevlp);
+
+				}catch (Exception e){
+					LogUtils.d("initViewAndListener","异常##"+e.getMessage());
+				}
+			}
+		}
+
+
 		if (info == null)
 			return;
 		final boolean i = info.isLandscape;
@@ -371,7 +422,7 @@ public final class VisualizerActivity extends Activity implements
 			if (visualizer != null && panelTopWasVisibleOk)
 				visualizer.onClick();
 		} else if(view==nextVisualizerIb){
-			LogUtils.d("点击了下一个~");
+			//LogUtils.d("点击了下一个~");
 			if(VisualizerManager.getInstance().visualizerIndex
 					==VisualizerManager.getInstance().visualizerDataType.length-1){
 				VisualizerManager.getInstance().visualizerIndex=0;
@@ -382,8 +433,7 @@ public final class VisualizerActivity extends Activity implements
 			changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
 
 		} else if(view==prevVisualizerIb){
-
-			LogUtils.d("点击了上一个~");
+			//LogUtils.d("点击了上一个~");
 			if(VisualizerManager.getInstance().visualizerIndex ==0){
 				VisualizerManager.getInstance().visualizerIndex=
 						VisualizerManager.getInstance().visualizerDataType.length-1;
@@ -531,6 +581,21 @@ public final class VisualizerActivity extends Activity implements
 				uiAnimTimer.start(16);
 			}
 		}
+	}
+
+	@Override
+	public void nextVisualizer() {
+		nextVisualizer();
+	}
+
+	@Override
+	public void previousVisualizer() {
+		previousVisualizer();
+	}
+
+	@Override
+	public void someVisualizer(int type) {
+		changeVisualizer(type);
 	}
 
 	@SuppressLint("InlinedApi")
@@ -708,6 +773,8 @@ public final class VisualizerActivity extends Activity implements
 		initStatus();
 		initOther();
 		initRegistBroadcast();
+
+		VisualizerManager.getInstance().setControlVisualizer(this);
 	}
 
 	/**
@@ -854,6 +921,12 @@ public final class VisualizerActivity extends Activity implements
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		}
+
+		try{
+			statusHeight=CommonUtils.getStatusBarHeight(this);
+		}catch (Throwable e){
+			LogUtils.d("","异常##"+e.getMessage());
+		}
 	}
 
 	/**
@@ -897,6 +970,9 @@ public final class VisualizerActivity extends Activity implements
 		nextVisualizerIb=findViewById(R.id.av_rightBtn);
 		prevVisualizerIb=findViewById(R.id.av_leftBtn);
 
+		nextVisualizerIb.bringToFront();
+		prevVisualizerIb.bringToFront();
+
 		panelControls.setOnClickListener(this);
 		panelControls.setInterceptedTouchEventListener(this);
 		btnGoBack.setOnClickListener(this);
@@ -906,12 +982,36 @@ public final class VisualizerActivity extends Activity implements
 		nextVisualizerIb.setOnClickListener(this);
 		prevVisualizerIb.setOnClickListener(this);
 
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(nextVisualizerIb.getLayoutParams());
-		lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
-		lp.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
-		lp.rightMargin=20;
-		nextVisualizerIb.setLayoutParams(lp);
+		if(statusHeight>80){
+			//刘海屏
+			try{
+				RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
+				lp.setMargins(0,statusHeight,0,0);
+				panelTop.setLayoutParams(lp);
+			}catch (Exception e){
+				LogUtils.d("initViewAndListener","异常##"+e.getMessage());
+			}
+		}
+		if(!CommonUtils.isScreenOriatationPortrait(this)){
+			//水平
+			int navigationBarHeight=CommonUtils.getNavigationBarHeight(this);
+			if(navigationBarHeight>0){
+				try{
+					RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
+					lp.setMargins(0,0,navigationBarHeight,0);
+					panelTop.setLayoutParams(lp);
 
+                    RelativeLayout.LayoutParams nextprevlp = new RelativeLayout.LayoutParams(nextVisualizerIb.getLayoutParams());
+                    nextprevlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
+                    nextprevlp.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
+                    nextprevlp.rightMargin=navigationBarHeight;
+                    nextVisualizerIb.setLayoutParams(lp);
+
+				}catch (Exception e){
+					LogUtils.d("initViewAndListener","异常##"+e.getMessage());
+				}
+			}
+		}
 
 		updateTrackInfo();
 		setPauseButtonImage();

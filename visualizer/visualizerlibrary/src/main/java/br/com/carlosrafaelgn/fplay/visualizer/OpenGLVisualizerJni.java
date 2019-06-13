@@ -35,7 +35,6 @@ package br.com.carlosrafaelgn.fplay.visualizer;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -45,24 +44,22 @@ import android.graphics.Point;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Message;
-import android.support.v7.app.AlertDialog;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.DynamicDrawableSpan;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Surface;
 import android.view.SurfaceHolder;
-import android.view.View;
 import android.view.ViewDebug.ExportedProperty;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.coocent.visualizerlib.R;
@@ -75,9 +72,11 @@ import com.coocent.visualizerlib.inter.IVisualizerMenu;
 import com.coocent.visualizerlib.ui.UI;
 import com.coocent.visualizerlib.utils.Constants;
 import com.coocent.visualizerlib.utils.CustomColorPickDialogUtils;
+import com.coocent.visualizerlib.utils.DirectDrawer;
 import com.coocent.visualizerlib.utils.FileUtils;
+import com.coocent.visualizerlib.utils.ImageUtils;
 import com.coocent.visualizerlib.utils.LogUtils;
-import com.coocent.visualizerlib.utils.SharedPreferencesUtils;
+import com.coocent.visualizerlib.utils.PermissionUtils;
 import com.coocent.visualizerlib.view.ColorDrawable;
 import com.coocent.visualizerlib.view.TextIconDrawable;
 
@@ -107,6 +106,10 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 		MNU_DIFFUSION1 = MNU_VISUALIZER + 7, MNU_DIFFUSION2 = MNU_VISUALIZER + 8, MNU_DIFFUSION3 = MNU_VISUALIZER + 9,
 		MNU_RISESPEED0 = MNU_VISUALIZER + 10, MNU_RISESPEED1 = MNU_VISUALIZER + 11, MNU_RISESPEED2 = MNU_VISUALIZER + 12,
 		MNU_RISESPEED3 = MNU_VISUALIZER + 13, MNU_SPEED_FASTEST = MNU_VISUALIZER + 14;
+
+	private static final int MNU_CLEAR_IMAGE=10011;//添加清除图片方法
+	public static final int READ_AND_WEITE_PERMISSION_CODE=10009;
+	public static final int ACTIVITY_CHOOSE_IMAGE=1234;
 
 	private static final int MSG_OPENGL_ERROR = 0x0600;
 	private static final int MSG_CHOOSE_IMAGE = 0x0601;
@@ -142,6 +145,9 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 	private volatile boolean cameraOK;
 
 	public Context context;
+	private int mTextureID = -1;
+	private DirectDrawer mDirectDrawer;
+	private int mCameraId = -1;
 
 	public OpenGLVisualizerJni(Context context) {
 		super(context);
@@ -151,6 +157,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 
 	public OpenGLVisualizerJni(Activity activity, boolean landscape, Intent extras) {
 		super(activity);
+		this.context = activity;
 		VisualizerManager.getInstance().setVisualizerMenu(this);
 		final int t = extras.getIntExtra(EXTRA_VISUALIZER_TYPE, TYPE_SPECTRUM);
 		type = ((t < TYPE_LIQUID || t > TYPE_COLOR_WAVES) ? TYPE_SPECTRUM : t);
@@ -211,18 +218,43 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 		setEGLWindowSurfaceFactory(this);
 		setRenderer(this);
 		setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+      //  setRenderMode(RENDERMODE_WHEN_DIRTY);//RENDERMODE_WHEN_DIRTY  RENDERMODE_CONTINUOUSLY
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 			setPreserveEGLContext();
 
-		if(type==TYPE_LIQUID){
-			String path=(String)SharedPreferencesUtils.getParam(activity,"selectedUri","");
-			try{
-				selectedUri=FileUtils.getMediaUriFromPath(activity,path);
-			}catch (Exception e){
-				LogUtils.d("异常"+e.getMessage());
+		//读一下之前保存的url
+		if(PermissionUtils.hasWriteAndReadPermission(activity)){
+			if(type==TYPE_LIQUID){
+				String path=VisualizerManager.getInstance().getLiquidType1Url();
+				try{
+					selectedUri=FileUtils.getMediaUriFromPath(activity,path);
+				}catch (Exception e){
+					LogUtils.d("异常"+e.getMessage());
+				}
+			}else if(type==TYPE_LIQUID_POWER_SAVER){
+				String path=VisualizerManager.getInstance().getLiquidType2Url();
+				try{
+					selectedUri=FileUtils.getMediaUriFromPath(activity,path);
+				}catch (Exception e){
+					LogUtils.d("异常"+e.getMessage());
+				}
 			}
-			//LogUtils.d("这里在构造函数中获取到记录的uri="+selectedUri.toString());
 		}
+	}
+
+	private int createTextureID() {
+		int[] texture = new int[1];
+		GLES20.glGenTextures(1, texture, 0);
+		GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0]);
+		GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+				GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+		GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+				GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+		GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+				GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+		GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+				GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
+		return texture[0];
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -452,6 +484,8 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 	@Override
 	@SuppressWarnings("deprecation")
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+		//mTextureID = createTextureID();
+
 		if (type == TYPE_SPECTRUM)
 			SimpleVisualizerJni.commonSetColorIndex(colorIndex);
 		SimpleVisualizerJni.commonSetSpeed(speed);
@@ -555,12 +589,14 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 						Camera.getCameraInfo(0, info);
 						cameraId = 0;
 					}
+					mCameraId = cameraId;
 					camera = ((cameraId >= 0) ? Camera.open(cameraId) : null);
 
-					//调整镜像,还是不行,放弃吧
 					//setCameraDisplayOrientation(info,camera);
 
-					cameraNativeOrientation = info.orientation;
+					//cameraNativeOrientation = info.orientation;
+					//int degree = getDisplayOrientation(getDisplayRotation(),mCameraId);
+					//camera.setDisplayOrientation(0);
 
 				} catch (Throwable ex) {
 					if (camera != null) {
@@ -582,6 +618,8 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 		} else if (type == TYPE_IMMERSIVE_PARTICLE_VR && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			synchronized (this) {
 				cameraTexture = new SurfaceTexture(SimpleVisualizerJni.glGetOESTexture());
+				//cameraTexture = new SurfaceTexture(mTextureID);
+			//	mDirectDrawer = new DirectDrawer(mTextureID);
 				cameraTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
 					@Override
 					public void onFrameAvailable(SurfaceTexture surfaceTexture) {
@@ -590,6 +628,9 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 				});
 				try {
 					camera.setPreviewTexture(cameraTexture);
+//					int degree = getDisplayOrientation(getDisplayRotation(),mCameraId);
+//					camera.setDisplayOrientation(180);
+//					camera.setParameters(camera.getParameters());
 				} catch (Throwable ex) {
 					releaseCamera();
 					error = 0;
@@ -604,6 +645,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 	@Override
 	@SuppressWarnings("deprecation")
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
+	//	GLES20.glViewport(0, 0, width, height);
 		if (!supported)
 			return;
 		//http://developer.download.nvidia.com/tegra/docs/tegra_android_accelerometer_v5f.pdf
@@ -642,8 +684,12 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 					final int cameraDisplayOrientation = (cameraNativeOrientation - degrees + 360) % 360;
 
 					//LogUtils.d("cameraNativeOrientation="+cameraDisplayOrientation+" 预览旋转角度为："+cameraDisplayOrientation);
-					camera.setDisplayOrientation(cameraDisplayOrientation);
 
+				//	int degree = getDisplayOrientation(getDisplayRotation(),mCameraId);
+					//camera.setDisplayOrientation(0);
+
+				//	camera.setDisplayOrientation(cameraDisplayOrientation);
+					//LogUtils.e("nsc","onSurfaceChanged degree =="+degree);
 					final Camera.Parameters parameters = camera.getParameters();
 
 					//try to find the ideal preview size...
@@ -706,6 +752,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 
 					camera.setParameters(parameters);
 					camera.startPreview();
+					//camera.getParameters();
 				} catch (Throwable ex) {
 					releaseCamera();
 				}
@@ -716,6 +763,34 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 		viewHeight = height;
 		SimpleVisualizerJni.glOnSurfaceChanged(width, height, rotation, cameraPreviewW, cameraPreviewH, (UI._1dp < 2) ? 1 : 0);
 		okToRender = true;
+	}
+
+	public int getDisplayRotation() {
+		int i = windowManager.getDefaultDisplay().getRotation();
+		switch (i) {
+			case Surface.ROTATION_0:
+				return 0;
+			case Surface.ROTATION_90:
+				return 90;
+			case Surface.ROTATION_180:
+				return 180;
+			case Surface.ROTATION_270:
+				return 270;
+		}
+		return 0;
+	}
+
+	public int getDisplayOrientation(int degrees, int cameraId) {
+		Camera.CameraInfo info = new Camera.CameraInfo();
+		Camera.getCameraInfo(cameraId, info);
+		int result;
+		if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+			result = (info.orientation + degrees) % 360;
+			result = (360 - result) % 360;
+		} else {
+			result = (info.orientation - degrees + 360) % 360;
+		}
+		return result;
 	}
 	
 	//Runs on the MAIN thread
@@ -730,9 +805,9 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 
 	@SuppressWarnings("deprecation")
 	private void loadBitmap() {
-		if (selectedUri == null||selectedUri.toString().equals(""))
+		if (selectedUri == null || activity==null)
 			return;
-		LogUtils.d("loadBitmap中 selectedUri为"+selectedUri.toString());
+
 		/*String path = null;
 		int orientation = 1;
 
@@ -757,13 +832,15 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 			orientation = (new ExifInterface(path)).getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
 		} catch (Throwable ex) {
 		}*/
-
+//content://com.android.providers.media.documents/document/image%3A240219
 		InputStream input = null;
 		Bitmap bitmap = null;
 		try {
-			input = VisualizerManager.getInstance().getApplication().getContentResolver().openInputStream(selectedUri);
-			if (input == null)
+			input = activity.getContentResolver().openInputStream(selectedUri);
+			if (input == null){
 				return;
+			}
+
 			BitmapFactory.Options opts = new BitmapFactory.Options();
 			opts.inJustDecodeBounds = true;
 			bitmap = BitmapFactory.decodeStream(input, null, opts);
@@ -778,33 +855,30 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 				opts.inSampleSize <<= 1;
 				largest >>= 1;
 			}
-
-			input = VisualizerManager.getInstance().getApplication().getContentResolver().openInputStream(selectedUri);
+			input =  activity.getContentResolver().openInputStream(selectedUri);
 			opts.inJustDecodeBounds = false;
 			opts.inPreferredConfig = Bitmap.Config.RGB_565;
 			opts.inDither = true;
 			bitmap = BitmapFactory.decodeStream(input, null, opts);
 
-			LogUtils.d("loadBitmap中成功获取到bitmap");
 			if (bitmap != null) {
-				if (opts.outWidth != opts.outHeight && ((opts.outWidth > opts.outHeight) != (viewWidth > viewHeight))) {
+//				if (opts.outWidth != opts.outHeight && ((opts.outWidth > opts.outHeight) != (viewWidth > viewHeight))) {
 					//rotate the image 90 degress
 					final Matrix matrix = new Matrix();
-					matrix.postRotate(-90);
+					//matrix.postRotate(-90);
 					final Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 					if (bitmap != newBitmap && newBitmap != null) {
 						bitmap.recycle();
 						bitmap = newBitmap;
 					}
 					System.gc();
-				}
-
-				LogUtils.d("执行到SimpleVisualizerJni执行图片绘制");
+//				}
 				SimpleVisualizerJni.glLoadBitmapFromJava(bitmap);
 			}
 		} catch (Throwable ex) {
+		    Log.e("nsc","Throwable ex="+ex.getMessage());
 			ex.printStackTrace();
-			LogUtils.d("异常 绘制图片异常"+ex.getMessage());
+			LogUtils.d("绘制图片异常"+ex.getMessage());
 		} finally {
 			if (input != null) {
 				try {
@@ -829,8 +903,12 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 			}
 			if (cameraOK && cameraTexture != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				synchronized (this) {
-					if (cameraTexture != null)
+					if (cameraTexture != null){
 						cameraTexture.updateTexImage();
+//						float[] mtx = new float[16];
+//						cameraTexture.getTransformMatrix(mtx);
+//						mDirectDrawer.draw(mtx,mCameraId);
+					}
 				}
 			}
 			SimpleVisualizerJni.glDrawFrame();
@@ -864,14 +942,40 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 	private void chooseImage() {
 		//Based on: http://stackoverflow.com/a/20177611/3569421
 		//Based on: http://stackoverflow.com/a/4105966/3569421
-		if (activity != null && selectedUri == null && !browsing && okToRender) {
-			browsing = true;
-			final Intent intent = new Intent();
-			intent.setType("image/*");
-			intent.setAction(Intent.ACTION_GET_CONTENT);
 
-			LogUtils.d("即将选择图片~");
-			activity.startActivityForResult(intent, 1234);
+		if(activity!=null){
+			if(PermissionUtils.hasWriteAndReadPermission(activity)){
+				if (activity != null && selectedUri == null && !browsing && okToRender) {
+					browsing = true;
+					final Intent intent = new Intent();
+					intent.setType("image/*");
+					intent.setAction(Intent.ACTION_GET_CONTENT);
+					//intent.setAction(Intent.ACTION_PICK);
+					LogUtils.d("即将选择图片~");
+					activity.startActivityForResult(intent, ACTIVITY_CHOOSE_IMAGE);
+
+				}
+			}else{
+				PermissionUtils.requestWriteAndReadPermissionInActivity(activity,READ_AND_WEITE_PERMISSION_CODE);
+			}
+		}
+	}
+
+	/**
+	 * 清除图片
+	 */
+	private void clearImage() {
+		//Based on: http://stackoverflow.com/a/20177611/3569421
+		//Based on: http://stackoverflow.com/a/4105966/3569421
+		//LogUtils.d("用户清除了图片");
+		if(type==TYPE_LIQUID){
+			VisualizerManager.getInstance().setLiquidType1Url("");
+		}else if(type==TYPE_LIQUID_POWER_SAVER){
+			VisualizerManager.getInstance().setLiquidType2Url("");
+		}
+		if(VisualizerManager.getInstance().getControlVisualizer()!=null){
+			VisualizerManager.getInstance().getControlVisualizer().
+					someVisualizer(VisualizerManager.getInstance().visualizerIndex);
 		}
 	}
 
@@ -913,6 +1017,10 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 		case MNU_CHOOSE_IMAGE:
 			chooseImage();
 			break;
+
+		case MNU_CLEAR_IMAGE:
+			clearImage();
+			break;
 		}
 		return true;
 	}
@@ -920,11 +1028,17 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 	//Runs on the MAIN thread
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Object intent) {
-		if (requestCode == 1234) {
+		if (requestCode == ACTIVITY_CHOOSE_IMAGE) {
 			browsing = false;
-			if (resultCode == Activity.RESULT_OK){
+			if (resultCode == Activity.RESULT_OK&&activity!=null){
 				selectedUri = ((Intent)intent).getData();
-				LogUtils.d("返回图片URI为："+selectedUri);
+				//LogUtils.d("返回图片URI为："+selectedUri);
+				String path=FileUtils.getFilePathByUri(activity,selectedUri);
+				if(type==TYPE_LIQUID){
+					VisualizerManager.getInstance().setLiquidType1Url(path);
+				}else if(type==TYPE_LIQUID_POWER_SAVER){
+					VisualizerManager.getInstance().setLiquidType2Url(path);
+				}
 			}
 		}
 	}
@@ -958,6 +1072,11 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 			menu.add(1, MNU_CHOOSE_IMAGE, 1, R.string.choose_image)
 				.setOnMenuItemClickListener(this)
 				.setIcon(new TextIconDrawable(UI.ICON_PALETTE));
+
+			menu.add(1, MNU_CLEAR_IMAGE, 1, R.string.clear_image)
+					.setOnMenuItemClickListener(this)
+					.setIcon(new TextIconDrawable(UI.ICON_DELETE));
+
 			break;
 		case TYPE_SPIN:
 		case TYPE_PARTICLE:
@@ -1161,12 +1280,28 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 	public void changeImageUri(Uri selectedUri1) {
 		if(selectedUri1!=null){
 			selectedUri=selectedUri1;
+			String path=FileUtils.getFilePathByUri(activity,selectedUri);
+			if(type==TYPE_LIQUID){
+				VisualizerManager.getInstance().setLiquidType1Url(path);
+			}else if(type==TYPE_LIQUID_POWER_SAVER){
+				VisualizerManager.getInstance().setLiquidType2Url(path);
+			}
+		}else{
+		    //这里用于自己清楚图片
+            selectedUri=null;
+            LogUtils.d("用户清除了图片");
+            if(type==TYPE_LIQUID){
+                VisualizerManager.getInstance().setLiquidType1Url("");
+            }else if(type==TYPE_LIQUID_POWER_SAVER){
+                VisualizerManager.getInstance().setLiquidType2Url("");
+            }
+            if(VisualizerManager.getInstance().getControlVisualizer()!=null){
+                VisualizerManager.getInstance().getControlVisualizer().
+                        someVisualizer(VisualizerManager.getInstance().visualizerIndex);
+            }
 
-			String path=FileUtils.getFilePathByUri(activity,selectedUri1);
-			LogUtils.d("这里真的记录了uri的"+path);
-			SharedPreferencesUtils.setParam(activity,"selectedUri",path);
-		}
-		loadBitmap();
+        }
+		//loadBitmap();
 	}
 
 	@Override

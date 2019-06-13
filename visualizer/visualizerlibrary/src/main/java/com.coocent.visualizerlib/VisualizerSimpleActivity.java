@@ -46,16 +46,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -84,7 +81,7 @@ import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
 /**
  * 频谱主页
  */
-public final class VisualizerSimpleActivity extends Activity implements
+public final class VisualizerSimpleActivity extends AppCompatActivity implements
         VisualizerService.Observer,
         MainHandler.Callback,
         IControlVisualizer,View.OnClickListener {
@@ -98,6 +95,7 @@ public final class VisualizerSimpleActivity extends Activity implements
     public static final int CAMERA_PERMISSION_CODE=1001;//照相机权限回调Code
     public static final int RECORD_PERMISSION_CODE=1002;//录音权限
     public static final int CHOOSEIMAGE_CODE=10011;
+    public static final int READ_WRITE_PERMISSION_CODE=10012;
 
     private IVisualizer visualizer;
     private VisualizerService visualizerService;
@@ -194,6 +192,10 @@ public final class VisualizerSimpleActivity extends Activity implements
             if(PermissionUtils.hasRecordPermission(this)){
                 LogUtils.d("Activity权限请求成功");
                 changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
+            }
+        }else if(requestCode==READ_WRITE_PERMISSION_CODE){
+            if(PermissionUtils.hasWriteAndReadPermission(VisualizerSimpleActivity.this)){
+                ImageUtils.getImageBySystemInActivity(VisualizerSimpleActivity.this,CHOOSEIMAGE_CODE);
             }
         }
     }
@@ -584,7 +586,12 @@ public final class VisualizerSimpleActivity extends Activity implements
                         if(mListPopWindow!=null){
                             mListPopWindow.dissmiss();
                         }
-                        ImageUtils.getImageBySystemInActivity(VisualizerSimpleActivity.this,CHOOSEIMAGE_CODE);
+                        //判断有没有权限
+                        if(PermissionUtils.hasWriteAndReadPermission(VisualizerSimpleActivity.this)){
+                            ImageUtils.getImageBySystemInActivity(VisualizerSimpleActivity.this,CHOOSEIMAGE_CODE);
+                        }else{
+                            PermissionUtils.requestWriteAndReadPermissionInActivity(VisualizerSimpleActivity.this,READ_WRITE_PERMISSION_CODE);
+                        }
 
                     }else if(mData.get(position).getMenuCode()==MenuData.CHANGECOLOR){
                         if(mListPopWindow!=null){
@@ -592,6 +599,14 @@ public final class VisualizerSimpleActivity extends Activity implements
                         }
                         if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
                             VisualizerManager.getInstance().getVisualizerMenu().changeColor();
+                        }
+                    }else if(mData.get(position).getMenuCode()==MenuData.CLEARIMAGE){
+                        //清除图片
+                        if(mListPopWindow!=null){
+                            mListPopWindow.dissmiss();
+                        }
+                        if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
+                            VisualizerManager.getInstance().getVisualizerMenu().changeImageUri(null);
                         }
                     }
                 }

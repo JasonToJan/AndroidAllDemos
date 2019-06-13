@@ -1,7 +1,6 @@
 package com.coocent.visualizerlib.utils;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 
 import com.coocent.visualizerlib.R;
 import com.coocent.visualizerlib.ui.CircleView;
@@ -64,6 +64,8 @@ public class CustomColorPickDialogUtils {
         final AlertDialog dialog = builder.create();
 
         RecyclerView mRecyclerView=view.findViewById(R.id.dvp_color_list);
+        Button btnVisualizerCancel = view.findViewById(R.id.btn_visualizer_cancel);
+        Button btnVisualizerOk = view.findViewById(R.id.btn_visualizer_ok);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(spanCount,StaggeredGridLayoutManager.VERTICAL));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         final ArrayList<ColorCirlceEntity> mListData=new ArrayList<>();
@@ -115,17 +117,31 @@ public class CustomColorPickDialogUtils {
         dialog.setIcon(R.drawable.ic_dialog_color_pick);
         dialog.setTitle(R.string.change_color);
         dialog.setView(view);
-        dialog.setButton(DialogInterface.BUTTON_POSITIVE,context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+//        dialog.setButton(DialogInterface.BUTTON_POSITIVE,context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//                dialogOKOrCancel.onClickOK(colorPosition);
+//            }
+//        });
+//        dialog.setButton(DialogInterface.BUTTON_NEUTRAL,context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//            }
+//        });
+        btnVisualizerCancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 dialog.dismiss();
-                dialogOKOrCancel.onClickOK(colorPosition);
             }
         });
-        dialog.setButton(DialogInterface.BUTTON_NEUTRAL,context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+
+        btnVisualizerOk.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 dialog.dismiss();
+                dialogOKOrCancel.onClickOK(colorPosition);
             }
         });
 
@@ -133,8 +149,16 @@ public class CustomColorPickDialogUtils {
 
         Window dialogWindow = dialog.getWindow();//获取window对象
         dialogWindow.setGravity(Gravity.CENTER);//设置对话框位置
-        dialogWidth=CommonUtils.getScreenWidth(context)*8/10;
-        dialogHeight=CommonUtils.getScreenWidth(context)*8/10;
+
+
+        if(CommonUtils.isScreenOriatationPortrait(context)){
+            dialogWidth=CommonUtils.getScreenWidth(context)*8/10;
+            dialogHeight=CommonUtils.getScreenWidth(context)*8/10;
+        }else{
+            dialogWidth=CommonUtils.getScreenHight(context)*8/10;
+            dialogHeight=CommonUtils.getScreenHight(context)*8/10;
+        }
+
         paddingWidth=CommonUtils.dip2px(context,40);
         dialogWindow.setLayout(dialogWidth,dialogHeight);//设置横向全屏
         dialogWindow.setWindowAnimations(R.style.ZoomFadeAnimation);

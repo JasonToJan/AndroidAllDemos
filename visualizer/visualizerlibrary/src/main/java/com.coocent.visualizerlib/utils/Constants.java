@@ -44,4 +44,9 @@ public class Constants {
 
     public final static int [] colorsIndex = new int[]{0,70,190,257,600};
 
+    /**
+     * 如果没有保存过，显示这个文件名
+     */
+    public final static String DEFUALUT_URL_EMPTY="empty";
+
 }

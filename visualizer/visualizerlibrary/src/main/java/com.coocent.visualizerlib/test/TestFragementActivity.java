@@ -27,6 +27,7 @@ import com.coocent.visualizerlib.core.VisualizerManager;
 import com.coocent.visualizerlib.entity.MenuItem;
 import com.coocent.visualizerlib.utils.Constants;
 import com.coocent.visualizerlib.utils.ImageUtils;
+import com.coocent.visualizerlib.utils.KeepToUtils;
 import com.coocent.visualizerlib.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -49,7 +50,6 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_fragment);
-
         initView();
 
         setFragment();
@@ -71,11 +71,11 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
     }
 
     private void setFragment(){
-        fragment=new TestFragment();
+        fragment=new VisualizerFragment();
 
         //组装传递参数，详情查看VisualizerManager中的频谱类型
-//        Bundle bundle = new Bundle();
-//        bundle.putInt(Constants.FRAGMENT_ARGUMENTS_INDEX, 0);
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.FRAGMENT_ARGUMENTS_INDEX, 0);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.atf_visualizer_test_fl, fragment)
@@ -100,7 +100,7 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
-//        if(VisualizerManager.getInstance().getControlVisualizer()==null) return;
+        if(VisualizerManager.getInstance().getControlVisualizer()==null) return;
         if(v==previousBtn){
             VisualizerManager.getInstance().getControlVisualizer().previousVisualizer();
         }else if(v==nextBtn){
@@ -117,8 +117,7 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
         }else if(v==menuBtn){
             showPopup(v);
         }else if(v==otherBtn){
-            LogUtils.d("测试###监听到点击");
-           startActivity(new Intent(this,TestSegmentTabActivity.class));
+            KeepToUtils.keepToVisualizerActivity(TestFragementActivity.this,0);
         }
 
     }
@@ -201,6 +200,11 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
                     }else if(Datas.get(position).getMenuCode()==MenuData.CHANGECOLOR){
                         if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
                             VisualizerManager.getInstance().getVisualizerMenu().changeColor();
+                        }
+                    }else if(Datas.get(position).getMenuCode()==MenuData.CLEARIMAGE){
+                        //清除图片
+                        if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
+                            VisualizerManager.getInstance().getVisualizerMenu().changeImageUri(null);
                         }
                     }
                 }

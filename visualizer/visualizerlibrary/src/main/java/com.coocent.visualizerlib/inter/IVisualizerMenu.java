@@ -13,4 +13,5 @@ public interface IVisualizerMenu {
     void changeImageUri(Uri uri);
 
     void changeColor();
+
 }

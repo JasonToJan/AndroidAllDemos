@@ -32,6 +32,11 @@ public class MenuData {
     public static final int CHOOSEIMAGE=12;
 
     /**
+     * 清除图片
+     */
+    public static final int CLEARIMAGE=122;
+
+    /**
      * 改变颜色
      */
     public static final int CHANGECOLOR=13;
@@ -106,6 +111,7 @@ public class MenuData {
             }
         }
         menuItems.add(new MenuItem(CHOOSEIMAGE,context.getResources().getString(R.string.choose_image),VisualizerManager.LIQUID_TYPE));
+        menuItems.add(new MenuItem(CLEARIMAGE,context.getResources().getString(R.string.clear_image),VisualizerManager.LIQUID_TYPE));
 
         return menuItems;
     }
@@ -242,7 +248,7 @@ public class MenuData {
             }
         }
         menuItems.add(new MenuItem(CHOOSEIMAGE,context.getResources().getString(R.string.choose_image),VisualizerManager.LIQUID_POWER_SAVER));
-
+        menuItems.add(new MenuItem(CLEARIMAGE,context.getResources().getString(R.string.clear_image),VisualizerManager.LIQUID_POWER_SAVER));
         return menuItems;
     }
 

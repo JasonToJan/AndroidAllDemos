@@ -1,20 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dvp_color_picker_rl"
-    android:clickable="true"
-    android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="400dp"
+    android:background="@android:color/white"
+    android:clickable="true"
+    android:orientation="vertical"
     tools:context=".test.TestFragementActivity">
 
-   <android.support.v7.widget.RecyclerView
-       android:id="@+id/dvp_color_list"
-       android:layout_marginLeft="20dp"
-       android:layout_marginRight="20dp"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:layout_centerInParent="true" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/dvp_color_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_visualizer_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:background="?android:attr/selectableItemBackground"
+            android:textColor="@color/visualizer_select_color" />
+
+        <Button
+            android:id="@+id/btn_visualizer_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/ok"
+            android:textColor="@color/visualizer_select_color" />
+    </LinearLayout>
+
+</LinearLayout>
