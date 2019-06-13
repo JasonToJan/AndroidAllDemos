@@ -35,7 +35,6 @@ package com.coocent.visualizerlib;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -45,7 +44,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -53,6 +51,7 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -61,8 +60,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
-import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -85,6 +84,10 @@ import com.coocent.visualizerlib.view.ColorDrawable;
 import com.coocent.visualizerlib.view.CustomContextMenu;
 import com.coocent.visualizerlib.view.InterceptableLayout;
 import com.coocent.visualizerlib.view.TextIconDrawable;
+import com.wcl.notchfit.NotchFit;
+import com.wcl.notchfit.args.NotchProperty;
+import com.wcl.notchfit.args.NotchScreenType;
+import com.wcl.notchfit.core.OnNotchCallBack;
 
 import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
 
@@ -313,25 +316,11 @@ public final class VisualizerActivity extends AppCompatActivity implements
 		super.onConfigurationChanged(newConfig);
 		if(newConfig.orientation == 1){
 			//竖屏
+			doWhenPortrait();
+
 		}else if(newConfig.orientation == 2){
 			//横屏
-			int navigationBarHeight=CommonUtils.getNavigationBarHeight(this);
-			if(navigationBarHeight>0){
-				try{
-					RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
-					lp.setMargins(0,0,navigationBarHeight,0);
-					panelTop.setLayoutParams(lp);
-
-                    RelativeLayout.LayoutParams nextprevlp = new RelativeLayout.LayoutParams(nextVisualizerIb.getLayoutParams());
-                    nextprevlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
-                    nextprevlp.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
-                    nextprevlp.rightMargin=navigationBarHeight;
-                    nextVisualizerIb.setLayoutParams(nextprevlp);
-
-				}catch (Exception e){
-					LogUtils.d("initViewAndListener","异常##"+e.getMessage());
-				}
-			}
+			doWhenLandscape();
 		}
 
 
@@ -982,36 +971,42 @@ public final class VisualizerActivity extends AppCompatActivity implements
 		nextVisualizerIb.setOnClickListener(this);
 		prevVisualizerIb.setOnClickListener(this);
 
-		if(statusHeight>80){
-			//刘海屏
-			try{
-				RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
-				lp.setMargins(0,statusHeight,0,0);
-				panelTop.setLayoutParams(lp);
-			}catch (Exception e){
-				LogUtils.d("initViewAndListener","异常##"+e.getMessage());
-			}
-		}
-		if(!CommonUtils.isScreenOriatationPortrait(this)){
-			//水平
-			int navigationBarHeight=CommonUtils.getNavigationBarHeight(this);
-			if(navigationBarHeight>0){
-				try{
-					RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
-					lp.setMargins(0,0,navigationBarHeight,0);
-					panelTop.setLayoutParams(lp);
+//		if(statusHeight>80){
+//
+//		}
 
-                    RelativeLayout.LayoutParams nextprevlp = new RelativeLayout.LayoutParams(nextVisualizerIb.getLayoutParams());
-                    nextprevlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
-                    nextprevlp.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
-                    nextprevlp.rightMargin=navigationBarHeight;
-                    nextVisualizerIb.setLayoutParams(lp);
-
-				}catch (Exception e){
-					LogUtils.d("initViewAndListener","异常##"+e.getMessage());
-				}
+		//刘海屏
+		try{
+			if(CommonUtils.isScreenOriatationPortrait(this)) {
+				doWhenPortrait();
+			}else{
+				doWhenLandscape();
 			}
+		}catch (Exception e){
+			LogUtils.d("initViewAndListener","异常##"+e.getMessage());
 		}
+
+
+//		if(!CommonUtils.isScreenOriatationPortrait(this)){
+//			//水平
+//			int navigationBarHeight=CommonUtils.getNavigationBarHeight(this);
+//			if(navigationBarHeight>0){
+//				try{
+////					RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
+////					lp.setMargins(0,0,navigationBarHeight,0);
+////					panelTop.setLayoutParams(lp);
+//
+//                    RelativeLayout.LayoutParams nextprevlp = new RelativeLayout.LayoutParams(nextVisualizerIb.getLayoutParams());
+//                    nextprevlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
+//                    nextprevlp.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
+//                    nextprevlp.rightMargin=navigationBarHeight;
+//                    nextVisualizerIb.setLayoutParams(nextprevlp);
+//
+//				}catch (Exception e){
+//					LogUtils.d("initViewAndListener","异常##"+e.getMessage());
+//				}
+//			}
+//		}
 
 		updateTrackInfo();
 		setPauseButtonImage();
@@ -1208,6 +1203,65 @@ public final class VisualizerActivity extends AppCompatActivity implements
 			}else{
 				btnPlay.setImageResource(R.drawable.control_play_selector);
 			}
+		}
+	}
+
+	/**
+	 * 当竖直情况下，调整布局
+	 */
+	private void doWhenPortrait(){
+		try{
+			NotchFit.fit(this, NotchScreenType.FULL_SCREEN, new OnNotchCallBack() {
+				@Override
+				public void onNotchReady(NotchProperty notchProperty) {
+					if(notchProperty.isNotchEnable()){
+						LogUtils.d("1这里设置偏移距离为："+notchProperty.getNotchHeight());
+						RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
+						lp.setMargins(0,notchProperty.getNotchHeight(),0,0);
+						panelTop.setLayoutParams(lp);
+					}
+				}
+			});
+			int navHeight=CommonUtils.getNavigationBarHeight(this);
+			if(navHeight>0){
+				FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(panelControls.getLayoutParams());
+				lp.setMargins(0,0,0,0);
+				panelControls.setLayoutParams(lp);
+				LogUtils.d("1这里水平的时候设置右侧偏移距离为："+navHeight);
+			}
+
+		}catch (Exception e){
+			LogUtils.d("initViewAndListener","异常##"+e.getMessage());
+		}
+	}
+
+	/**
+	 * 当水平情况下，调整布局
+	 */
+	private void doWhenLandscape(){
+		try{
+			NotchFit.fit(this, NotchScreenType.FULL_SCREEN, new OnNotchCallBack() {
+				@Override
+				public void onNotchReady(NotchProperty notchProperty) {
+					if(notchProperty.isNotchEnable()){
+						LogUtils.d("2这里设置偏移距离为："+notchProperty.getNotchHeight());
+						RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
+						lp.setMargins(0,0,0,0);
+						panelTop.setLayoutParams(lp);
+					}
+				}
+			});
+
+			int navHeight=CommonUtils.getNavigationBarHeight(this);
+			if(navHeight>0){
+				FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(panelControls.getLayoutParams());
+				lp.setMargins(0,0,navHeight,0);
+				panelControls.setLayoutParams(lp);
+				LogUtils.d("2这里水平的时候设置右侧偏移距离为："+navHeight);
+			}
+
+		}catch (Exception e){
+			LogUtils.d("initViewAndListener","异常##"+e.getMessage());
 		}
 	}
 

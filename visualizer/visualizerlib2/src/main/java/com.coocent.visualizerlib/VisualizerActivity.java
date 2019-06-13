@@ -981,15 +981,15 @@ public final class VisualizerActivity extends AppCompatActivity implements
 			int navigationBarHeight=CommonUtils.getNavigationBarHeight(this);
 			if(navigationBarHeight>0){
 				try{
-					RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
-					lp.setMargins(0,0,navigationBarHeight,0);
-					panelTop.setLayoutParams(lp);
+//					RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
+//					lp.setMargins(0,0,navigationBarHeight,0);
+//					panelTop.setLayoutParams(lp);
 
                     RelativeLayout.LayoutParams nextprevlp = new RelativeLayout.LayoutParams(nextVisualizerIb.getLayoutParams());
                     nextprevlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
                     nextprevlp.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
                     nextprevlp.rightMargin=navigationBarHeight;
-                    nextVisualizerIb.setLayoutParams(lp);
+                    nextVisualizerIb.setLayoutParams(nextprevlp);
 
 				}catch (Exception e){
 					LogUtils.d("initViewAndListener","异常##"+e.getMessage());
