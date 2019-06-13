@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.coocent.visualizerlib"
-    android:installLocation="auto">
+    package="com.coocent.visualizerlib">
 
     <!-- In favor of gradle -->
     <!--
@@ -29,15 +28,15 @@
     <!-- For Google Drive -->
     <!-- uses-permission android:name="android.permission.GET_ACCOUNTS" -->
     <!-- For http playback -->
-    <uses-permission android:name="android.permission.INTERNET" />
+    <!--<uses-permission android:name="android.permission.INTERNET" />-->
     <!-- To check the connection state -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
+    <!--<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />-->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- See this: http://developer.android.com/reference/android/bluetooth/BluetoothHeadset.html#ACTION_AUDIO_STATE_CHANGED -->
-    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <!--<uses-permission android:name="android.permission.BLUETOOTH" />-->
     <!-- For scanning bluetooth devices -->
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!--<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />-->
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <!-- Apparently, a few devices require this.... (not only to make android.media.audiofx.PresetReverb work, but to control volume and other settings) -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -91,11 +90,24 @@
     <uses-feature
         android:name="android.hardware.wifi"
         android:required="false" />
+
+    <!-- Support for Chromebook and other PC-like devices with mouse and keyboard -->
     <uses-feature
         android:name="android.hardware.type.pc"
         android:required="false" />
 
-    <application android:theme="@style/AppTheme">
+    <!-- http://developer.android.com/intl/pt-br/reference/android/app/backup/BackupManager.html -->
+    <!-- android:allowBackup="true" -->
+    <!-- android:allowClearUserData="true" -->
+    <!-- android:usesCleartextTraffic="true" -->
+    <!-- android:killAfterRestore="true" -->
+    <!-- android:restoreAnyVersion="false" -->
+    <!-- android:icon="@mipmap/ic_launcher" -->
+    <!-- android:banner="@mipmap/ic_launcher" -->
+    <!-- android:label="@string/app_name" -->
+    <!-- android:supportsRtl="true" -->
+    <!-- android:fullBackupContent="@xml/backup_rules" -->
+    <application android:theme="@style/AppThemeVisualizer">
 
         <!-- &lt;!&ndash; http://stackoverflow.com/a/14185426/3569421 &ndash;&gt; -->
         <uses-library
@@ -129,10 +141,15 @@
             android:multiprocess="false"
             android:resizeableActivity="true"
             android:stateNotNeeded="true"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/visualizer_fullscreen" />
+
+        <activity android:name=".test.TestVisualizerActivity"
+            android:theme="@style/visualizer_fullscreen"/>
 
         <activity android:name=".test.TestFragementActivity"/>
 
+        <activity android:name=".VisualizerSimpleActivity"
+            android:theme="@style/visualizer_fullscreen" />
     </application>
 
 </manifest>

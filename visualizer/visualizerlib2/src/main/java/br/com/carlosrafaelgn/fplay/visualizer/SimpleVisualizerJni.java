@@ -37,15 +37,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewDebug.ExportedProperty;
 
-import com.coocent.visualizerlib.common.SlimLock;
 import com.coocent.visualizerlib.inter.IVisualizer;
-import com.coocent.visualizerlib.utils.Constants;
+import com.coocent.visualizerlib.R;
+import com.coocent.visualizerlib.common.SlimLock;
+import com.coocent.visualizerlib.entity.SongInfo;
+import com.coocent.visualizerlib.view.TextIconDrawable;
+import com.coocent.visualizerlib.ui.UI;
 
 import java.util.Arrays;
 
@@ -93,7 +97,7 @@ public final class SimpleVisualizerJni extends SurfaceView implements SurfaceHol
 
 	public SimpleVisualizerJni(Activity activity, boolean landscape, Intent extras) {
 		super(activity);
-		init(Constants.color_visualizer565);
+		init(UI.color_visualizer565);
 		lock = new SlimLock();
 		point = new Point();
 		setClickable(true);
@@ -164,20 +168,20 @@ public final class SimpleVisualizerJni extends SurfaceView implements SurfaceHol
 	//Runs on the MAIN thread
 	@Override
 	public void onCreateContextMenu(Object contextMenu) {
-//		final ContextMenu menu = (ContextMenu)contextMenu;
-//		menu.add(1, MNU_COLOR, 1, (colorIndex == 0) ? R.string.green : R.string.blue)
-//			.setOnMenuItemClickListener(this)
-//			.setIcon(new TextIconDrawable(UI.ICON_THEME));
-//		UI.separator(menu, 1, 2);
-//		menu.add(2, MNU_LORES, 0, "LoRes")
-//			.setOnMenuItemClickListener(this)
-//			.setIcon(new TextIconDrawable((!voice && !lerp) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-//		menu.add(2, MNU_HIRES, 1, "HiRes")
-//			.setOnMenuItemClickListener(this)
-//			.setIcon(new TextIconDrawable(lerp ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-//		menu.add(2, MNU_VOICEPRINT, 2, "VoicePrint")
-//			.setOnMenuItemClickListener(this)
-//			.setIcon(new TextIconDrawable(voice ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+		final ContextMenu menu = (ContextMenu)contextMenu;
+		menu.add(1, MNU_COLOR, 1, (colorIndex == 0) ? R.string.green : R.string.blue)
+			.setOnMenuItemClickListener(this)
+			.setIcon(new TextIconDrawable(UI.ICON_THEME));
+		UI.separator(menu, 1, 2);
+		menu.add(2, MNU_LORES, 0, "LoRes")
+			.setOnMenuItemClickListener(this)
+			.setIcon(new TextIconDrawable((!voice && !lerp) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+		menu.add(2, MNU_HIRES, 1, "HiRes")
+			.setOnMenuItemClickListener(this)
+			.setIcon(new TextIconDrawable(lerp ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+		menu.add(2, MNU_VOICEPRINT, 2, "VoicePrint")
+			.setOnMenuItemClickListener(this)
+			.setIcon(new TextIconDrawable(voice ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
 	}
 	
 	//Runs on the MAIN thread
@@ -206,9 +210,9 @@ public final class SimpleVisualizerJni extends SurfaceView implements SurfaceHol
 	}
 
 	//Runs on the MAIN thread
-//	@Override
-//	public void onPlayerChanged(SongInfo currentSongInfo, boolean songHasChanged, Throwable ex) {
-//	}
+	@Override
+	public void onPlayerChanged(SongInfo currentSongInfo, boolean songHasChanged, Throwable ex) {
+	}
 
 	//Runs on the MAIN thread (returned value MUST always be the same)
 	@Override

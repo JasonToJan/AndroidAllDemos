@@ -7,6 +7,24 @@
     android:background="#ffff"
     tools:context=".test.TestFragementActivity">
 
+    <Button
+        android:id="@+id/atf_visualizer_menu"
+        android:text="菜单"
+        android:layout_margin="16dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/atf_visualizer_some_activity"
+        android:text="跳转到其它Activity"
+        android:layout_margin="16dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <FrameLayout
         android:id="@+id/atf_visualizer_test_fl"
         android:background="@android:color/black"

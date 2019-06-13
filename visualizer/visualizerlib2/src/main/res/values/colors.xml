@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="color_transparent">#00000000</color>
+    <color name="colorAccent">#4ADDFE</color>
+    <color name="visualizer_select_color">#0099ff</color>
+
+    <color name="visualizer_menu_bg_color">#ffffff</color>
+    <color name="visualizer_menu_item_text_color">#101010</color>
+
+</resources>

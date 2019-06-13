@@ -38,26 +38,47 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Message;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.DynamicDrawableSpan;
+import android.text.style.ImageSpan;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.ViewDebug.ExportedProperty;
 import android.view.WindowManager;
 
+import com.coocent.visualizerlib.R;
+import com.coocent.visualizerlib.common.ArraySorter;
 import com.coocent.visualizerlib.core.MainHandler;
 import com.coocent.visualizerlib.core.VisualizerManager;
-import com.coocent.visualizerlib.common.ArraySorter;
+import com.coocent.visualizerlib.entity.SongInfo;
 import com.coocent.visualizerlib.inter.IVisualizer;
+import com.coocent.visualizerlib.inter.IVisualizerMenu;
+import com.coocent.visualizerlib.ui.UI;
 import com.coocent.visualizerlib.utils.Constants;
+import com.coocent.visualizerlib.utils.CustomColorPickDialogUtils;
+import com.coocent.visualizerlib.utils.DirectDrawer;
+import com.coocent.visualizerlib.utils.FileUtils;
+import com.coocent.visualizerlib.utils.ImageUtils;
+import com.coocent.visualizerlib.utils.LogUtils;
+import com.coocent.visualizerlib.utils.PermissionUtils;
+import com.coocent.visualizerlib.view.ColorDrawable;
+import com.coocent.visualizerlib.view.TextIconDrawable;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -74,13 +95,21 @@ import javax.microedition.khronos.egl.EGLSurface;
 import javax.microedition.khronos.opengles.GL10;
 
 
-public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfaceView.Renderer, GLSurfaceView.EGLContextFactory, GLSurfaceView.EGLWindowSurfaceFactory, IVisualizer, MenuItem.OnMenuItemClickListener, MainHandler.Callback {
+
+public final class OpenGLVisualizerJni extends GLSurfaceView
+		implements GLSurfaceView.Renderer, GLSurfaceView.EGLContextFactory,
+		GLSurfaceView.EGLWindowSurfaceFactory, IVisualizer,
+		MenuItem.OnMenuItemClickListener, MainHandler.Callback,IVisualizerMenu {
 
 	private static final int MNU_COLOR = MNU_VISUALIZER + 1, MNU_SPEED0 = MNU_VISUALIZER + 2, MNU_SPEED1 = MNU_VISUALIZER + 3,
 		MNU_SPEED2 = MNU_VISUALIZER + 4, MNU_CHOOSE_IMAGE = MNU_VISUALIZER + 5, MNU_DIFFUSION0 = MNU_VISUALIZER + 6,
 		MNU_DIFFUSION1 = MNU_VISUALIZER + 7, MNU_DIFFUSION2 = MNU_VISUALIZER + 8, MNU_DIFFUSION3 = MNU_VISUALIZER + 9,
 		MNU_RISESPEED0 = MNU_VISUALIZER + 10, MNU_RISESPEED1 = MNU_VISUALIZER + 11, MNU_RISESPEED2 = MNU_VISUALIZER + 12,
 		MNU_RISESPEED3 = MNU_VISUALIZER + 13, MNU_SPEED_FASTEST = MNU_VISUALIZER + 14;
+
+	private static final int MNU_CLEAR_IMAGE=10011;//添加清除图片方法
+	public static final int READ_AND_WEITE_PERMISSION_CODE=10009;
+	public static final int ACTIVITY_CHOOSE_IMAGE=1234;
 
 	private static final int MSG_OPENGL_ERROR = 0x0600;
 	private static final int MSG_CHOOSE_IMAGE = 0x0601;
@@ -116,6 +145,9 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 	private volatile boolean cameraOK;
 
 	public Context context;
+	private int mTextureID = -1;
+	private DirectDrawer mDirectDrawer;
+	private int mCameraId = -1;
 
 	public OpenGLVisualizerJni(Context context) {
 		super(context);
@@ -125,6 +157,8 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 
 	public OpenGLVisualizerJni(Activity activity, boolean landscape, Intent extras) {
 		super(activity);
+		this.context = activity;
+		VisualizerManager.getInstance().setVisualizerMenu(this);
 		final int t = extras.getIntExtra(EXTRA_VISUALIZER_TYPE, TYPE_SPECTRUM);
 		type = ((t < TYPE_LIQUID || t > TYPE_COLOR_WAVES) ? TYPE_SPECTRUM : t);
 		setClickable(true);
@@ -162,17 +196,17 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 			sensorManager = new OpenGLVisualizerSensorManager(false);
 			if (!sensorManager.isCapable) {
 				sensorManager = null;
-				//UI.toast(R.string.msg_no_sensors);
+				UI.toast(R.string.msg_no_sensors);
 			} else {
 				sensorManager.start();
-//				CharSequence originalText = VisualizerManager.getInstance().getApplication().getText(R.string.msg_immersive);
-//				final int iconIdx = originalText.toString().indexOf('\u21BA');
-//				if (iconIdx >= 0) {
-//					final SpannableStringBuilder txt = new SpannableStringBuilder(originalText);
-//					txt.setSpan(new ImageSpan(new TextIconDrawable(UI.ICON_3DPAN, UI.colorState_text_visualizer_static.getDefaultColor(), UI._22sp, 0), DynamicDrawableSpan.ALIGN_BASELINE), iconIdx, iconIdx + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//					originalText = txt;
-//				}
-//				UI.customToast(originalText, true, UI._22sp, UI.colorState_text_visualizer_static.getDefaultColor(), new ColorDrawable(0x7f000000 | (UI.color_visualizer565 & 0x00ffffff)));
+				CharSequence originalText = VisualizerManager.getInstance().getApplication().getText(R.string.msg_immersive);
+				final int iconIdx = originalText.toString().indexOf('\u21BA');
+				if (iconIdx >= 0) {
+					final SpannableStringBuilder txt = new SpannableStringBuilder(originalText);
+					txt.setSpan(new ImageSpan(new TextIconDrawable(UI.ICON_3DPAN, UI.colorState_text_visualizer_static.getDefaultColor(), UI._22sp, 0), DynamicDrawableSpan.ALIGN_BASELINE), iconIdx, iconIdx + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+					originalText = txt;
+				}
+				UI.customToast(originalText, true, UI._22sp, UI.colorState_text_visualizer_static.getDefaultColor(), new ColorDrawable(0x7f000000 | (UI.color_visualizer565 & 0x00ffffff)));
 			}
 		}
 		
@@ -184,8 +218,43 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 		setEGLWindowSurfaceFactory(this);
 		setRenderer(this);
 		setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+      //  setRenderMode(RENDERMODE_WHEN_DIRTY);//RENDERMODE_WHEN_DIRTY  RENDERMODE_CONTINUOUSLY
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 			setPreserveEGLContext();
+
+		//读一下之前保存的url
+		if(PermissionUtils.hasWriteAndReadPermission(activity)){
+			if(type==TYPE_LIQUID){
+				String path=VisualizerManager.getInstance().getLiquidType1Url();
+				try{
+					selectedUri=FileUtils.getMediaUriFromPath(activity,path);
+				}catch (Exception e){
+					LogUtils.d("异常"+e.getMessage());
+				}
+			}else if(type==TYPE_LIQUID_POWER_SAVER){
+				String path=VisualizerManager.getInstance().getLiquidType2Url();
+				try{
+					selectedUri=FileUtils.getMediaUriFromPath(activity,path);
+				}catch (Exception e){
+					LogUtils.d("异常"+e.getMessage());
+				}
+			}
+		}
+	}
+
+	private int createTextureID() {
+		int[] texture = new int[1];
+		GLES20.glGenTextures(1, texture, 0);
+		GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0]);
+		GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+				GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+		GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+				GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+		GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+				GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+		GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+				GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
+		return texture[0];
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -415,6 +484,8 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 	@Override
 	@SuppressWarnings("deprecation")
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+		//mTextureID = createTextureID();
+
 		if (type == TYPE_SPECTRUM)
 			SimpleVisualizerJni.commonSetColorIndex(colorIndex);
 		SimpleVisualizerJni.commonSetSpeed(speed);
@@ -518,12 +589,14 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 						Camera.getCameraInfo(0, info);
 						cameraId = 0;
 					}
+					mCameraId = cameraId;
 					camera = ((cameraId >= 0) ? Camera.open(cameraId) : null);
 
-					//调整镜像,还是不行,放弃吧
 					//setCameraDisplayOrientation(info,camera);
 
-					cameraNativeOrientation = info.orientation;
+					//cameraNativeOrientation = info.orientation;
+					//int degree = getDisplayOrientation(getDisplayRotation(),mCameraId);
+					//camera.setDisplayOrientation(0);
 
 				} catch (Throwable ex) {
 					if (camera != null) {
@@ -539,12 +612,14 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 				}
 			}
 		}
-		if ((error = SimpleVisualizerJni.glOnSurfaceCreated(Constants.color_visualizer, type, Constants.screenWidth, Constants.screenHeight, (Constants._1dp < 2) ? 1 : 0, (sensorManager != null && sensorManager.hasGyro) ? 1 : 0)) != 0) {
+		if ((error = SimpleVisualizerJni.glOnSurfaceCreated(UI.color_visualizer, type, UI.screenWidth, UI.screenHeight, (UI._1dp < 2) ? 1 : 0, (sensorManager != null && sensorManager.hasGyro) ? 1 : 0)) != 0) {
 			supported = false;
 			MainHandler.sendMessage(this, MSG_OPENGL_ERROR);
 		} else if (type == TYPE_IMMERSIVE_PARTICLE_VR && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			synchronized (this) {
 				cameraTexture = new SurfaceTexture(SimpleVisualizerJni.glGetOESTexture());
+				//cameraTexture = new SurfaceTexture(mTextureID);
+			//	mDirectDrawer = new DirectDrawer(mTextureID);
 				cameraTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
 					@Override
 					public void onFrameAvailable(SurfaceTexture surfaceTexture) {
@@ -553,6 +628,9 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 				});
 				try {
 					camera.setPreviewTexture(cameraTexture);
+//					int degree = getDisplayOrientation(getDisplayRotation(),mCameraId);
+//					camera.setDisplayOrientation(180);
+//					camera.setParameters(camera.getParameters());
 				} catch (Throwable ex) {
 					releaseCamera();
 					error = 0;
@@ -567,6 +645,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 	@Override
 	@SuppressWarnings("deprecation")
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
+	//	GLES20.glViewport(0, 0, width, height);
 		if (!supported)
 			return;
 		//http://developer.download.nvidia.com/tegra/docs/tegra_android_accelerometer_v5f.pdf
@@ -605,8 +684,12 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 					final int cameraDisplayOrientation = (cameraNativeOrientation - degrees + 360) % 360;
 
 					//LogUtils.d("cameraNativeOrientation="+cameraDisplayOrientation+" 预览旋转角度为："+cameraDisplayOrientation);
-					camera.setDisplayOrientation(cameraDisplayOrientation);
 
+				//	int degree = getDisplayOrientation(getDisplayRotation(),mCameraId);
+					//camera.setDisplayOrientation(0);
+
+				//	camera.setDisplayOrientation(cameraDisplayOrientation);
+					//LogUtils.e("nsc","onSurfaceChanged degree =="+degree);
 					final Camera.Parameters parameters = camera.getParameters();
 
 					//try to find the ideal preview size...
@@ -669,6 +752,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 
 					camera.setParameters(parameters);
 					camera.startPreview();
+					//camera.getParameters();
 				} catch (Throwable ex) {
 					releaseCamera();
 				}
@@ -677,8 +761,36 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 
 		viewWidth = width;
 		viewHeight = height;
-		SimpleVisualizerJni.glOnSurfaceChanged(width, height, rotation, cameraPreviewW, cameraPreviewH, (Constants._1dp < 2) ? 1 : 0);
+		SimpleVisualizerJni.glOnSurfaceChanged(width, height, rotation, cameraPreviewW, cameraPreviewH, (UI._1dp < 2) ? 1 : 0);
 		okToRender = true;
+	}
+
+	public int getDisplayRotation() {
+		int i = windowManager.getDefaultDisplay().getRotation();
+		switch (i) {
+			case Surface.ROTATION_0:
+				return 0;
+			case Surface.ROTATION_90:
+				return 90;
+			case Surface.ROTATION_180:
+				return 180;
+			case Surface.ROTATION_270:
+				return 270;
+		}
+		return 0;
+	}
+
+	public int getDisplayOrientation(int degrees, int cameraId) {
+		Camera.CameraInfo info = new Camera.CameraInfo();
+		Camera.getCameraInfo(cameraId, info);
+		int result;
+		if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+			result = (info.orientation + degrees) % 360;
+			result = (360 - result) % 360;
+		} else {
+			result = (info.orientation - degrees + 360) % 360;
+		}
+		return result;
 	}
 	
 	//Runs on the MAIN thread
@@ -693,7 +805,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 
 	@SuppressWarnings("deprecation")
 	private void loadBitmap() {
-		if (selectedUri == null)
+		if (selectedUri == null || activity==null)
 			return;
 
 		/*String path = null;
@@ -720,13 +832,15 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 			orientation = (new ExifInterface(path)).getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
 		} catch (Throwable ex) {
 		}*/
-
+//content://com.android.providers.media.documents/document/image%3A240219
 		InputStream input = null;
 		Bitmap bitmap = null;
 		try {
-			input = VisualizerManager.getInstance().getApplication().getContentResolver().openInputStream(selectedUri);
-			if (input == null)
+			input = activity.getContentResolver().openInputStream(selectedUri);
+			if (input == null){
 				return;
+			}
+
 			BitmapFactory.Options opts = new BitmapFactory.Options();
 			opts.inJustDecodeBounds = true;
 			bitmap = BitmapFactory.decodeStream(input, null, opts);
@@ -741,29 +855,30 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 				opts.inSampleSize <<= 1;
 				largest >>= 1;
 			}
-
-			input = VisualizerManager.getInstance().getApplication().getContentResolver().openInputStream(selectedUri);
+			input =  activity.getContentResolver().openInputStream(selectedUri);
 			opts.inJustDecodeBounds = false;
 			opts.inPreferredConfig = Bitmap.Config.RGB_565;
 			opts.inDither = true;
 			bitmap = BitmapFactory.decodeStream(input, null, opts);
 
 			if (bitmap != null) {
-				if (opts.outWidth != opts.outHeight && ((opts.outWidth > opts.outHeight) != (viewWidth > viewHeight))) {
+//				if (opts.outWidth != opts.outHeight && ((opts.outWidth > opts.outHeight) != (viewWidth > viewHeight))) {
 					//rotate the image 90 degress
 					final Matrix matrix = new Matrix();
-					matrix.postRotate(-90);
+					//matrix.postRotate(-90);
 					final Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 					if (bitmap != newBitmap && newBitmap != null) {
 						bitmap.recycle();
 						bitmap = newBitmap;
 					}
 					System.gc();
-				}
+//				}
 				SimpleVisualizerJni.glLoadBitmapFromJava(bitmap);
 			}
 		} catch (Throwable ex) {
+		    Log.e("nsc","Throwable ex="+ex.getMessage());
 			ex.printStackTrace();
+			LogUtils.d("绘制图片异常"+ex.getMessage());
 		} finally {
 			if (input != null) {
 				try {
@@ -788,8 +903,12 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 			}
 			if (cameraOK && cameraTexture != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				synchronized (this) {
-					if (cameraTexture != null)
+					if (cameraTexture != null){
 						cameraTexture.updateTexImage();
+//						float[] mtx = new float[16];
+//						cameraTexture.getTransformMatrix(mtx);
+//						mDirectDrawer.draw(mtx,mCameraId);
+					}
 				}
 			}
 			SimpleVisualizerJni.glDrawFrame();
@@ -802,9 +921,9 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 		case MSG_OPENGL_ERROR:
 			if (!alerted) {
 				alerted = true;
-//				UI.toast(VisualizerManager.getInstance().getApplication().getText(R.string.sorry) + " "
-//						+ ((error != 0) ? (VisualizerManager.getInstance().getApplication().getText(R.string.opengl_error).toString()
-//						+ UI.collon() + error) : VisualizerManager.getInstance().getApplication().getText(R.string.opengl_not_supported).toString()) + " :(");
+				UI.toast(VisualizerManager.getInstance().getApplication().getText(R.string.sorry) + " "
+						+ ((error != 0) ? (VisualizerManager.getInstance().getApplication().getText(R.string.opengl_error).toString()
+						+ UI.collon() + error) : VisualizerManager.getInstance().getApplication().getText(R.string.opengl_not_supported).toString()) + " :(");
 			}
 			break;
 		case MSG_CHOOSE_IMAGE:
@@ -823,12 +942,40 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 	private void chooseImage() {
 		//Based on: http://stackoverflow.com/a/20177611/3569421
 		//Based on: http://stackoverflow.com/a/4105966/3569421
-		if (activity != null && selectedUri == null && !browsing && okToRender) {
-			browsing = true;
-			final Intent intent = new Intent();
-			intent.setType("image/*");
-			intent.setAction(Intent.ACTION_GET_CONTENT);
-			activity.startActivityForResult(intent, 1234);
+
+		if(activity!=null){
+			if(PermissionUtils.hasWriteAndReadPermission(activity)){
+				if (activity != null && selectedUri == null && !browsing && okToRender) {
+					browsing = true;
+					final Intent intent = new Intent();
+					intent.setType("image/*");
+					intent.setAction(Intent.ACTION_GET_CONTENT);
+					//intent.setAction(Intent.ACTION_PICK);
+					LogUtils.d("即将选择图片~");
+					activity.startActivityForResult(intent, ACTIVITY_CHOOSE_IMAGE);
+
+				}
+			}else{
+				PermissionUtils.requestWriteAndReadPermissionInActivity(activity,READ_AND_WEITE_PERMISSION_CODE);
+			}
+		}
+	}
+
+	/**
+	 * 清除图片
+	 */
+	private void clearImage() {
+		//Based on: http://stackoverflow.com/a/20177611/3569421
+		//Based on: http://stackoverflow.com/a/4105966/3569421
+		//LogUtils.d("用户清除了图片");
+		if(type==TYPE_LIQUID){
+			VisualizerManager.getInstance().setLiquidType1Url("");
+		}else if(type==TYPE_LIQUID_POWER_SAVER){
+			VisualizerManager.getInstance().setLiquidType2Url("");
+		}
+		if(VisualizerManager.getInstance().getControlVisualizer()!=null){
+			VisualizerManager.getInstance().getControlVisualizer().
+					someVisualizer(VisualizerManager.getInstance().visualizerIndex);
 		}
 	}
 
@@ -837,8 +984,11 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 		final int id = item.getItemId();
 		switch (id) {
 		case MNU_COLOR:
-			colorIndex = ((colorIndex == 0) ? 257 : 0);
-			SimpleVisualizerJni.commonSetColorIndex(colorIndex);
+//			colorIndex = ((colorIndex == 0) ? 257 : 0);
+//			SimpleVisualizerJni.commonSetColorIndex(colorIndex);
+
+			changeColor();
+
 			break;
 		case MNU_SPEED0:
 		case MNU_SPEED1:
@@ -867,6 +1017,10 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 		case MNU_CHOOSE_IMAGE:
 			chooseImage();
 			break;
+
+		case MNU_CLEAR_IMAGE:
+			clearImage();
+			break;
 		}
 		return true;
 	}
@@ -874,10 +1028,18 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 	//Runs on the MAIN thread
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Object intent) {
-		if (requestCode == 1234) {
+		if (requestCode == ACTIVITY_CHOOSE_IMAGE) {
 			browsing = false;
-			if (resultCode == Activity.RESULT_OK)
+			if (resultCode == Activity.RESULT_OK&&activity!=null){
 				selectedUri = ((Intent)intent).getData();
+				//LogUtils.d("返回图片URI为："+selectedUri);
+				String path=FileUtils.getFilePathByUri(activity,selectedUri);
+				if(type==TYPE_LIQUID){
+					VisualizerManager.getInstance().setLiquidType1Url(path);
+				}else if(type==TYPE_LIQUID_POWER_SAVER){
+					VisualizerManager.getInstance().setLiquidType2Url(path);
+				}
+			}
 		}
 	}
 
@@ -900,76 +1062,86 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 	//Runs on the MAIN thread
 	@Override
 	public void onCreateContextMenu(Object contextMenu) {
-//		final ContextMenu menu = (ContextMenu)contextMenu;
-//		Menu s;
-//		boolean itemsAdded = false;
-//		switch (type) {
-//		case TYPE_LIQUID:
-//		case TYPE_LIQUID_POWER_SAVER:
-//			itemsAdded = true;
-//			menu.add(1, MNU_CHOOSE_IMAGE, 1, R.string.choose_image)
-//				.setOnMenuItemClickListener(this)
-//				.setIcon(new TextIconDrawable(UI.ICON_PALETTE));
-//			break;
-//		case TYPE_SPIN:
-//		case TYPE_PARTICLE:
-//		case TYPE_COLOR_WAVES:
-//			break;
-//		case TYPE_IMMERSIVE_PARTICLE:
-//		case TYPE_IMMERSIVE_PARTICLE_VR:
-//			itemsAdded = true;
-//			s = menu.addSubMenu(1, 0, 1, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + "\u2026")
-//				.setIcon(new TextIconDrawable(UI.ICON_SETTINGS));
-//			UI.prepare(s);
-//			s.add(0, MNU_DIFFUSION0, 0, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 0"))
-//				.setOnMenuItemClickListener(this)
-//				.setIcon(new TextIconDrawable((diffusion == 0) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-//			s.add(0, MNU_DIFFUSION1, 1, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 1"))
-//				.setOnMenuItemClickListener(this)
-//				.setIcon(new TextIconDrawable((diffusion != 0 && diffusion != 2 && diffusion != 3) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-//			s.add(0, MNU_DIFFUSION2, 2, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 2"))
-//				.setOnMenuItemClickListener(this)
-//				.setIcon(new TextIconDrawable((diffusion == 2) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-//			s.add(0, MNU_DIFFUSION3, 3, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 3"))
-//				.setOnMenuItemClickListener(this)
-//				.setIcon(new TextIconDrawable((diffusion == 3) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-//			s = menu.addSubMenu(1, 0, 2, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + "\u2026")
-//				.setIcon(new TextIconDrawable(UI.ICON_SETTINGS));
-//			UI.prepare(s);
-//			s.add(0, MNU_RISESPEED0, 0, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 0"))
-//				.setOnMenuItemClickListener(this)
-//				.setIcon(new TextIconDrawable((riseSpeed == 0) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-//			s.add(0, MNU_RISESPEED1, 1, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 1"))
-//				.setOnMenuItemClickListener(this)
-//				.setIcon(new TextIconDrawable((riseSpeed != 0 && riseSpeed != 2 && riseSpeed != 3) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-//			s.add(0, MNU_RISESPEED2, 2, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 2"))
-//				.setOnMenuItemClickListener(this)
-//				.setIcon(new TextIconDrawable((riseSpeed == 2) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-//			s.add(0, MNU_RISESPEED3, 3, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 3"))
-//				.setOnMenuItemClickListener(this)
-//				.setIcon(new TextIconDrawable((riseSpeed == 3) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-//			break;
-//		default:
-//			itemsAdded = true;
+		final ContextMenu menu = (ContextMenu)contextMenu;
+		Menu s;
+		boolean itemsAdded = false;
+		switch (type) {
+		case TYPE_LIQUID:
+		case TYPE_LIQUID_POWER_SAVER:
+			itemsAdded = true;
+			menu.add(1, MNU_CHOOSE_IMAGE, 1, R.string.choose_image)
+				.setOnMenuItemClickListener(this)
+				.setIcon(new TextIconDrawable(UI.ICON_PALETTE));
+
+			menu.add(1, MNU_CLEAR_IMAGE, 1, R.string.clear_image)
+					.setOnMenuItemClickListener(this)
+					.setIcon(new TextIconDrawable(UI.ICON_DELETE));
+
+			break;
+		case TYPE_SPIN:
+		case TYPE_PARTICLE:
+		case TYPE_COLOR_WAVES:
+			break;
+		case TYPE_IMMERSIVE_PARTICLE:
+		case TYPE_IMMERSIVE_PARTICLE_VR:
+			itemsAdded = true;
+			s = menu.addSubMenu(1, 0, 1, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + "\u2026")
+				.setIcon(new TextIconDrawable(UI.ICON_SETTINGS));
+			UI.prepare(s);
+			s.add(0, MNU_DIFFUSION0, 0, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 0"))
+				.setOnMenuItemClickListener(this)
+				.setIcon(new TextIconDrawable((diffusion == 0) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+			s.add(0, MNU_DIFFUSION1, 1, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 1"))
+				.setOnMenuItemClickListener(this)
+				.setIcon(new TextIconDrawable((diffusion != 0 && diffusion != 2 && diffusion != 3) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+			s.add(0, MNU_DIFFUSION2, 2, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 2"))
+				.setOnMenuItemClickListener(this)
+				.setIcon(new TextIconDrawable((diffusion == 2) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+			s.add(0, MNU_DIFFUSION3, 3, VisualizerManager.getInstance().getApplication().getText(R.string.diffusion) + UI.punctuationSpace(": 3"))
+				.setOnMenuItemClickListener(this)
+				.setIcon(new TextIconDrawable((diffusion == 3) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+			s = menu.addSubMenu(1, 0, 2, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + "\u2026")
+				.setIcon(new TextIconDrawable(UI.ICON_SETTINGS));
+			UI.prepare(s);
+			s.add(0, MNU_RISESPEED0, 0, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 0"))
+				.setOnMenuItemClickListener(this)
+				.setIcon(new TextIconDrawable((riseSpeed == 0) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+			s.add(0, MNU_RISESPEED1, 1, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 1"))
+				.setOnMenuItemClickListener(this)
+				.setIcon(new TextIconDrawable((riseSpeed != 0 && riseSpeed != 2 && riseSpeed != 3) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+			s.add(0, MNU_RISESPEED2, 2, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 2"))
+				.setOnMenuItemClickListener(this)
+				.setIcon(new TextIconDrawable((riseSpeed == 2) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+			s.add(0, MNU_RISESPEED3, 3, VisualizerManager.getInstance().getApplication().getText(R.string.speed) + UI.punctuationSpace(": 3"))
+				.setOnMenuItemClickListener(this)
+				.setIcon(new TextIconDrawable((riseSpeed == 3) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+			break;
+		default:
+			itemsAdded = true;
 //			menu.add(1, MNU_COLOR, 1, (colorIndex == 0) ? R.string.green : R.string.blue)
 //				.setOnMenuItemClickListener(this)
 //				.setIcon(new TextIconDrawable(UI.ICON_PALETTE));
-//			break;
-//		}
-//		if (itemsAdded)
-//			UI.separator(menu, 2, 0);
-//		menu.add(2, MNU_SPEED0, 1, VisualizerManager.getInstance().getApplication().getText(R.string.sustain) + " 3")
-//			.setOnMenuItemClickListener(this)
-//			.setIcon(new TextIconDrawable((speed != 1 && speed != 2 && speed != 99) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-//		menu.add(2, MNU_SPEED1, 2, VisualizerManager.getInstance().getApplication().getText(R.string.sustain) + " 2")
-//			.setOnMenuItemClickListener(this)
-//			.setIcon(new TextIconDrawable((speed == 1) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-//		menu.add(2, MNU_SPEED2, 3, VisualizerManager.getInstance().getApplication().getText(R.string.sustain) + " 1")
-//			.setOnMenuItemClickListener(this)
-//			.setIcon(new TextIconDrawable((speed == 2) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
-//		menu.add(2, MNU_SPEED_FASTEST, 3, VisualizerManager.getInstance().getApplication().getText(R.string.sustain) + " " + VisualizerManager.getInstance().getApplication().getText(R.string.none))
-//			.setOnMenuItemClickListener(this)
-//			.setIcon(new TextIconDrawable((speed == 99) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+
+			menu.add(1, MNU_COLOR, 1, R.string.change_color)
+					.setOnMenuItemClickListener(this)
+					.setIcon(new TextIconDrawable(UI.ICON_PALETTE));
+
+			break;
+		}
+		if (itemsAdded)
+			UI.separator(menu, 2, 0);
+		menu.add(2, MNU_SPEED0, 1, VisualizerManager.getInstance().getApplication().getText(R.string.sustain) + " 3")
+			.setOnMenuItemClickListener(this)
+			.setIcon(new TextIconDrawable((speed != 1 && speed != 2 && speed != 99) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+		menu.add(2, MNU_SPEED1, 2, VisualizerManager.getInstance().getApplication().getText(R.string.sustain) + " 2")
+			.setOnMenuItemClickListener(this)
+			.setIcon(new TextIconDrawable((speed == 1) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+		menu.add(2, MNU_SPEED2, 3, VisualizerManager.getInstance().getApplication().getText(R.string.sustain) + " 1")
+			.setOnMenuItemClickListener(this)
+			.setIcon(new TextIconDrawable((speed == 2) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
+		menu.add(2, MNU_SPEED_FASTEST, 3, VisualizerManager.getInstance().getApplication().getText(R.string.sustain) + " " + VisualizerManager.getInstance().getApplication().getText(R.string.none))
+			.setOnMenuItemClickListener(this)
+			.setIcon(new TextIconDrawable((speed == 99) ? UI.ICON_RADIOCHK24 : UI.ICON_RADIOUNCHK24));
 	}
 	
 	//Runs on the MAIN thread
@@ -978,9 +1150,9 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 	}
 
 	//Runs on the MAIN thread
-//	@Override
-//	public void onPlayerChanged(SongInfo currentSongInfo, boolean songHasChanged, Throwable ex) {
-//	}
+	@Override
+	public void onPlayerChanged(SongInfo currentSongInfo, boolean songHasChanged, Throwable ex) {
+	}
 
 	//Runs on the MAIN thread (returned value MUST always be the same)
 	@Override
@@ -1071,4 +1243,130 @@ public final class OpenGLVisualizerJni extends GLSurfaceView implements GLSurfac
 		SimpleVisualizerJni.glReleaseView();
 	}
 
+	/**
+	 * @param camera   相机对象
+	 */
+	public void setCameraDisplayOrientation(Camera.CameraInfo info, Camera camera) {
+		if(activity==null) return;
+
+		int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+		int degrees = 0;
+		switch (rotation) {
+			case Surface.ROTATION_0:
+				degrees = 0;
+				break;
+			case Surface.ROTATION_90:
+				degrees = 90;
+				break;
+			case Surface.ROTATION_180:
+				degrees = 180;
+				break;
+			case Surface.ROTATION_270:
+				degrees = 270;
+				break;
+		}
+		int result;
+		if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+			result = (info.orientation + degrees) % 360;
+			result = (360 - result) % 360;  // compensate the mirror
+		} else {
+			// back-facing
+			result = (info.orientation - degrees + 360) % 360;
+		}
+		camera.setDisplayOrientation(180);
+	}
+
+	@Override
+	public void changeImageUri(Uri selectedUri1) {
+		if(selectedUri1!=null){
+			selectedUri=selectedUri1;
+			String path=FileUtils.getFilePathByUri(activity,selectedUri);
+			if(type==TYPE_LIQUID){
+				VisualizerManager.getInstance().setLiquidType1Url(path);
+			}else if(type==TYPE_LIQUID_POWER_SAVER){
+				VisualizerManager.getInstance().setLiquidType2Url(path);
+			}
+		}else{
+		    //这里用于自己清楚图片
+            selectedUri=null;
+            LogUtils.d("用户清除了图片");
+            if(type==TYPE_LIQUID){
+                VisualizerManager.getInstance().setLiquidType1Url("");
+            }else if(type==TYPE_LIQUID_POWER_SAVER){
+                VisualizerManager.getInstance().setLiquidType2Url("");
+            }
+            if(VisualizerManager.getInstance().getControlVisualizer()!=null){
+                VisualizerManager.getInstance().getControlVisualizer().
+                        someVisualizer(VisualizerManager.getInstance().visualizerIndex);
+            }
+
+        }
+		//loadBitmap();
+	}
+
+	@Override
+	public void changeColor() {
+//		colorIndex = ((colorIndex == 0) ? 257 : 0);
+//		colorIndex=colorIndex+10;
+
+		CustomColorPickDialogUtils.showColorPickDialog(activity,getColorByColorIndex(colorIndex),new CustomColorPickDialogUtils.DialogOKOrCancel() {
+			@Override
+			public void onClickOK(int colorPosition) {
+				colorIndex=Constants.colorsIndex[colorPosition];
+				SimpleVisualizerJni.commonSetColorIndex(colorIndex);
+			}
+		});
+	}
+
+    /**
+     * 通过颜色值获取colorIndex
+     * @return
+     */
+	public int getColorIndexByColors(int color){
+
+        switch (color){
+            case Color.BLUE:
+                return Constants.colorsIndex[0];
+
+            case Color.RED:
+                return Constants.colorsIndex[1];
+
+            case Color.YELLOW:
+                return Constants.colorsIndex[2];
+
+            case Color.GREEN:
+                return Constants.colorsIndex[3];
+
+            case Color.GRAY:
+                return Constants.colorsIndex[4];
+        }
+
+        return Constants.colorsIndex[0];
+    }
+
+    /**
+     * 通过索引获取颜色值
+     * @return
+     */
+    public int getColorByColorIndex(int colorIndex){
+
+        switch (colorIndex){
+            case 0:
+                return Constants.colors[0];
+
+            case 70:
+                return Constants.colors[1];
+
+            case 190:
+                return Constants.colors[2];
+
+            case 257:
+                return Constants.colors[3];
+
+            case 600:
+                return Constants.colors[4];
+        }
+
+        return Constants.colors[0];
+    }
 }

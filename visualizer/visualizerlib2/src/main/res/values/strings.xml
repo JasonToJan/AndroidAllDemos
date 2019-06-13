@@ -19,15 +19,20 @@
     <string name="sorry">Sorry!</string>
     <string name="opengl_error">OpenGL error</string>
     <string name="opengl_not_supported">No support for OpenGL ES 2.0</string>
-    <string name="choose_image">Choose image&#8230;</string>
+    <string name="choose_image">Choose image</string>
+    <string name="clear_image">Clear image</string>
     <string name="diffusion">Diffusion</string>
     <string name="speed">Speed</string>
     <string name="blue">Blue</string>
     <string name="green">Green</string>
+    <string name="change_color">Change color</string>
     <string name="orange">Orange</string>
     <string name="light">Light</string>
     <string name="sustain">Sustain:</string>
     <string name="none">None</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+
 
 
 </resources>
