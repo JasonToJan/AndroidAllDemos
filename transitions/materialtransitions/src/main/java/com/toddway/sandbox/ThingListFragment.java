@@ -40,6 +40,7 @@ public class ThingListFragment extends TransitionHelper.BaseFragment {
                 if (isLongClick) {
                     TransitionMaterialBaseActivity.of(getActivity()).animateHomeIcon(MaterialMenuDrawable.IconState.X);
                 } else {
+                    LogUtils.d("这里监听到item点击事件了");
                     Navigator.launchDetail(TransitionMaterialBaseActivity.of(getActivity()), view, item, recyclerView);
                 }
             }

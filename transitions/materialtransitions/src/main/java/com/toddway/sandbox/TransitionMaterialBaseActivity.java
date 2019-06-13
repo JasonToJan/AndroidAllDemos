@@ -73,19 +73,28 @@ public class TransitionMaterialBaseActivity extends TransitionHelper.BaseActivit
 
     protected Fragment getBaseFragment() {
         int fragmentResourceId = getIntent().getIntExtra("fragment_resource_id", R.layout.fragment_thing_list);
-        switch (fragmentResourceId) {
-            case R2.layout.fragment_thing_list:
-            default:
-                return new ThingListFragment();
-            case R2.layout.fragment_thing_detail:
-                return ThingDetailFragment.create();
-            case R2.layout.fragment_overaly:
-                return new OverlayFragment();
+
+        //LogUtils.d("这里fragmentResourceId="+fragmentResourceId+" 1="+R.layout.fragment_thing_detail+" 3="+R.layout.fragment_thing_list);
+
+        if(fragmentResourceId==R.layout.fragment_thing_detail){
+            //LogUtils.d("这里fragmentResourceId=1");
+            return ThingDetailFragment.create();
+        }else if(fragmentResourceId==R.layout.fragment_overaly){
+            //LogUtils.d("这里fragmentResourceId=2");
+            return new OverlayFragment();
+        }else if(fragmentResourceId==R.layout.fragment_thing_list){
+            //LogUtils.d("这里fragmentResourceId=3");
+            return new ThingListFragment();
+        }else{
+            //LogUtils.d("这里fragmentResourceId=4");
+            return new ThingListFragment();
         }
     }
 
     public void setBaseFragment(Fragment fragment) {
         if (fragment == null) return;
+
+        //LogUtils.d("这里设置了BaseFragment : "+fragment.getClass().getSimpleName());
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.base_fragment, fragment, BASE_FRAGMENT);
         transaction.commit();
