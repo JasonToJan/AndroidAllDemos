@@ -8,6 +8,17 @@
     android:focusableInTouchMode="true"
     android:fitsSystemWindows="false">
 
+    <RelativeLayout
+        android:id="@+id/asv_visualizer_containner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/asv_visualizer_click_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <ImageView
         android:id="@+id/asv_visualizer_more_iv"
@@ -15,7 +26,6 @@
         android:layout_height="wrap_content"
         android:src="@drawable/visualizer_more"
         android:layout_gravity="right|top"
-        android:layout_margin="5dp"
-        />
+        android:layout_margin="5dp" />
 
 </FrameLayout>

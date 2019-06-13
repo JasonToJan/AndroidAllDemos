@@ -53,7 +53,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -99,9 +98,10 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
 
     private IVisualizer visualizer;
     private VisualizerService visualizerService;
-    private FrameLayout visualizerRoot;
+    private RelativeLayout visualizerContainer;
     private CustomPopWindow mListPopWindow;
     private ImageView visualizerMenu;
+    private View clickView;
 
 
     @SuppressLint("InlinedApi")
@@ -374,10 +374,12 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
     }
 
     private void initView(){
-        visualizerRoot=findViewById(R.id.asv_activity_root);
+        visualizerContainer=findViewById(R.id.asv_visualizer_containner);
+        clickView=findViewById(R.id.asv_visualizer_click_view);
         visualizerMenu=findViewById(R.id.asv_visualizer_more_iv);
 
         visualizerMenu.setOnClickListener(this);
+        clickView.setOnClickListener(this);
     }
 
     /**
@@ -385,9 +387,9 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
      */
     private void addVisualizerView(){
         if (visualizer != null) {
-            VisualizerManager.getInstance().visualizerIndex=0;//默认是水波纹
+            VisualizerManager.getInstance().visualizerIndex=VisualizerManager.getInstance().visualizerIndex;
 
-            visualizerRoot.addView((View)visualizer);
+            visualizerContainer.addView((View)visualizer);
 
             if(VisualizerManager.getInstance().getIsShowActivityMenu()
                     &&VisualizerManager.getInstance().getCurrentTypeMenus(this).size()>0){
@@ -411,7 +413,7 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
 
         try{
             if (visualizer != null) {
-                visualizerRoot.removeView((View) visualizer);
+                visualizerContainer.removeView((View) visualizer);
                 visualizer.release();
                 visualizer = null;
             }
@@ -450,7 +452,7 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
         }
 
         if (visualizer != null) {
-            visualizerRoot.addView((View)visualizer);
+            visualizerContainer.addView((View)visualizer);
 
             if(VisualizerManager.getInstance().getIsShowActivityMenu()
                     &&VisualizerManager.getInstance().getCurrentTypeMenus(this).size()>0){
@@ -528,6 +530,8 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
     public void onClick(View v) {
         if(v==visualizerMenu){
             showPopup(v);
+        }else if(v==clickView){
+            nextVisualizer();
         }
     }
 

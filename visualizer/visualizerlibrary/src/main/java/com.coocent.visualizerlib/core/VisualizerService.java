@@ -107,12 +107,8 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 //			final int g = Player.audioSessionId;
 
 			//TODO 这里需要Session
-			int g;
-			if(VisualizerManager.getInstance().getMusicVisualizerInter()!=null){
-				g=VisualizerManager.getInstance().getMusicVisualizerInter().vi_getSessionId();
-			}else{
-				g=VisualizerManager.getInstance().getSessionId();
-			}
+			int g=VisualizerManager.getInstance().getSessionId();
+
 			//LogUtils.d("当前歌曲的sessionId="+g);
 
 			if (g < 0)

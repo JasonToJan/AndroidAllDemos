@@ -384,13 +384,6 @@ public class VisualizerMusicDetailActivity extends AppCompatActivity implements 
     }
 
     @Override
-    public int vi_getSessionId() {
-//        return mediaPlayer.getAudioSessionId();
-        return 0;
-    }
-
-
-    @Override
     public String vi_artist() {
         return  ApplicationData.getInstance().getAllSongList().get(position).getArtist();
     }

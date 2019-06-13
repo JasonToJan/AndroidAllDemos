@@ -5,4 +5,7 @@
     <color name="colorAccent">#4ADDFE</color>
     <color name="visualizer_select_color">#0099ff</color>
 
+    <color name="visualizer_menu_bg_color">#3d3b3b</color>
+    <color name="visualizer_menu_item_text_color">#ffff</color>
+
 </resources>

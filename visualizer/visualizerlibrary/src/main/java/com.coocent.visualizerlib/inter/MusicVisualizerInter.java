@@ -30,12 +30,6 @@ public interface MusicVisualizerInter {
     void vi_playorpause();
 
     /**
-     * 获取音乐SessionId
-     * @return
-     */
-    int vi_getSessionId();
-
-    /**
      * 艺术家
      */
     String vi_artist();
