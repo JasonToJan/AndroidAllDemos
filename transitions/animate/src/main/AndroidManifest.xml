@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="com.hitherejoe.animate"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:theme="@style/AppThemeAnimate">
+        <activity
+            android:name=".ui.activity.AnimateMainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.ActionBar">
+
+        </activity>
+
+        <activity android:name=".ui.activity.AnimatedVectorDrawablesActivity"
+                  android:label="@string/label_animated_vector_drawables"
+                  android:theme="@style/AppTheme.ActionBar"/>
+
+        <activity android:name=".ui.activity.CircularRevealActivity"
+                  android:label="@string/label_circular_reveal"
+                  android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.activity.InterpolatorActivity"
+                  android:label="@string/label_interpolators"
+                  android:theme="@style/AppTheme.ActionBar"/>
+
+        <activity android:name=".ui.activity.ObjectAnimatorActivity"
+                  android:label="@string/label_object_animator"
+                  android:theme="@style/AppTheme.ActionBar"/>
+
+        <activity android:name=".ui.activity.PopupActivity"
+                  android:theme="@style/TranslucentActivity"/>
+
+        <activity android:name=".ui.activity.SharedTransitionInToolbarActivity"
+                  android:label="@string/label_shared_element_transitions"
+                  android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.activity.SharedTransitionsInActionbarActivity"
+                  android:label="@string/label_shared_element_transitions"
+                  android:theme="@style/AppTheme.ActionBar"/>
+
+        <activity android:name=".ui.activity.SharedTransitionsActivity"
+                  android:label="@string/label_shared_content_transitions"
+                  android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.activity.SharedTransitionToolbarActivity"
+                  android:label="@string/label_shared_element_transitions"
+                  android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.activity.TransitionInActivity"
+                  android:label="@string/label_window_content_transitions"
+                  android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.activity.MorphTransitionsActivity"
+                  android:label="@string/label_morph_transitions"
+                  android:theme="@style/AppTheme.ActionBar"/>
+
+        <activity android:name=".ui.activity.ViewPropertyAnimatorActivity"
+                  android:label="@string/label_view_property_animator"
+                  android:theme="@style/AppTheme.ActionBar"/>
+
+        <activity android:name=".ui.activity.WindowTransitionsActivity"
+                  android:label="@string/label_window_content_transitions"
+                  android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.activity.WindowTransitionsActivityExplode"
+                  android:label="@string/label_explode_window_content_transitions"
+                  android:theme="@style/AppTheme.ExplodeContent"/>
+
+    </application>
+
+</manifest>

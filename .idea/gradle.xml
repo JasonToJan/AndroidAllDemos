@@ -11,7 +11,11 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/popupwindow" />
             <option value="$PROJECT_DIR$/popupwindow/popupwindowdemo" />
+            <option value="$PROJECT_DIR$/tools" />
+            <option value="$PROJECT_DIR$/tools/notchfit" />
+            <option value="$PROJECT_DIR$/tools/notchtools" />
             <option value="$PROJECT_DIR$/transitions" />
+            <option value="$PROJECT_DIR$/transitions/animate" />
             <option value="$PROJECT_DIR$/transitions/easyanimations" />
             <option value="$PROJECT_DIR$/transitions/easyanimationsdemo" />
             <option value="$PROJECT_DIR$/transitions/materialanimationdemo" />

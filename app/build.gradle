@@ -47,6 +47,7 @@ dependencies {
     implementation project(':transitions:mtransitiondemo')
     implementation project(':transitions:materialanimationdemo')
     implementation project(':transitions:materialtransitions')
+    implementation project(':transitions:animate')
 
     //频谱库
     implementation project(':visualizer:visualizerlibrary')

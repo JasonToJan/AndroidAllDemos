@@ -5,7 +5,8 @@ include ':app'
 include ':transitions:transitionEverywhere',':transitions:transitionEverywhereDemo',
         ':transitions:easyanimations', ':transitions:easyanimationsdemo',
         ':transitions:mtransition', ':transitions:mtransitiondemo',
-        ':transitions:materialanimationdemo',':transitions:materialtransitions'
+        ':transitions:materialanimationdemo',':transitions:materialtransitions',
+        ':transitions:animate'
 
 
 //频谱相关
