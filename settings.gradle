@@ -6,7 +6,8 @@ include ':transitions:transitionEverywhere',':transitions:transitionEverywhereDe
         ':transitions:easyanimations', ':transitions:easyanimationsdemo',
         ':transitions:mtransition', ':transitions:mtransitiondemo',
         ':transitions:materialanimationdemo',':transitions:materialtransitions',
-        ':transitions:animate',':transitions:ycshareelement','transitions:ycshareelementdemo'
+        ':transitions:animate',':transitions:ycshareelement','transitions:ycshareelementdemo',
+        ':transitions:switchlayout',':transitions:switchlayoutdemo'
 
 
 //频谱相关

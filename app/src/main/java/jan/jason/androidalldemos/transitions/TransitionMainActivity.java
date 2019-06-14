@@ -9,6 +9,7 @@ import android.view.View;
 import com.hitherejoe.animate.ui.activity.AnimateMainActivity;
 import com.lgvalle.material_animations.MaterialMainActivity;
 import com.mjun.demo.EnterActivity;
+import com.tandong.switchlayoutdemo.SwitchMainActivity;
 import com.toddway.sandbox.TransitionMaterialBaseActivity;
 
 import jan.jason.androidalldemos.R;
@@ -35,6 +36,7 @@ public class TransitionMainActivity extends AppCompatActivity implements View.On
         mainBinding.atmTransitionBtn6.setOnClickListener(this);
         mainBinding.atmTransitionBtn7.setOnClickListener(this);
         mainBinding.atmTransitionBtn8.setOnClickListener(this);
+        mainBinding.atmTransitionBtn9.setOnClickListener(this);
     }
 
     @Override
@@ -70,6 +72,10 @@ public class TransitionMainActivity extends AppCompatActivity implements View.On
 
             case R.id.atm_transition_btn8:
                 startActivity(new Intent(this, YcShareMainActivity.class));
+                break;
+
+            case R.id.atm_transition_btn9:
+                startActivity(new Intent(this, SwitchMainActivity.class));
                 break;
         }
     }

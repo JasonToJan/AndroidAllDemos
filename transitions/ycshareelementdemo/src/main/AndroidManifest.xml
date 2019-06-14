@@ -19,7 +19,9 @@
         <activity android:name=".simple.SimpleToActivity" />
         <activity android:name=".advanced.AdvancedListActivity" />
         <activity android:name=".advanced.AdvancedContentActivity" />
-        <activity android:name=".contacts.ContactsActivity"/>
+        <activity android:name=".contacts.ContactsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
         <activity android:name=".contacts.DetailActivity" />
 
     </application>

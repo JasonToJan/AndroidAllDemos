@@ -3,76 +3,90 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".MainActivity">
+    <!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
 
-        <Button
-            android:id="@+id/atm_everywhere_btn1"
-            android:text="Transitions-Everywhere"
-            android:textAllCaps="false"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".MainActivity">
 
-        <Button
-            android:id="@+id/atm_transition_btn2"
-            android:text="API21转场动画Demo"
-            android:textAllCaps="false"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/atm_everywhere_btn1"
+                android:text="Transitions-Everywhere"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/atm_transition_btn3"
-            android:text="EasyAnimation Demo"
-            android:textAllCaps="false"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/atm_transition_btn2"
+                android:text="API21转场动画Demo"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/atm_transition_btn4"
-            android:text="MTransition Demo"
-            android:textAllCaps="false"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/atm_transition_btn3"
+                android:text="EasyAnimation Demo"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/atm_transition_btn5"
-            android:text="MaterialAnimation Demo"
-            android:textAllCaps="false"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/atm_transition_btn4"
+                android:text="MTransition Demo"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/atm_transition_btn6"
-            android:text="MaterialTransitons Demo"
-            android:textAllCaps="false"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/atm_transition_btn5"
+                android:text="MaterialAnimation Demo"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/atm_transition_btn7"
-            android:text="Animate Demo"
-            android:textAllCaps="false"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/atm_transition_btn6"
+                android:text="MaterialTransitons Demo"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/atm_transition_btn8"
-            android:text="YcShareElement Demo"
-            android:textAllCaps="false"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/atm_transition_btn7"
+                android:text="Animate Demo"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/atm_transition_btn8"
+                android:text="YcShareElement Demo"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/atm_transition_btn9"
+                android:text="SwitchLayout Demo"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    <!--</ScrollView>-->
 
 </layout>

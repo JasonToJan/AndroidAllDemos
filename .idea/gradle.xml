@@ -22,8 +22,12 @@
             <option value="$PROJECT_DIR$/transitions/materialtransitions" />
             <option value="$PROJECT_DIR$/transitions/mtransition" />
             <option value="$PROJECT_DIR$/transitions/mtransitiondemo" />
+            <option value="$PROJECT_DIR$/transitions/switchlayout" />
+            <option value="$PROJECT_DIR$/transitions/switchlayoutdemo" />
             <option value="$PROJECT_DIR$/transitions/transitionEverywhere" />
             <option value="$PROJECT_DIR$/transitions/transitioneverywheredemo" />
+            <option value="$PROJECT_DIR$/transitions/ycshareelement" />
+            <option value="$PROJECT_DIR$/transitions/ycshareelementdemo" />
             <option value="$PROJECT_DIR$/visualizer" />
             <option value="$PROJECT_DIR$/visualizer/visualizerlib" />
             <option value="$PROJECT_DIR$/visualizer/visualizerlib2" />

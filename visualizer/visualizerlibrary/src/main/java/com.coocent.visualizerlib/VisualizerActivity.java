@@ -574,12 +574,25 @@ public final class VisualizerActivity extends AppCompatActivity implements
 
 	@Override
 	public void nextVisualizer() {
-		nextVisualizer();
+		if(VisualizerManager.getInstance().visualizerIndex
+				==VisualizerManager.getInstance().visualizerDataType.length-1){
+			VisualizerManager.getInstance().visualizerIndex=0;
+		}else{
+			VisualizerManager.getInstance().visualizerIndex++;
+		}
+
+		changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
 	}
 
 	@Override
 	public void previousVisualizer() {
-		previousVisualizer();
+		if(VisualizerManager.getInstance().visualizerIndex ==0){
+			VisualizerManager.getInstance().visualizerIndex=
+					VisualizerManager.getInstance().visualizerDataType.length-1;
+		}else{
+			VisualizerManager.getInstance().visualizerIndex--;
+		}
+		changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
 	}
 
 	@Override
