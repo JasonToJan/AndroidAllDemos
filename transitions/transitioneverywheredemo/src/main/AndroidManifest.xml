@@ -4,7 +4,7 @@
     <application android:theme="@style/AppTheme" >
 
         <activity
-            android:name=".MainActivity">
+            android:name=".EveryWhereMainActivity">
         </activity>
 
     </application>

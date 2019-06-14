@@ -48,6 +48,7 @@ dependencies {
     implementation project(':transitions:materialanimationdemo')
     implementation project(':transitions:materialtransitions')
     implementation project(':transitions:animate')
+    implementation project(':transitions:ycshareelementdemo')
 
     //频谱库
     implementation project(':visualizer:visualizerlibrary')

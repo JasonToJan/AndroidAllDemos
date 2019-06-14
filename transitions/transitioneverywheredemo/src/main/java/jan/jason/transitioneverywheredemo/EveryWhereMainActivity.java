@@ -20,12 +20,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 
-public class MainActivity extends AppCompatActivity implements ListFragment.SampleListProvider {
+public class EveryWhereMainActivity extends AppCompatActivity implements ListFragment.SampleListProvider {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_everywhere);
 
         ListFragment listFragment = new ListFragment();
         listFragment.setSampleListListener(this);//回调监听

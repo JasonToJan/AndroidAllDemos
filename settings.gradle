@@ -6,14 +6,14 @@ include ':transitions:transitionEverywhere',':transitions:transitionEverywhereDe
         ':transitions:easyanimations', ':transitions:easyanimationsdemo',
         ':transitions:mtransition', ':transitions:mtransitiondemo',
         ':transitions:materialanimationdemo',':transitions:materialtransitions',
-        ':transitions:animate'
+        ':transitions:animate',':transitions:ycshareelement','transitions:ycshareelementdemo'
 
 
 //频谱相关
 include ':visualizer:visualizerlib',':visualizer:visualizerlibrary',':visualizer:visualizerlib2'
 
 
-//popupwindow
+//弹窗相关
 include ':popupwindow:popupwindowdemo'
 
 

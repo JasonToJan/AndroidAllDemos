@@ -15,7 +15,8 @@ import jan.jason.androidalldemos.R;
 import jan.jason.androidalldemos.databinding.ActivityTransitionMainBinding;
 import jan.jason.androidalldemos.transitions.activitytransition.TransitionDemoActivity;
 import jan.jason.easyanimationsdemo.AnimationListActivity;
-import jan.jason.transitioneverywheredemo.MainActivity;
+import jan.jason.transitioneverywheredemo.EveryWhereMainActivity;
+import us.pinguo.shareelementdemo.YcShareMainActivity;
 
 public class TransitionMainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -33,13 +34,14 @@ public class TransitionMainActivity extends AppCompatActivity implements View.On
         mainBinding.atmTransitionBtn5.setOnClickListener(this);
         mainBinding.atmTransitionBtn6.setOnClickListener(this);
         mainBinding.atmTransitionBtn7.setOnClickListener(this);
+        mainBinding.atmTransitionBtn8.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.atm_everywhere_btn1:
-                startActivity(new Intent(this,MainActivity.class));
+                startActivity(new Intent(this, EveryWhereMainActivity.class));
                 break;
 
             case R.id.atm_transition_btn2:
@@ -64,6 +66,10 @@ public class TransitionMainActivity extends AppCompatActivity implements View.On
 
             case R.id.atm_transition_btn7:
                 startActivity(new Intent(this,AnimateMainActivity.class));
+                break;
+
+            case R.id.atm_transition_btn8:
+                startActivity(new Intent(this, YcShareMainActivity.class));
                 break;
         }
     }
