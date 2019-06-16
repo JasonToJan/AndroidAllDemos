@@ -50,6 +50,7 @@ dependencies {
     implementation project(':transitions:animate')
     implementation project(':transitions:ycshareelementdemo')
     implementation project(':transitions:switchlayoutdemo')
+    implementation project(':transitions:transitionhelperdemo')
 
     //频谱库
     implementation project(':visualizer:visualizerlibrary')

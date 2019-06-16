@@ -26,6 +26,8 @@
             <option value="$PROJECT_DIR$/transitions/switchlayoutdemo" />
             <option value="$PROJECT_DIR$/transitions/transitionEverywhere" />
             <option value="$PROJECT_DIR$/transitions/transitioneverywheredemo" />
+            <option value="$PROJECT_DIR$/transitions/transitionhelper" />
+            <option value="$PROJECT_DIR$/transitions/transitionhelperdemo" />
             <option value="$PROJECT_DIR$/transitions/ycshareelement" />
             <option value="$PROJECT_DIR$/transitions/ycshareelementdemo" />
             <option value="$PROJECT_DIR$/visualizer" />
