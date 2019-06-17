@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ import com.coocent.visualizerlib.utils.PermissionUtils;
 import com.coocent.visualizerlib.view.CustomPopWindow;
 import com.wildma.pictureselector.PictureSelector;
 
+import java.io.File;
 import java.util.List;
 
 import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
@@ -171,7 +173,7 @@ public class VisualizerFragment extends LazyFragment implements
         }else if(requestCode==READ_WRITE_PERMISSION_CODE){
             if(PermissionUtils.hasWriteAndReadPermission(getActivity())){
                 //ImageUtils.getImageBySystemInFragment(VisualizerFragment.this,CHOOSEIMAGE_CODE);
-                PictureSelector.create(VisualizerFragment.this,PictureSelector.SELECT_REQUEST_CODE);
+                PictureSelector.create(VisualizerFragment.this,PictureSelector.SELECT_REQUEST_CODE).selectPicture();
             }
         }
     }
@@ -191,8 +193,11 @@ public class VisualizerFragment extends LazyFragment implements
             if (resultCode == Activity.RESULT_OK){
                 if (data != null) {
                     String picturePath = data.getStringExtra(PictureSelector.PICTURE_PATH);
-                    Uri uri=FileUtils.getMediaUriFromPath(getActivity(),picturePath);
+                    Uri uri=FileUtils.getImageContentUri(getActivity(),picturePath);
                     LogUtils.d("Fragment1返回图片URI为："+picturePath);
+                    if(uri!=null){
+                        LogUtils.d("最终，返回的图片uri="+uri.toString());
+                    }
                     if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
                         VisualizerManager.getInstance().getVisualizerMenu().changeImageUri(uri);
                     }
@@ -369,6 +374,7 @@ public class VisualizerFragment extends LazyFragment implements
         if(getActivity()==null) return;
 
         isFinishChange=false;
+        VisualizerManager.getInstance().isPause=true;
 
         try{
             if (visualizer != null) {
@@ -419,7 +425,7 @@ public class VisualizerFragment extends LazyFragment implements
             visualizerMenu.setVisibility(View.GONE);
         }
 
-
+        VisualizerManager.getInstance().isPause=false;
         isFinishChange=true;
     }
 
@@ -540,7 +546,7 @@ public class VisualizerFragment extends LazyFragment implements
                         if(PermissionUtils.hasWriteAndReadPermission(getActivity())){
                             //ImageUtils.getImageBySystemInFragment(VisualizerFragment.this,CHOOSEIMAGE_CODE);
 
-                            PictureSelector.create(VisualizerFragment.this,CHOOSEIMAGE_CODE);
+                            PictureSelector.create(VisualizerFragment.this,PictureSelector.SELECT_REQUEST_CODE).selectPicture();
 
                         }else{
                             PermissionUtils.requestWriteAndReadPermissionInFragment(VisualizerFragment.this,READ_WRITE_PERMISSION_CODE);
