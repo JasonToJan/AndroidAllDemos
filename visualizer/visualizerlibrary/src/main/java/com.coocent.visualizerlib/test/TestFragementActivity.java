@@ -100,7 +100,7 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
-        if(VisualizerManager.getInstance().getControlVisualizer()==null) return;
+//        if(VisualizerManager.getInstance().getControlVisualizer()==null) return;
         if(v==previousBtn){
             VisualizerManager.getInstance().getControlVisualizer().previousVisualizer();
         }else if(v==nextBtn){
@@ -117,7 +117,8 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
         }else if(v==menuBtn){
             showPopup(v);
         }else if(v==otherBtn){
-            KeepToUtils.keepToVisualizerActivity(TestFragementActivity.this,0);
+//            KeepToUtils.keepToVisualizerActivity(TestFragementActivity.this,0);
+            startActivity(new Intent(this,TestSegmentTabActivity.class));
         }
 
     }

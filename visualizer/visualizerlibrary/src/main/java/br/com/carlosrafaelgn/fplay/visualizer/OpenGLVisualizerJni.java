@@ -915,6 +915,20 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 		}
 	}
 
+	/**
+	 * 暂停绘制
+	 */
+	private void pauseDraw(){
+		okToRender=false;
+	}
+
+	/**
+	 * 继续绘制
+	 */
+	private void resumeDraw(){
+		okToRender=true;
+	}
+
 	@Override
 	public boolean handleMessage(Message msg) {
 		switch (msg.what) {
@@ -1318,7 +1332,17 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 		});
 	}
 
-    /**
+	@Override
+	public void onPauseDraw() {
+		pauseDraw();
+	}
+
+	@Override
+	public void onResumeDraw() {
+		resumeDraw();
+	}
+
+	/**
      * 通过颜色值获取colorIndex
      * @return
      */

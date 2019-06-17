@@ -20,4 +20,4 @@ include ':popupwindow:popupwindowdemo'
 
 
 //tools工具相关
-include 'tools:notchtools','tools:notchfit'
+include ':tools:notchtools',':tools:notchfit',':tools:pictureselector'

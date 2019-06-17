@@ -38,7 +38,7 @@ public interface IVisualizerService {
 		void onFinalCleanup();
 	}
 
-	void playingChanged();
+	void playingChanged(boolean isPlaying);
 	void pause();
 	void resume();
 	void resetAndResume();

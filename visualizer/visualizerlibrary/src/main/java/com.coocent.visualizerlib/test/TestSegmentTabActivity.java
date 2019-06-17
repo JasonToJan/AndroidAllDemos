@@ -29,6 +29,8 @@ public class TestSegmentTabActivity extends AppCompatActivity implements View.On
     private View mDecorView;
     private SegmentTabLayout mTabLayout_3;
     private Button clickToOther;
+    private Button clickPause;
+    private Button clickResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +46,12 @@ public class TestSegmentTabActivity extends AppCompatActivity implements View.On
 
         mTabLayout_3 = ViewFindUtils.find(mDecorView, R.id.tl_3);
         clickToOther=ViewFindUtils.find(mDecorView,R.id.test_fl_click_btn);
+        clickPause=ViewFindUtils.find(mDecorView,R.id.test_fl_click_pause_btn);
+        clickResume=ViewFindUtils.find(mDecorView,R.id.test_fl_click_resume_btn);
 
         clickToOther.setOnClickListener(this);
+        clickPause.setOnClickListener(this);
+        clickResume.setOnClickListener(this);
 
         tl_3();
 
@@ -63,7 +69,14 @@ public class TestSegmentTabActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
         if(v==clickToOther){
             startActivity(new Intent(this,TestEmptyActivity.class));
+        }else if(v==clickPause){
+            VisualizerManager.getInstance().getVisualizerService().playingChanged(false);
+            //VisualizerManager.getInstance().getVisualizerMenu().onPauseDraw();
+        }else if(v==clickResume){
+            VisualizerManager.getInstance().getVisualizerService().playingChanged(true);
+            //VisualizerManager.getInstance().getVisualizerMenu().onResumeDraw();
         }
+
     }
 
     private void tl_3() {

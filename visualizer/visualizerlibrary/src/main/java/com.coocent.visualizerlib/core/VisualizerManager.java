@@ -7,6 +7,7 @@ import android.content.Context;
 import com.coocent.visualizerlib.entity.MenuItem;
 import com.coocent.visualizerlib.inter.IControlVisualizer;
 import com.coocent.visualizerlib.inter.IVisualizerMenu;
+import com.coocent.visualizerlib.inter.IVisualizerService;
 import com.coocent.visualizerlib.inter.MusicVisualizerInter;
 import com.coocent.visualizerlib.utils.Constants;
 import com.coocent.visualizerlib.utils.FileUtils;
@@ -44,6 +45,10 @@ public class VisualizerManager {
      */
     public IVisualizerMenu visualizerMenu;
     /**
+     * 频谱服务接口
+     */
+    public IVisualizerService visualizerService;
+    /**
      * 是否允许横屏
      */
     public boolean isAllowLandscape=false;
@@ -51,6 +56,10 @@ public class VisualizerManager {
      * 是否是横屏
      */
     public boolean isLandscape;
+    /**
+     * 频谱或者音乐是否暂停了
+     */
+    public volatile boolean isPause;
     /**
      * Fragment是否展示菜单
      */
@@ -179,6 +188,17 @@ public class VisualizerManager {
 
     public void setVisualizerMenu(IVisualizerMenu visualizerMenu){
         this.visualizerMenu=visualizerMenu;
+    }
+
+    public IVisualizerService getVisualizerService() {
+        if(visualizerService==null) {
+            LogUtils.d("糟了，这里的visualizerService为空了！！！");
+        }
+        return visualizerService;
+    }
+
+    public void setVisualizerService(IVisualizerService visualizerService) {
+        this.visualizerService = visualizerService;
     }
 
     public IVisualizerMenu getVisualizerMenu(){

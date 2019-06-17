@@ -28,13 +28,16 @@ import com.coocent.visualizerlib.core.VisualizerService;
 import com.coocent.visualizerlib.entity.MenuItem;
 import com.coocent.visualizerlib.inter.IControlVisualizer;
 import com.coocent.visualizerlib.inter.IVisualizer;
+import com.coocent.visualizerlib.test.LazyFragment;
 import com.coocent.visualizerlib.ui.UI;
 import com.coocent.visualizerlib.utils.CommonUtils;
 import com.coocent.visualizerlib.utils.Constants;
+import com.coocent.visualizerlib.utils.FileUtils;
 import com.coocent.visualizerlib.utils.ImageUtils;
 import com.coocent.visualizerlib.utils.LogUtils;
 import com.coocent.visualizerlib.utils.PermissionUtils;
 import com.coocent.visualizerlib.view.CustomPopWindow;
+import com.wildma.pictureselector.PictureSelector;
 
 import java.util.List;
 
@@ -46,7 +49,7 @@ import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
  * user: JasonJan 1211241203@qq.com
  * time: 2019/6/5 13:36
  **/
-public class VisualizerFragment extends Fragment implements
+public class VisualizerFragment extends LazyFragment implements
         VisualizerService.Observer,
         MainHandler.Callback,
         IControlVisualizer,
@@ -75,29 +78,15 @@ public class VisualizerFragment extends Fragment implements
         init();
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_layout_visualizer, container, false);
-
-        visualizerRoot=rootView.findViewById(R.id.flv_visualizer_root);
-        visualizerMenu=rootView.findViewById(R.id.flv_visualizer_more_iv);
-        viewClick=rootView.findViewById(R.id.flv_visualizer_click_view);
-
-        visualizerMenu.setOnClickListener(this);
-        viewClick.setOnClickListener(this);
-
-        Bundle bundle = getArguments();
-        if(bundle!=null){
-            VisualizerManager.getInstance().visualizerIndex=bundle.getInt(Constants.FRAGMENT_ARGUMENTS_INDEX,0);
-            LogUtils.d("Fragment中拿到数据为："+ VisualizerManager.getInstance().visualizerIndex);
-        }
-
-        initVisualizer();
-        addVisualizerView();
-
-        return rootView;
-    }
+//    @Nullable
+//    @Override
+//    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+//        View rootView = inflater.inflate(R.layout.fragment_layout_visualizer, container, false);
+//
+//
+//
+//        return rootView;
+//    }
 
     @Override
     public void onResume() {
@@ -131,10 +120,45 @@ public class VisualizerFragment extends Fragment implements
     }
 
     @Override
+    protected int getLayoutRes() {
+        return R.layout.fragment_layout_visualizer;
+    }
+
+    @Override
+    protected void initView(View rootView) {
+        visualizerRoot=rootView.findViewById(R.id.flv_visualizer_root);
+        visualizerMenu=rootView.findViewById(R.id.flv_visualizer_more_iv);
+        viewClick=rootView.findViewById(R.id.flv_visualizer_click_view);
+
+        visualizerMenu.setOnClickListener(this);
+        viewClick.setOnClickListener(this);
+
+        Bundle bundle = getArguments();
+        if(bundle!=null){
+            VisualizerManager.getInstance().visualizerIndex=bundle.getInt(Constants.FRAGMENT_ARGUMENTS_INDEX,0);
+            LogUtils.d("Fragment中拿到数据为："+ VisualizerManager.getInstance().visualizerIndex);
+        }
+
+        initVisualizer();
+        addVisualizerView();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
     }
 
+    @Override
+    public void onFragmentPause() {
+        super.onFragmentPause();
+        VisualizerManager.getInstance().getVisualizerService().playingChanged(false);
+    }
+
+    @Override
+    public void onFragmentResume() {
+        super.onFragmentResume();
+        VisualizerManager.getInstance().getVisualizerService().playingChanged(true);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -146,7 +170,8 @@ public class VisualizerFragment extends Fragment implements
             }
         }else if(requestCode==READ_WRITE_PERMISSION_CODE){
             if(PermissionUtils.hasWriteAndReadPermission(getActivity())){
-                ImageUtils.getImageBySystemInFragment(VisualizerFragment.this,CHOOSEIMAGE_CODE);
+                //ImageUtils.getImageBySystemInFragment(VisualizerFragment.this,CHOOSEIMAGE_CODE);
+                PictureSelector.create(VisualizerFragment.this,PictureSelector.SELECT_REQUEST_CODE);
             }
         }
     }
@@ -160,6 +185,17 @@ public class VisualizerFragment extends Fragment implements
                 LogUtils.d("Fragment返回图片URI为："+selectedUri);
                 if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
                     VisualizerManager.getInstance().getVisualizerMenu().changeImageUri(selectedUri);
+                }
+            }
+        }else if(requestCode==PictureSelector.SELECT_REQUEST_CODE){
+            if (resultCode == Activity.RESULT_OK){
+                if (data != null) {
+                    String picturePath = data.getStringExtra(PictureSelector.PICTURE_PATH);
+                    Uri uri=FileUtils.getMediaUriFromPath(getActivity(),picturePath);
+                    LogUtils.d("Fragment1返回图片URI为："+picturePath);
+                    if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
+                        VisualizerManager.getInstance().getVisualizerMenu().changeImageUri(uri);
+                    }
                 }
             }
         }
@@ -259,6 +295,7 @@ public class VisualizerFragment extends Fragment implements
                 visualizer.load();
             }else{
                 visualizerService = new VisualizerService(visualizer, this);
+                VisualizerManager.getInstance().setVisualizerService(visualizerService);
             }
         }
     }
@@ -368,6 +405,7 @@ public class VisualizerFragment extends Fragment implements
                 visualizerService = new VisualizerService(visualizer, this);
             }
         }
+        VisualizerManager.getInstance().setVisualizerService(visualizerService);
 
         if (visualizer != null) {
             visualizerRoot.addView((View)visualizer);
@@ -500,7 +538,10 @@ public class VisualizerFragment extends Fragment implements
                         }
                         //判断有没有权限
                         if(PermissionUtils.hasWriteAndReadPermission(getActivity())){
-                            ImageUtils.getImageBySystemInFragment(VisualizerFragment.this,CHOOSEIMAGE_CODE);
+                            //ImageUtils.getImageBySystemInFragment(VisualizerFragment.this,CHOOSEIMAGE_CODE);
+
+                            PictureSelector.create(VisualizerFragment.this,CHOOSEIMAGE_CODE);
+
                         }else{
                             PermissionUtils.requestWriteAndReadPermissionInFragment(VisualizerFragment.this,READ_WRITE_PERMISSION_CODE);
                         }

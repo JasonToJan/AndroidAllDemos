@@ -32,13 +32,38 @@
             android:layout_width="match_parent"
             android:layout_height="400dp"/>
 
-        <Button
-            android:id="@+id/test_fl_click_btn"
-            android:gravity="left"
-            android:layout_marginTop="10dp"
-            android:text="跳转到其它Activity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/test_fl_click_btn"
+                android:gravity="center"
+                android:text="跳转"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/test_fl_click_pause_btn"
+                android:gravity="center"
+                android:text="暂停"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/test_fl_click_resume_btn"
+                android:gravity="center"
+                android:text="继续"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
 
     </LinearLayout>
 

@@ -14,4 +14,8 @@ public interface IVisualizerMenu {
 
     void changeColor();
 
+    void onPauseDraw();
+
+    void onResumeDraw();
+
 }

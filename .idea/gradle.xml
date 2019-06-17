@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/tools" />
             <option value="$PROJECT_DIR$/tools/notchfit" />
             <option value="$PROJECT_DIR$/tools/notchtools" />
+            <option value="$PROJECT_DIR$/tools/pictureselector" />
             <option value="$PROJECT_DIR$/transitions" />
             <option value="$PROJECT_DIR$/transitions/animate" />
             <option value="$PROJECT_DIR$/transitions/easyanimations" />
