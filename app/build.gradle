@@ -41,6 +41,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    //依赖三方库
+
+
     //转场动画库
     implementation project(':transitions:transitionEverywhereDemo')
     implementation project(':transitions:easyanimationsdemo')
@@ -52,13 +55,18 @@ dependencies {
     implementation project(':transitions:switchlayoutdemo')
     implementation project(':transitions:transitionhelperdemo')
 
+
     //频谱库
     implementation project(':visualizer:visualizerlibrary')
 //    implementation project(':visualizer:visualizerlib')
 //    implementation project(':visualizer:visualizerlib2')
 
+
     //弹窗相关
     implementation project(':popupwindow:popupwindowdemo')
+
+
+    //工具相关
 
 
 }

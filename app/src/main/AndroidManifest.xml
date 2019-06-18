@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppThemeMain"
-        tools:replace="android:theme">
+        tools:replace="android:theme,android:name" >
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,6 +35,7 @@
         <activity android:name=".transitions.activitytransition.TransitionOptionsActivity" />
         <activity android:name=".transitions.activitytransition.TransitionOptionsMoreActivity" />
         <activity android:name=".transitions.activitytransition.TransitionDemoActivity"></activity>
+        <activity android:name=".tools.ToolsMainActivity"/>
     </application>
 
 </manifest>
