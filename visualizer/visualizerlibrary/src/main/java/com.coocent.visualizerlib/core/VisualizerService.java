@@ -32,21 +32,20 @@
 //
 package com.coocent.visualizerlib.core;
 
+import android.media.audiofx.Visualizer;
 import android.os.Build;
-import android.util.Log;
 
 import com.coocent.visualizerlib.common.Timer;
 import com.coocent.visualizerlib.inter.IVisualizer;
 import com.coocent.visualizerlib.inter.IVisualizerService;
-import com.coocent.visualizerlib.utils.LogUtils;
 
 
 public final class VisualizerService implements IVisualizerService, Runnable, Timer.TimerHandler {
 	private IVisualizer visualizer;
 	private Observer observer;
-	private android.media.audiofx.Visualizer fxVisualizer;
+	public Visualizer fxVisualizer;
 	private boolean hasEverBeenAlive;
-	private volatile boolean alive, paused, reset,failed, visualizerReady,isForceRresh;
+	private volatile boolean alive, paused, reset, playing, failed, visualizerReady;
 	private int audioSessionId;
 	private byte[] waveform;
 	private Timer timer;
@@ -58,21 +57,24 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 		alive = true;
 		reset = true;
 //		playing = Player.localPlaying;
-
+		playing = true;
 		waveform = new byte[IVisualizer.CAPTURE_SIZE];
 		timer = new Timer(this, "Visualizer Thread", false, false, true);
 		timer.start(50);//16
 	}
 
-	@Override
-	public void playingChanged(boolean isPlaying) {
-		if(VisualizerManager.getInstance().isPause&&isPlaying){
-			isForceRresh=true;
+	public Visualizer getCurrentVisualizer(){
+		if(fxVisualizer==null){
+			int g= VisualizerManager.getInstance().getSessionId();
+			fxVisualizer = new Visualizer(g);
 		}
-		VisualizerManager.getInstance().isPause = !isPlaying;
 
+		return fxVisualizer;
+	}
 
-		LogUtils.d("播放状态改变："+isPlaying);
+	@Override
+	public void playingChanged() {
+		playing = true;
 	}
 
 	@Override
@@ -111,12 +113,11 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 
 	private boolean initialize() {
 		try {
-//			final int g = Player.audioSessionId;
 
-			//TODO 这里需要Session
-			int g=VisualizerManager.getInstance().getSessionId();
+			//TODO 这里需要Session，在自己项目中设置SessionId，默认为0
+			int g= VisualizerManager.getInstance().getSessionId();
 
-			LogUtils.d("当前歌曲的sessionId="+g);
+			//LogUtils.d("当前歌曲的sessionId="+g);
 
 			if (g < 0)
 				return true;
@@ -124,11 +125,9 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 				if (audioSessionId == g) {
 					try {
 						fxVisualizer.setEnabled(true);
-						//
-						 return true;
+						return true;
 					} catch (Throwable ex) {
 						ex.printStackTrace();
-						LogUtils.d("抱歉，这里异常了");
 					}
 				}
 				try {
@@ -136,16 +135,14 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 				} catch (Throwable ex) {
 					fxVisualizer = null;
 					ex.printStackTrace();
-					LogUtils.d("抱歉，这里异常了");
 				}
 			}
-			fxVisualizer = new android.media.audiofx.Visualizer(g);
+			fxVisualizer = new Visualizer(g);
 			audioSessionId = g;
 		} catch (Throwable ex) {
 			failed = true;
 			fxVisualizer = null;
 			audioSessionId = -1;
-			LogUtils.d("抱歉，这里异常了");
 			return false;
 		}
 		try {
@@ -158,80 +155,14 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 			fxVisualizer.release();
 			fxVisualizer = null;
 			audioSessionId = -1;
-			LogUtils.d("抱歉，这里异常了");
 		}
 		if (fxVisualizer != null && visualizer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			try {
-				fxVisualizer.setScalingMode(android.media.audiofx.Visualizer.SCALING_MODE_AS_PLAYED);
-				fxVisualizer.setScalingMode(android.media.audiofx.Visualizer.SCALING_MODE_NORMALIZED);
+				fxVisualizer.setScalingMode(Visualizer.SCALING_MODE_AS_PLAYED);
+				fxVisualizer.setScalingMode(Visualizer.SCALING_MODE_NORMALIZED);
 			} catch (Throwable ex) {
 				ex.printStackTrace();
-				LogUtils.d("抱歉，这里异常了");
 			}
-			LogUtils.d("这里初始化完成了");
-			return true;
-		}
-		return false;
-	}
-
-	private boolean initialize2() {
-		try {
-//			final int g = Player.audioSessionId;
-
-			//TODO 这里需要Session
-			int g=VisualizerManager.getInstance().getSessionId();
-
-			LogUtils.d("当前歌曲的sessionId="+g);
-
-			if (g < 0)
-				return true;
-			if (fxVisualizer != null) {
-				if (audioSessionId == g) {
-					try {
-						fxVisualizer.setEnabled(true);
-					} catch (Throwable ex) {
-						ex.printStackTrace();
-						LogUtils.d("抱歉，这里异常了");
-					}
-				}
-				try {
-					fxVisualizer.release();
-				} catch (Throwable ex) {
-					fxVisualizer = null;
-					ex.printStackTrace();
-					LogUtils.d("抱歉，这里异常了");
-				}
-			}
-			fxVisualizer = new android.media.audiofx.Visualizer(g);
-			audioSessionId = g;
-		} catch (Throwable ex) {
-			failed = true;
-			fxVisualizer = null;
-			audioSessionId = -1;
-			LogUtils.d("抱歉，这里异常了");
-			return false;
-		}
-		try {
-			fxVisualizer.setEnabled(false);
-			fxVisualizer.setCaptureSize(IVisualizer.CAPTURE_SIZE);
-			fxVisualizer.setEnabled(true);
-		} catch (Throwable ex) {
-
-			failed = true;
-			fxVisualizer.release();
-			fxVisualizer = null;
-			audioSessionId = -1;
-			LogUtils.d("抱歉，这里异常了");
-		}
-		if (fxVisualizer != null && visualizer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			try {
-				fxVisualizer.setScalingMode(android.media.audiofx.Visualizer.SCALING_MODE_AS_PLAYED);
-				fxVisualizer.setScalingMode(android.media.audiofx.Visualizer.SCALING_MODE_NORMALIZED);
-			} catch (Throwable ex) {
-				ex.printStackTrace();
-				LogUtils.d("抱歉，这里异常了");
-			}
-			LogUtils.d("这里初始化完成了");
 			return true;
 		}
 		return false;
@@ -256,8 +187,7 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 
 	@Override
 	public void handleTimer(Timer timer, Object param) {
-		//LogUtils.d(" handleTimer paused======"+paused + " reset="+reset + " alive ="+alive);
-		boolean isPlaying=!VisualizerManager.getInstance().isPause;
+		//LogUtils.e("nsc"," handleTimer paused======"+paused + " reset="+reset + " alive ="+alive);
 		if (alive) {
 			if (paused) {
 				try {
@@ -265,7 +195,6 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 						fxVisualizer.setEnabled(false);
 				} catch (Throwable ex) {
 					ex.printStackTrace();
-					LogUtils.d("抱歉，这里异常了！");
 				}
 				timer.pause();
 				return;
@@ -287,22 +216,16 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 					visualizer.load();
 					visualizerReady = true;
 				}
-			}else if(isForceRresh){
-				LogUtils.d("这里强制刷新了");
-				initialize2();
-				isForceRresh=false;
 			}
 			if (visualizer != null) {
 				//WE MUST NEVER call any method from visualizer
 				//while the player is not actually playing
-				if (isPlaying) {
-					LogUtils.d("这里getWaveForm执行了");
+				if (playing) {
 					fxVisualizer.getWaveForm(waveform);
 					//LogUtils.e("nsc"," handleTimer paused======"+paused + " reset="+reset + " alive ="+alive);
 				}
-				visualizer.processFrame(isPlaying, waveform);
 				//LogUtils.e("nsc"," handleTimer paused2======"+paused + " reset="+reset + " alive ="+alive);
-
+				visualizer.processFrame(playing, waveform);
 			}
 		}
 		if (!alive) {

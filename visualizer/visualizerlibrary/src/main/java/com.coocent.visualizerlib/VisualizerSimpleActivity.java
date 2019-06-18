@@ -32,17 +32,14 @@
 //
 package com.coocent.visualizerlib;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -166,6 +163,9 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
         if(requestCode==CHOOSEIMAGE_CODE){
             if (resultCode == Activity.RESULT_OK){
                 Uri selectedUri = ((Intent)data).getData();
+                if(selectedUri==null){
+                    selectedUri= ImageUtils.geturi(VisualizerSimpleActivity.this,data);
+                }
                 LogUtils.d("Simple返回图片URI为："+selectedUri);
                 if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
                     VisualizerManager.getInstance().getVisualizerMenu().changeImageUri(selectedUri);
@@ -233,7 +233,7 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
     @Override
     public void nextVisualizer() {
         if(VisualizerManager.getInstance().visualizerIndex
-                ==VisualizerManager.getInstance().visualizerDataType.length-1){
+                == VisualizerManager.getInstance().visualizerDataType.length-1){
             VisualizerManager.getInstance().visualizerIndex=0;
         }else{
             VisualizerManager.getInstance().visualizerIndex++;
@@ -291,7 +291,7 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
      * 初始化Handler
      */
     private void initHandlerAndUI(){
-        UI.initialize(this, CommonUtils.getScreenWidth(this),CommonUtils.getScreenWidth(this));
+        UI.initialize(this, CommonUtils.getScreenWidth(this), CommonUtils.getScreenWidth(this));
         UI.loadCommonColors(true);
         UI.initColorDefault();//默认的相关颜色值
         MainHandler.initialize();
@@ -387,12 +387,12 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
      */
     private void addVisualizerView(){
         if (visualizer != null) {
-            VisualizerManager.getInstance().visualizerIndex=VisualizerManager.getInstance().visualizerIndex;
+            VisualizerManager.getInstance().visualizerIndex= VisualizerManager.getInstance().visualizerIndex;
 
             visualizerContainer.addView((View)visualizer);
 
             if(VisualizerManager.getInstance().getIsShowActivityMenu()
-                    &&VisualizerManager.getInstance().getCurrentTypeMenus(this).size()>0){
+                    && VisualizerManager.getInstance().getCurrentTypeMenus(this).size()>0){
                 visualizerMenu.bringToFront();
                 visualizerMenu.setVisibility(View.VISIBLE);
             }else{
@@ -407,7 +407,7 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
      */
     private void changeVisualizer(int type){
 
-        LogUtils.d("当前选择的频谱类型为："+type+" 名称为："+VisualizerManager.getInstance().visualizerDataType[type]);
+        //LogUtils.d("当前选择的频谱类型为："+type+" 名称为："+VisualizerManager.getInstance().visualizerDataType[type]);
         if(!isFinishChange) return;
         isFinishChange=false;
 
@@ -455,7 +455,7 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
             visualizerContainer.addView((View)visualizer);
 
             if(VisualizerManager.getInstance().getIsShowActivityMenu()
-                    &&VisualizerManager.getInstance().getCurrentTypeMenus(this).size()>0){
+                    && VisualizerManager.getInstance().getCurrentTypeMenus(this).size()>0){
                 visualizerMenu.bringToFront();
                 visualizerMenu.setVisibility(View.VISIBLE);
             }else{
@@ -464,7 +464,7 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
         }
 
         isFinishChange=true;
-        LogUtils.d("当前选择的频谱类型 切换成功结束！！！");
+        //LogUtils.d("当前选择的频谱类型 切换成功结束！！！");
     }
 
     private Intent setIntent(int type){
@@ -506,15 +506,15 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
 
             case VisualizerManager.PARTICLE_VR:
                 //需要照相机支持
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
-                        break;
-                    }
-                }
-                //沉浸式Particle_VR版
-                intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
-                intent.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_IMMERSIVE_PARTICLE_VR);
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                        requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+//                        break;
+//                    }
+//                }
+//                //沉浸式Particle_VR版
+//                intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
+//                intent.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_IMMERSIVE_PARTICLE_VR);
                 break;
 
             case VisualizerManager.LIQUID_POWER_SAVER:
@@ -558,7 +558,7 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
-        MyAdapter adapter = new MyAdapter(this,VisualizerManager.getInstance().getCurrentTypeMenus(this));
+        MyAdapter adapter = new MyAdapter(this, VisualizerManager.getInstance().getCurrentTypeMenus(this));
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -586,7 +586,7 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
             ((ViewHolder) holder).root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mData.get(position).getMenuCode()==MenuData.CHOOSEIMAGE){
+                    if(mData.get(position).getMenuCode()== MenuData.CHOOSEIMAGE){
                         if(mListPopWindow!=null){
                             mListPopWindow.dissmiss();
                         }
@@ -597,14 +597,14 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
                             PermissionUtils.requestWriteAndReadPermissionInActivity(VisualizerSimpleActivity.this,READ_WRITE_PERMISSION_CODE);
                         }
 
-                    }else if(mData.get(position).getMenuCode()==MenuData.CHANGECOLOR){
+                    }else if(mData.get(position).getMenuCode()== MenuData.CHANGECOLOR){
                         if(mListPopWindow!=null){
                             mListPopWindow.dissmiss();
                         }
                         if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
                             VisualizerManager.getInstance().getVisualizerMenu().changeColor();
                         }
-                    }else if(mData.get(position).getMenuCode()==MenuData.CLEARIMAGE){
+                    }else if(mData.get(position).getMenuCode()== MenuData.CLEARIMAGE){
                         //清除图片
                         if(mListPopWindow!=null){
                             mListPopWindow.dissmiss();

@@ -7,10 +7,8 @@ import android.content.Context;
 import com.coocent.visualizerlib.entity.MenuItem;
 import com.coocent.visualizerlib.inter.IControlVisualizer;
 import com.coocent.visualizerlib.inter.IVisualizerMenu;
-import com.coocent.visualizerlib.inter.IVisualizerService;
 import com.coocent.visualizerlib.inter.MusicVisualizerInter;
 import com.coocent.visualizerlib.utils.Constants;
-import com.coocent.visualizerlib.utils.FileUtils;
 import com.coocent.visualizerlib.utils.LogUtils;
 import com.coocent.visualizerlib.utils.VisualizerSharePareUtils;
 
@@ -45,10 +43,6 @@ public class VisualizerManager {
      */
     public IVisualizerMenu visualizerMenu;
     /**
-     * 频谱服务接口
-     */
-    public IVisualizerService visualizerService;
-    /**
      * 是否允许横屏
      */
     public boolean isAllowLandscape=false;
@@ -56,10 +50,6 @@ public class VisualizerManager {
      * 是否是横屏
      */
     public boolean isLandscape;
-    /**
-     * 频谱或者音乐是否暂停了
-     */
-    public volatile boolean isPause;
     /**
      * Fragment是否展示菜单
      */
@@ -190,17 +180,6 @@ public class VisualizerManager {
         this.visualizerMenu=visualizerMenu;
     }
 
-    public IVisualizerService getVisualizerService() {
-        if(visualizerService==null) {
-            LogUtils.d("糟了，这里的visualizerService为空了！！！");
-        }
-        return visualizerService;
-    }
-
-    public void setVisualizerService(IVisualizerService visualizerService) {
-        this.visualizerService = visualizerService;
-    }
-
     public IVisualizerMenu getVisualizerMenu(){
         if(visualizerMenu==null) {
             LogUtils.d("糟了，这里的controlVisualizer为空了！！！");
@@ -251,8 +230,8 @@ public class VisualizerManager {
          if(liquidType1Url!=null&&liquidType1Url.equals("")){
              //第一次进来，默认为“”，读一下sp
              if(VisualizerManager.getInstance().getApplication()!=null){
-                 liquidType1Url=(String)VisualizerSharePareUtils.getParam(VisualizerManager.getInstance().getApplication(),
-                         VisualizerSharePareUtils.URL_FOR_LIQUID_TYPE,Constants.DEFUALUT_URL_EMPTY);
+                 liquidType1Url=(String) VisualizerSharePareUtils.getParam(VisualizerManager.getInstance().getApplication(),
+                         VisualizerSharePareUtils.URL_FOR_LIQUID_TYPE, Constants.DEFUALUT_URL_EMPTY);
 
                  if(liquidType1Url.equals(Constants.DEFUALUT_URL_EMPTY)) liquidType1Url=null;
 
@@ -281,8 +260,8 @@ public class VisualizerManager {
         if(liquidType2Url!=null&&liquidType2Url.equals("")){
             //第一次进来，默认为“”，读一下sp
             if(VisualizerManager.getInstance().getApplication()!=null){
-                liquidType2Url=(String)VisualizerSharePareUtils.getParam(VisualizerManager.getInstance().getApplication(),
-                        VisualizerSharePareUtils.URL_FOR_LIQUID_POWER_SAVER,Constants.DEFUALUT_URL_EMPTY);
+                liquidType2Url=(String) VisualizerSharePareUtils.getParam(VisualizerManager.getInstance().getApplication(),
+                        VisualizerSharePareUtils.URL_FOR_LIQUID_POWER_SAVER, Constants.DEFUALUT_URL_EMPTY);
 
                 if(liquidType2Url.equals(Constants.DEFUALUT_URL_EMPTY)) liquidType2Url=null;
 
@@ -302,4 +281,5 @@ public class VisualizerManager {
         }
 
     }
+
 }

@@ -45,7 +45,7 @@ public class PictureSelectActivity extends Activity {
 
         //请求应用需要的所有权限
         boolean checkPermissionFirst = PermissionUtils.checkPermissionFirst(this, PERMISSION_CODE_FIRST,
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA});
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
         if (checkPermissionFirst) {
             selectPicture();
         }
@@ -67,7 +67,7 @@ public class PictureSelectActivity extends Activity {
                 isPermissions = false;
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])) { //用户选择了"不再询问"
                     if (isToast) {
-                        Toast.makeText(this, "请手动打开该应用需要的权限", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "please open the permission.", Toast.LENGTH_SHORT).show();
                         isToast = false;
                     }
                 }

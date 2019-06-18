@@ -8,6 +8,7 @@ import android.view.View;
 
 import androidalldemo.popupwindowdemo.PopupMainActivity;
 import jan.jason.androidalldemos.databinding.ActivityMainAllBinding;
+import jan.jason.androidalldemos.photo.PhotoMainActivity;
 import jan.jason.androidalldemos.tools.ToolsMainActivity;
 import jan.jason.androidalldemos.transitions.TransitionMainActivity;
 import jan.jason.androidalldemos.visualizer.VisualizerMainActivity;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainBinding.amBtn2.setOnClickListener(this);
         mainBinding.amBtn3.setOnClickListener(this);
         mainBinding.amBtn4.setOnClickListener(this);
+        mainBinding.amBtn5.setOnClickListener(this);
     }
 
     @Override
@@ -45,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.am_btn4:
                 startActivity(new Intent(this, ToolsMainActivity.class));
+                break;
+
+            case R.id.am_btn5:
+                startActivity(new Intent(this, PhotoMainActivity.class));
                 break;
         }
     }

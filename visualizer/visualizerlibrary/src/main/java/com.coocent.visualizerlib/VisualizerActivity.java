@@ -32,7 +32,6 @@
 //
 package com.coocent.visualizerlib;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
@@ -40,7 +39,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.media.AudioManager;
@@ -51,7 +49,6 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -84,10 +81,6 @@ import com.coocent.visualizerlib.view.ColorDrawable;
 import com.coocent.visualizerlib.view.CustomContextMenu;
 import com.coocent.visualizerlib.view.InterceptableLayout;
 import com.coocent.visualizerlib.view.TextIconDrawable;
-import com.wcl.notchfit.NotchFit;
-import com.wcl.notchfit.args.NotchProperty;
-import com.wcl.notchfit.args.NotchScreenType;
-import com.wcl.notchfit.core.OnNotchCallBack;
 
 import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
 
@@ -103,7 +96,7 @@ public final class VisualizerActivity extends AppCompatActivity implements
 		MenuItem.OnMenuItemClickListener,
 		OnCreateContextMenuListener,
 		View.OnTouchListener,
-		Timer.TimerHandler,IControlVisualizer {
+		Timer.TimerHandler, IControlVisualizer {
 
 	//基本数据
 	private boolean visualizerViewFullscreen,
@@ -213,7 +206,12 @@ public final class VisualizerActivity extends AppCompatActivity implements
 		super.onDestroy();
 	}
 
-
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		finish();
+		overridePendingTransition(R.anim.activity_vi_slide_right_in,R.anim.activity_vi_slide_left_out);
+	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -241,8 +239,8 @@ public final class VisualizerActivity extends AppCompatActivity implements
 				LogUtils.d("Activity权限请求成功");
 				changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
 			}
-		}else if(requestCode==OpenGLVisualizerJni.READ_AND_WEITE_PERMISSION_CODE){
-            ImageUtils.getImageBySystemInActivity(this,OpenGLVisualizerJni.ACTIVITY_CHOOSE_IMAGE);
+		}else if(requestCode== OpenGLVisualizerJni.READ_AND_WEITE_PERMISSION_CODE){
+            ImageUtils.getImageBySystemInActivity(this, OpenGLVisualizerJni.ACTIVITY_CHOOSE_IMAGE);
         }
 	}
 
@@ -317,12 +315,12 @@ public final class VisualizerActivity extends AppCompatActivity implements
 		if(newConfig.orientation == 1){
 			//竖屏
 			doWhenPortrait();
-
+			//LogUtils.d(this.getClass().getSimpleName(),"#切换到竖屏了#"+"");
 		}else if(newConfig.orientation == 2){
 			//横屏
 			doWhenLandscape();
+            //LogUtils.d(this.getClass().getSimpleName(),"#切换到横屏了#"+"");
 		}
-
 
 		if (info == null)
 			return;
@@ -388,6 +386,7 @@ public final class VisualizerActivity extends AppCompatActivity implements
 	public void onClick(View view) {
 		if (view == btnGoBack) {
 			finish();
+			overridePendingTransition(R.anim.activity_vi_slide_right_in,R.anim.activity_vi_slide_left_out);
 		}  else if (view == btnPlay) {
 			//Player.playPause();
 			if(VisualizerManager.getInstance().getMusicVisualizerInter()!=null){
@@ -413,7 +412,7 @@ public final class VisualizerActivity extends AppCompatActivity implements
 		} else if(view==nextVisualizerIb){
 			//LogUtils.d("点击了下一个~");
 			if(VisualizerManager.getInstance().visualizerIndex
-					==VisualizerManager.getInstance().visualizerDataType.length-1){
+					== VisualizerManager.getInstance().visualizerDataType.length-1){
 				VisualizerManager.getInstance().visualizerIndex=0;
 			}else{
 				VisualizerManager.getInstance().visualizerIndex++;
@@ -575,23 +574,25 @@ public final class VisualizerActivity extends AppCompatActivity implements
 	@Override
 	public void nextVisualizer() {
 		if(VisualizerManager.getInstance().visualizerIndex
-				==VisualizerManager.getInstance().visualizerDataType.length-1){
+				== VisualizerManager.getInstance().visualizerDataType.length-1){
 			VisualizerManager.getInstance().visualizerIndex=0;
 		}else{
 			VisualizerManager.getInstance().visualizerIndex++;
 		}
 
 		changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
+
 	}
 
 	@Override
 	public void previousVisualizer() {
-		if(VisualizerManager.getInstance().visualizerIndex ==0){
-			VisualizerManager.getInstance().visualizerIndex=
-					VisualizerManager.getInstance().visualizerDataType.length-1;
+		if(VisualizerManager.getInstance().visualizerIndex
+				== VisualizerManager.getInstance().visualizerDataType.length-1){
+			VisualizerManager.getInstance().visualizerIndex=0;
 		}else{
-			VisualizerManager.getInstance().visualizerIndex--;
+			VisualizerManager.getInstance().visualizerIndex++;
 		}
+
 		changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
 	}
 
@@ -765,7 +766,6 @@ public final class VisualizerActivity extends AppCompatActivity implements
 	 */
 	private void init(){
 		initApplication();
-		initPermission();
 		initUI();
 		initHandler();
 		initLanguage();
@@ -787,23 +787,10 @@ public final class VisualizerActivity extends AppCompatActivity implements
 	}
 
 	/**
-	 * 申请权限
-	 */
-	private void initPermission(){
-		if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-				requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_PERMISSION_CODE);
-				LogUtils.d("这里开始申请权限了");
-				return;
-			}
-		}
-	}
-
-	/**
 	 * 初始化UI
 	 */
 	private void initUI(){
-		UI.initialize(VisualizerActivity.this, CommonUtils.getScreenWidth(this),CommonUtils.getScreenWidth(this));
+		UI.initialize(VisualizerActivity.this, CommonUtils.getScreenWidth(this), CommonUtils.getScreenWidth(this));
 		UI.loadCommonColors(true);
 		UI.initColorDefault();//默认的相关颜色值
 		PermissionUtils.requestRecordAudioPermissionInActivity(this,RECORD_PERMISSION_CODE);
@@ -849,22 +836,6 @@ public final class VisualizerActivity extends AppCompatActivity implements
 				return;
 			}
 		}
-//		if (name != null) {
-//			try {
-//				final Class<?> clazz = Class.forName(name);
-//				if (clazz != null) {
-//					try {
-//						updateInfoWithConfiguration(null);
-//						visualizer = (IVisualizer)clazz.getConstructor(Activity.class, boolean.class, Intent.class).newInstance(this, info.isLandscape, si);
-//					} catch (Throwable ex) {
-//						ex.printStackTrace();
-//					}
-//				}
-//			} catch (Throwable ex) {
-//				ex.printStackTrace();
-//			}
-//		}
-
 
 		visualizer = new OpenGLVisualizerJni(this, true, si);
 
@@ -925,7 +896,7 @@ public final class VisualizerActivity extends AppCompatActivity implements
 		}
 
 		try{
-			statusHeight=CommonUtils.getStatusBarHeight(this);
+			statusHeight= CommonUtils.getStatusBarHeight(this);
 		}catch (Throwable e){
 			LogUtils.d("","异常##"+e.getMessage());
 		}
@@ -984,10 +955,6 @@ public final class VisualizerActivity extends AppCompatActivity implements
 		nextVisualizerIb.setOnClickListener(this);
 		prevVisualizerIb.setOnClickListener(this);
 
-//		if(statusHeight>80){
-//
-//		}
-
 		//刘海屏
 		try{
 			if(CommonUtils.isScreenOriatationPortrait(this)) {
@@ -998,28 +965,6 @@ public final class VisualizerActivity extends AppCompatActivity implements
 		}catch (Exception e){
 			LogUtils.d("initViewAndListener","异常##"+e.getMessage());
 		}
-
-
-//		if(!CommonUtils.isScreenOriatationPortrait(this)){
-//			//水平
-//			int navigationBarHeight=CommonUtils.getNavigationBarHeight(this);
-//			if(navigationBarHeight>0){
-//				try{
-////					RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
-////					lp.setMargins(0,0,navigationBarHeight,0);
-////					panelTop.setLayoutParams(lp);
-//
-//                    RelativeLayout.LayoutParams nextprevlp = new RelativeLayout.LayoutParams(nextVisualizerIb.getLayoutParams());
-//                    nextprevlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
-//                    nextprevlp.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
-//                    nextprevlp.rightMargin=navigationBarHeight;
-//                    nextVisualizerIb.setLayoutParams(nextprevlp);
-//
-//				}catch (Exception e){
-//					LogUtils.d("initViewAndListener","异常##"+e.getMessage());
-//				}
-//			}
-//		}
 
 		updateTrackInfo();
 		setPauseButtonImage();
@@ -1085,7 +1030,7 @@ public final class VisualizerActivity extends AppCompatActivity implements
 	 * @param type
 	 */
 	private void changeVisualizer(int type){
-		LogUtils.d("当前选择的频谱类型为："+type+" 名称为："+VisualizerManager.getInstance().visualizerDataType[type]);
+		//LogUtils.d("当前选择的频谱类型为："+type+" 名称为："+VisualizerManager.getInstance().visualizerDataType[type]);
 		if(!isFinishChange) return;
 		isFinishChange=false;
 
@@ -1142,7 +1087,7 @@ public final class VisualizerActivity extends AppCompatActivity implements
 		prepareViews(true);
 
 		isFinishChange=true;
-		LogUtils.d("当前选择的频谱类型 切换成功结束！！！");
+		//LogUtils.d("当前选择的频谱类型 切换成功结束！！！");
 	}
 
 	private Intent setIntent(int type){
@@ -1184,15 +1129,15 @@ public final class VisualizerActivity extends AppCompatActivity implements
 
 			case VisualizerManager.PARTICLE_VR:
 				//需要照相机支持
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-					if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-						requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
-						break;
-					}
-				}
-				//沉浸式Particle_VR版
-				intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
-				intent.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_IMMERSIVE_PARTICLE_VR);
+//				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//					if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//						requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+//						break;
+//					}
+//				}
+//				//沉浸式Particle_VR版
+//				intent.putExtra(IVisualizer.EXTRA_VISUALIZER_CLASS_NAME, OpenGLVisualizerJni.class.getName());
+//				intent.putExtra(OpenGLVisualizerJni.EXTRA_VISUALIZER_TYPE, OpenGLVisualizerJni.TYPE_IMMERSIVE_PARTICLE_VR);
 				break;
 
 			case VisualizerManager.LIQUID_POWER_SAVER:
@@ -1224,18 +1169,18 @@ public final class VisualizerActivity extends AppCompatActivity implements
 	 */
 	private void doWhenPortrait(){
 		try{
-			NotchFit.fit(this, NotchScreenType.FULL_SCREEN, new OnNotchCallBack() {
-				@Override
-				public void onNotchReady(NotchProperty notchProperty) {
-					if(notchProperty.isNotchEnable()){
-						LogUtils.d("1这里设置偏移距离为："+notchProperty.getNotchHeight());
-						RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
-						lp.setMargins(0,notchProperty.getNotchHeight(),0,0);
-						panelTop.setLayoutParams(lp);
-					}
-				}
-			});
-			int navHeight=CommonUtils.getNavigationBarHeight(this);
+//			NotchFit.fit(this, NotchScreenType.FULL_SCREEN, new OnNotchCallBack() {
+//				@Override
+//				public void onNotchReady(NotchProperty notchProperty) {
+//					if(notchProperty.isNotchEnable()){
+//						LogUtils.d("1这里设置偏移距离为："+notchProperty.getNotchHeight());
+//						RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
+//						lp.setMargins(0,notchProperty.getNotchHeight(),0,0);
+//						panelTop.setLayoutParams(lp);
+//					}
+//				}
+//			});
+			int navHeight= CommonUtils.getNavigationBarHeight(this);
 			if(navHeight>0){
 				FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(panelControls.getLayoutParams());
 				lp.setMargins(0,0,0,0);
@@ -1253,19 +1198,19 @@ public final class VisualizerActivity extends AppCompatActivity implements
 	 */
 	private void doWhenLandscape(){
 		try{
-			NotchFit.fit(this, NotchScreenType.FULL_SCREEN, new OnNotchCallBack() {
-				@Override
-				public void onNotchReady(NotchProperty notchProperty) {
-					if(notchProperty.isNotchEnable()){
-						LogUtils.d("2这里设置偏移距离为："+notchProperty.getNotchHeight());
-						RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
-						lp.setMargins(0,0,0,0);
-						panelTop.setLayoutParams(lp);
-					}
-				}
-			});
+//			NotchFit.fit(this, NotchScreenType.FULL_SCREEN, new OnNotchCallBack() {
+//				@Override
+//				public void onNotchReady(NotchProperty notchProperty) {
+//					if(notchProperty.isNotchEnable()){
+//						LogUtils.d("2这里设置偏移距离为："+notchProperty.getNotchHeight());
+//						RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(panelTop.getLayoutParams());
+//						lp.setMargins(0,0,0,0);
+//						panelTop.setLayoutParams(lp);
+//					}
+//				}
+//			});
 
-			int navHeight=CommonUtils.getNavigationBarHeight(this);
+			int navHeight= CommonUtils.getNavigationBarHeight(this);
 			if(navHeight>0){
 				FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(panelControls.getLayoutParams());
 				lp.setMargins(0,0,navHeight,0);
@@ -1284,8 +1229,8 @@ public final class VisualizerActivity extends AppCompatActivity implements
 			String action = intent.getAction();
 			if(VisualizerManager.getInstance().getMusicVisualizerInter()==null) return;
 
-			String metachange=VisualizerManager.getInstance().getMusicVisualizerInter().vi_metachange();
-			String playstatechange=VisualizerManager.getInstance().getMusicVisualizerInter().vi_playstatechange();
+			String metachange= VisualizerManager.getInstance().getMusicVisualizerInter().vi_metachange();
+			String playstatechange= VisualizerManager.getInstance().getMusicVisualizerInter().vi_playstatechange();
 
 			if(!TextUtils.isEmpty(metachange)&&!TextUtils.isEmpty(playstatechange)) {
 				if (action.equals(metachange)) {

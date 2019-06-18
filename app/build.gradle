@@ -69,4 +69,8 @@ dependencies {
     //工具相关
 
 
+    //图片相关
+    implementation project(":photos:takephotodemo")
+
+
 }

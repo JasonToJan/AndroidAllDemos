@@ -32,15 +32,18 @@
 //
 package com.coocent.visualizerlib.inter;
 
+import android.media.audiofx.Visualizer;
+
 public interface IVisualizerService {
 	interface Observer {
 		void onFailure();
 		void onFinalCleanup();
 	}
 
-	void playingChanged(boolean isPlaying);
+	void playingChanged();
 	void pause();
 	void resume();
 	void resetAndResume();
 	void destroy();
+	Visualizer getCurrentVisualizer();
 }

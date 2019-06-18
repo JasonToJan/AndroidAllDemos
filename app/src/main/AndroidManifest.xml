@@ -36,6 +36,7 @@
         <activity android:name=".transitions.activitytransition.TransitionOptionsMoreActivity" />
         <activity android:name=".transitions.activitytransition.TransitionDemoActivity"></activity>
         <activity android:name=".tools.ToolsMainActivity"/>
+        <activity android:name=".photo.PhotoMainActivity"/>
     </application>
 
 </manifest>

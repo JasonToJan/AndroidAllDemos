@@ -915,20 +915,6 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 		}
 	}
 
-	/**
-	 * 暂停绘制
-	 */
-	private void pauseDraw(){
-		okToRender=false;
-	}
-
-	/**
-	 * 继续绘制
-	 */
-	private void resumeDraw(){
-		okToRender=true;
-	}
-
 	@Override
 	public boolean handleMessage(Message msg) {
 		switch (msg.what) {
@@ -1046,7 +1032,10 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 			browsing = false;
 			if (resultCode == Activity.RESULT_OK&&activity!=null){
 				selectedUri = ((Intent)intent).getData();
-				//LogUtils.d("返回图片URI为："+selectedUri);
+				if(selectedUri==null){
+				    selectedUri= ImageUtils.geturi(activity,(Intent)intent);
+                }
+				LogUtils.d("返回图片URI为："+selectedUri);
 				String path=FileUtils.getFilePathByUri(activity,selectedUri);
 				if(type==TYPE_LIQUID){
 					VisualizerManager.getInstance().setLiquidType1Url(path);
@@ -1319,6 +1308,32 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 	}
 
 	@Override
+	public void changeImagePath(String path) {
+		if(path!=null){
+			selectedUri=FileUtils.getMediaUriFromPath(activity,path);
+			if(type==TYPE_LIQUID){
+				VisualizerManager.getInstance().setLiquidType1Url(path);
+			}else if(type==TYPE_LIQUID_POWER_SAVER){
+				VisualizerManager.getInstance().setLiquidType2Url(path);
+			}
+		}else{
+			//这里用于自己清除图片
+			selectedUri=null;
+			LogUtils.d("用户清除了图片");
+			if(type==TYPE_LIQUID){
+				VisualizerManager.getInstance().setLiquidType1Url("");
+			}else if(type==TYPE_LIQUID_POWER_SAVER){
+				VisualizerManager.getInstance().setLiquidType2Url("");
+			}
+			if(VisualizerManager.getInstance().getControlVisualizer()!=null){
+				VisualizerManager.getInstance().getControlVisualizer().
+						someVisualizer(VisualizerManager.getInstance().visualizerIndex);
+			}
+
+		}
+	}
+
+	@Override
 	public void changeColor() {
 //		colorIndex = ((colorIndex == 0) ? 257 : 0);
 //		colorIndex=colorIndex+10;
@@ -1332,17 +1347,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 		});
 	}
 
-	@Override
-	public void onPauseDraw() {
-		pauseDraw();
-	}
-
-	@Override
-	public void onResumeDraw() {
-		resumeDraw();
-	}
-
-	/**
+    /**
      * 通过颜色值获取colorIndex
      * @return
      */

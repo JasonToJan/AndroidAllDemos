@@ -21,3 +21,7 @@ include ':popupwindow:popupwindowdemo'
 
 //tools工具相关
 include ':tools:notchtools',':tools:notchfit',':tools:pictureselector'
+
+
+//photos相关
+include ':photos:takephoto',':photos:takephotodemo'
