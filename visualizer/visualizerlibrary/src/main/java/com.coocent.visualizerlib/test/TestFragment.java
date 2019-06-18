@@ -1,5 +1,6 @@
 package com.coocent.visualizerlib.test;
 
+import android.media.audiofx.Visualizer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ public class TestFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_test_fragment2, container, false);
+
 
         return rootView;
     }

@@ -25,6 +25,7 @@ import com.coocent.visualizerlib.core.VisualizerService;
 import com.coocent.visualizerlib.entity.MenuItem;
 import com.coocent.visualizerlib.inter.IControlVisualizer;
 import com.coocent.visualizerlib.inter.IVisualizer;
+import com.coocent.visualizerlib.test.LazyFragment;
 import com.coocent.visualizerlib.ui.UI;
 import com.coocent.visualizerlib.utils.CommonUtils;
 import com.coocent.visualizerlib.utils.Constants;
@@ -43,7 +44,7 @@ import br.com.carlosrafaelgn.fplay.visualizer.OpenGLVisualizerJni;
  * user: JasonJan 1211241203@qq.com
  * time: 2019/6/5 13:36
  **/
-public class VisualizerFragment extends Fragment implements
+public class VisualizerFragment extends LazyFragment implements
         VisualizerService.Observer,
         MainHandler.Callback,
         IControlVisualizer,
@@ -72,29 +73,13 @@ public class VisualizerFragment extends Fragment implements
         init();
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_layout_visualizer, container, false);
-
-        visualizerRoot=rootView.findViewById(R.id.flv_visualizer_root);
-        visualizerMenu=rootView.findViewById(R.id.flv_visualizer_more_iv);
-        viewClick=rootView.findViewById(R.id.flv_visualizer_click_view);
-
-        visualizerMenu.setOnClickListener(this);
-        viewClick.setOnClickListener(this);
-
-        Bundle bundle = getArguments();
-        if(bundle!=null){
-            VisualizerManager.getInstance().visualizerIndex=bundle.getInt(Constants.FRAGMENT_ARGUMENTS_INDEX,0);
-            LogUtils.d("Fragment中拿到数据为："+ VisualizerManager.getInstance().visualizerIndex);
-        }
-
-        initVisualizer();
-        addVisualizerView();
-
-        return rootView;
-    }
+//    @Nullable
+//    @Override
+//    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+//
+//
+//        return rootView;
+//    }
 
     @Override
     public void onResume() {
@@ -128,6 +113,46 @@ public class VisualizerFragment extends Fragment implements
     }
 
     @Override
+    protected int getLayoutRes() {
+        return R.layout.fragment_layout_visualizer;
+    }
+
+    @Override
+    protected void initView(View rootView) {
+//        View rootView = inflater.inflate(R.layout.fragment_layout_visualizer, container, false);
+
+        visualizerRoot=rootView.findViewById(R.id.flv_visualizer_root);
+        visualizerMenu=rootView.findViewById(R.id.flv_visualizer_more_iv);
+        viewClick=rootView.findViewById(R.id.flv_visualizer_click_view);
+
+        visualizerMenu.setOnClickListener(this);
+        viewClick.setOnClickListener(this);
+
+        Bundle bundle = getArguments();
+        if(bundle!=null){
+            VisualizerManager.getInstance().visualizerIndex=bundle.getInt(Constants.FRAGMENT_ARGUMENTS_INDEX,0);
+            LogUtils.d("Fragment中拿到数据为："+ VisualizerManager.getInstance().visualizerIndex);
+        }
+
+        LogUtils.d("这里onCreateView开始执行了");
+        initVisualizer();
+        addVisualizerView();
+    }
+
+    @Override
+    public void onFragmentResume() {
+        super.onFragmentResume();
+        //changeVisualizer(VisualizerManager.getInstance().visualizerIndex);
+        visualizerService.setEnable(true);
+    }
+
+    @Override
+    public void onFragmentPause() {
+        super.onFragmentPause();
+        visualizerService.setEnable(false);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
     }
@@ -154,9 +179,9 @@ public class VisualizerFragment extends Fragment implements
         if(requestCode==CHOOSEIMAGE_CODE){
             if (resultCode == Activity.RESULT_OK){
                 Uri selectedUri = ((Intent)data).getData();
-                if(selectedUri==null){
-                    selectedUri= ImageUtils.geturi(getActivity(),data);
-                }
+//                if(selectedUri==null){
+//                    selectedUri= ImageUtils.geturi(getActivity(),data);
+//                }
                 LogUtils.d("Fragment返回图片URI为："+selectedUri);
                 if(VisualizerManager.getInstance().getVisualizerMenu()!=null){
                     VisualizerManager.getInstance().getVisualizerMenu().changeImageUri(selectedUri);
@@ -226,6 +251,8 @@ public class VisualizerFragment extends Fragment implements
         UI.loadCommonColors(true);
         UI.initColorDefault();//默认的相关颜色值
         PermissionUtils.requestRecordAudioPermissionInFragment(this,RECORD_AUDIO_CODE);
+
+        LogUtils.d("这里执行了init");
     }
 
     private void initVisualizer(){
@@ -237,6 +264,7 @@ public class VisualizerFragment extends Fragment implements
             }
         }
 
+        LogUtils.d("这里马上要 执行了initVisualizer~");
         if(visualizer!=null){
             visualizer.release();
             visualizer=null;
@@ -251,13 +279,17 @@ public class VisualizerFragment extends Fragment implements
             visualizerRequiresThread = false;
         }
 
+        LogUtils.d("这里马上要 执行了visualizerService ，先赋值为null~");
         visualizerService = null;
         if (visualizer != null) {
             visualizerPaused = false;
             visualizer.onActivityResume();
+            LogUtils.d("这里执行onActivityResume了");
             if (!visualizerRequiresThread){
+                LogUtils.d("这里执行visualizer#load函数！");
                 visualizer.load();
             }else{
+                LogUtils.d("这里new一个VisualizerService 传递一个visualizer以及观察者");
                 visualizerService = new VisualizerService(visualizer, this);
             }
         }
@@ -335,11 +367,13 @@ public class VisualizerFragment extends Fragment implements
 
         try{
             if (visualizer != null) {
+                LogUtils.d("这里在changeVisualizer方法中马上要移除visualizer方法了，然后会释放掉哦");
                 visualizerRoot.removeView((View) visualizer);
                 visualizer.release();
                 visualizer = null;
             }
             if(visualizerService!=null){
+                LogUtils.d("这里在changeVisualizer方法中，马上要设置VisualizerService为空了，这里先暂停一下再设置吧");
                 visualizerService.pause();
                 visualizerService=null;
             }
@@ -347,7 +381,7 @@ public class VisualizerFragment extends Fragment implements
             LogUtils.d("release异常##"+e.getMessage());
         }
 
-
+        LogUtils.d("这里马上开始new 一个OpenGLVisualizerJni了");
         Intent intent=setIntent(type);
         visualizer = new OpenGLVisualizerJni(getActivity(), true, intent);
 
@@ -361,20 +395,25 @@ public class VisualizerFragment extends Fragment implements
         visualizerService = null;
         if (visualizer != null) {
             visualizerPaused = false;
+            LogUtils.d("这里new了一个OpenGLVisualizer之后，设置了onActivityResume");
             visualizer.onActivityResume();
             if (!visualizerRequiresThread){
+                LogUtils.d("这里visualizer执行了load方法");
                 visualizer.load();
             }else{
+                LogUtils.d("这里new一个VisualizerService方法吧，传递一个Visualizer实例进去");
                 visualizerService = new VisualizerService(visualizer, this);
             }
         }
 
         if (visualizer != null) {
+            LogUtils.d("这里Visualizer成功生成，给他添加到VisualizerRoot视图中");
             visualizerRoot.addView((View)visualizer);
         }
 
         if(VisualizerManager.getInstance().getIsShowFragmentMenu()
                 && VisualizerManager.getInstance().getCurrentTypeMenus(getActivity()).size()>0){
+            LogUtils.d("这里把菜单给显示出来把");
             visualizerMenu.bringToFront();
             visualizerMenu.setVisibility(View.VISIBLE);
         }else{
@@ -433,6 +472,7 @@ public class VisualizerFragment extends Fragment implements
      * 退出时释放
      */
     private void finalCleanup() {
+        LogUtils.d("这里准备清除数据了，先Destroy，然后在释放，最后清除~");
         if (visualizerService != null) {
             visualizerService.destroy();
             visualizerService = null;

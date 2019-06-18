@@ -3,6 +3,7 @@ package com.coocent.visualizerlib.core;
 
 import android.app.Application;
 import android.content.Context;
+import android.media.audiofx.Visualizer;
 
 import com.coocent.visualizerlib.entity.MenuItem;
 import com.coocent.visualizerlib.inter.IControlVisualizer;
@@ -21,6 +22,8 @@ import java.util.List;
  * Date: 2019/6/3 21:50
  */
 public class VisualizerManager {
+
+    public Visualizer oneVisualizer;
 
     /**
      * 全局上下文
@@ -282,4 +285,15 @@ public class VisualizerManager {
 
     }
 
+    public Visualizer getOneVisualizer(boolean forceNewVisualizer) {
+        if(oneVisualizer==null||forceNewVisualizer){
+            LogUtils.d("这里，直接new 一个Visualizer");
+            oneVisualizer=new Visualizer(sessionId);
+        }
+        return oneVisualizer;
+    }
+
+    public void setOneVisualizer(Visualizer oneVisualizer) {
+        this.oneVisualizer = oneVisualizer;
+    }
 }

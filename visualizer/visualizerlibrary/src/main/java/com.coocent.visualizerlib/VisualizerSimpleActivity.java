@@ -164,7 +164,7 @@ public final class VisualizerSimpleActivity extends AppCompatActivity implements
             if (resultCode == Activity.RESULT_OK){
                 Uri selectedUri = ((Intent)data).getData();
                 if(selectedUri==null){
-                    selectedUri= ImageUtils.geturi(VisualizerSimpleActivity.this,data);
+                    //selectedUri= ImageUtils.geturi(VisualizerSimpleActivity.this,data);
                 }
                 LogUtils.d("Simple返回图片URI为："+selectedUri);
                 if(VisualizerManager.getInstance().getVisualizerMenu()!=null){

@@ -210,7 +210,7 @@ public final class VisualizerActivity extends AppCompatActivity implements
 	public void onBackPressed() {
 		super.onBackPressed();
 		finish();
-		overridePendingTransition(R.anim.activity_vi_slide_right_in,R.anim.activity_vi_slide_left_out);
+		//overridePendingTransition(R.anim.activity_vi_slide_right_in,R.anim.activity_vi_slide_left_out);
 	}
 
 	@Override
@@ -386,7 +386,7 @@ public final class VisualizerActivity extends AppCompatActivity implements
 	public void onClick(View view) {
 		if (view == btnGoBack) {
 			finish();
-			overridePendingTransition(R.anim.activity_vi_slide_right_in,R.anim.activity_vi_slide_left_out);
+			//overridePendingTransition(R.anim.activity_vi_slide_right_in,R.anim.activity_vi_slide_left_out);
 		}  else if (view == btnPlay) {
 			//Player.playPause();
 			if(VisualizerManager.getInstance().getMusicVisualizerInter()!=null){

@@ -1033,7 +1033,7 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 			if (resultCode == Activity.RESULT_OK&&activity!=null){
 				selectedUri = ((Intent)intent).getData();
 				if(selectedUri==null){
-				    selectedUri= ImageUtils.geturi(activity,(Intent)intent);
+				    //selectedUri= ImageUtils.geturi(activity,(Intent)intent);
                 }
 				LogUtils.d("返回图片URI为："+selectedUri);
 				String path=FileUtils.getFilePathByUri(activity,selectedUri);

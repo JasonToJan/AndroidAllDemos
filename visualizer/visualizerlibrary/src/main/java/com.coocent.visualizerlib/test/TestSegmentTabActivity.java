@@ -37,9 +37,14 @@ public class TestSegmentTabActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_segment_tab);
 
-        for (int i=0;i<3;i++) {
-            mFragments.add(TestSimpleCardFragment.getInstance("Switch ViewPager " + mTitles_3[i]));
-        }
+        mFragments.add(TestSimpleCardFragment.getInstance("SwitchViewPagerr1"));
+//        for (int i=0;i<2;i++) {
+//            mFragments.add(TestSimpleCardFragment.getInstance("Switch ViewPager " + mTitles_3[i]));
+//        }
+//        mFragments.add(new TestFragment());
+//        mFragments.add(new VisualizerFragment());
+        mFragments.add(new TestFragment());
+        mFragments.add(new TestFragment());
         mFragments.add(new VisualizerFragment());
 
         mDecorView = getWindow().getDecorView();
@@ -70,10 +75,10 @@ public class TestSegmentTabActivity extends AppCompatActivity implements View.On
         if(v==clickToOther){
             startActivity(new Intent(this,TestEmptyActivity.class));
         }else if(v==clickPause){
-            VisualizerManager.getInstance().getVisualizerService().playingChanged(false);
+            //VisualizerManager.getInstance().getVisualizerService().playingChanged(false);
             //VisualizerManager.getInstance().getVisualizerMenu().onPauseDraw();
         }else if(v==clickResume){
-            VisualizerManager.getInstance().getVisualizerService().playingChanged(true);
+            //VisualizerManager.getInstance().getVisualizerService().playingChanged(true);
             //VisualizerManager.getInstance().getVisualizerMenu().onResumeDraw();
         }
 

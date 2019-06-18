@@ -38,6 +38,7 @@ import android.os.Build;
 import com.coocent.visualizerlib.common.Timer;
 import com.coocent.visualizerlib.inter.IVisualizer;
 import com.coocent.visualizerlib.inter.IVisualizerService;
+import com.coocent.visualizerlib.utils.LogUtils;
 
 
 public final class VisualizerService implements IVisualizerService, Runnable, Timer.TimerHandler {
@@ -61,15 +62,26 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 		waveform = new byte[IVisualizer.CAPTURE_SIZE];
 		timer = new Timer(this, "Visualizer Thread", false, false, true);
 		timer.start(50);//16
+
+//		fxVisualizer=VisualizerManager.getInstance().getOneVisualizer(false);
 	}
 
-	public Visualizer getCurrentVisualizer(){
-		if(fxVisualizer==null){
-			int g= VisualizerManager.getInstance().getSessionId();
-			fxVisualizer = new Visualizer(g);
-		}
+//	public Visualizer getCurrentVisualizer(){
+////		if(fxVisualizer==null){
+////			int g= VisualizerManager.getInstance().getSessionId();
+////			fxVisualizer = new Visualizer(g);
+////		}
+//
+//
+//		return fxVisualizer;
+//	}
 
-		return fxVisualizer;
+	public void setEnable(boolean isEnable){
+		try{
+			fxVisualizer.setEnabled(isEnable);
+		}catch (Exception e){
+
+		}
 	}
 
 	@Override
@@ -117,13 +129,14 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 			//TODO 这里需要Session，在自己项目中设置SessionId，默认为0
 			int g= VisualizerManager.getInstance().getSessionId();
 
-			//LogUtils.d("当前歌曲的sessionId="+g);
+			LogUtils.d("当前歌曲的sessionId="+g);
 
 			if (g < 0)
 				return true;
 			if (fxVisualizer != null) {
 				if (audioSessionId == g) {
 					try {
+						LogUtils.d("这里是初始化，发现之前的sessionId一样，所以这里设置Enable为true");
 						fxVisualizer.setEnabled(true);
 						return true;
 					} catch (Throwable ex) {
@@ -131,6 +144,7 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 					}
 				}
 				try {
+					LogUtils.d("这里发现之前的Visualizer存在，并且sessionId发生了改变，所以这里释放一下");
 					fxVisualizer.release();
 				} catch (Throwable ex) {
 					fxVisualizer = null;
@@ -138,6 +152,7 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 				}
 			}
 			fxVisualizer = new Visualizer(g);
+			LogUtils.d("这里释放完毕之后，开始新建一个Visualizer了");
 			audioSessionId = g;
 		} catch (Throwable ex) {
 			failed = true;
@@ -146,9 +161,11 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 			return false;
 		}
 		try {
+			LogUtils.d("这里因为要设置CaptureSize，所以前面设置一下Enable为false");
 			fxVisualizer.setEnabled(false);
 			fxVisualizer.setCaptureSize(IVisualizer.CAPTURE_SIZE);
 			fxVisualizer.setEnabled(true);
+			LogUtils.d("这里因为要设置CaptureSize，所以后面设置一下Enable为true");
 		} catch (Throwable ex) {
 
 			failed = true;
@@ -158,6 +175,7 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 		}
 		if (fxVisualizer != null && visualizer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			try {
+				LogUtils.d("这里设置一下ScaleingMode");
 				fxVisualizer.setScalingMode(Visualizer.SCALING_MODE_AS_PLAYED);
 				fxVisualizer.setScalingMode(Visualizer.SCALING_MODE_NORMALIZED);
 			} catch (Throwable ex) {
@@ -191,8 +209,11 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 		if (alive) {
 			if (paused) {
 				try {
-					if (fxVisualizer != null)
+					if (fxVisualizer != null){
 						fxVisualizer.setEnabled(false);
+						LogUtils.d("这里在handlerTimer中因为暂停了，这里设置为false");
+					}
+
 				} catch (Throwable ex) {
 					ex.printStackTrace();
 				}
@@ -215,6 +236,7 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 					hasEverBeenAlive = true;
 					visualizer.load();
 					visualizerReady = true;
+					LogUtils.d("这里初始化返回true之后，可能会执行的，load方法");
 				}
 			}
 			if (visualizer != null) {
@@ -230,15 +252,20 @@ public final class VisualizerService implements IVisualizerService, Runnable, Ti
 		}
 		if (!alive) {
 			timer.release();
-			if (visualizer != null)
+			if (visualizer != null){
+				LogUtils.d("这里是 绘制过程中，如果alive为false的话，会执相机的释放");
 				visualizer.release();
+			}
+
 			if (fxVisualizer != null) {
 				try {
+					LogUtils.d("这里相机释放完毕后，进行频谱的设置Enable");
 					fxVisualizer.setEnabled(false);
 				} catch (Throwable ex) {
 					ex.printStackTrace();
 				}
 				try {
+					LogUtils.d("这里设置Enable后，释放一下频谱");
 					fxVisualizer.release();
 				} catch (Throwable ex) {
 					ex.printStackTrace();

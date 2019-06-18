@@ -71,7 +71,7 @@ public class TestFragementActivity extends AppCompatActivity implements View.OnC
     }
 
     private void setFragment(){
-        fragment=new VisualizerFragment();
+        fragment=new TestFragment();
 
         //组装传递参数，详情查看VisualizerManager中的频谱类型
         Bundle bundle = new Bundle();

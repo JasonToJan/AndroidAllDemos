@@ -8,9 +8,11 @@ import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 
+import com.coocent.visualizerlib.core.VisualizerManager;
 import com.coocent.visualizerlib.utils.LogUtils;
 
 import java.util.ConcurrentModificationException;
@@ -62,6 +64,8 @@ public class VisualizerView extends View {
 //        mFadePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
 //
         mRenderers = new HashSet<>();
+
+        mVisualizer=new Visualizer(0);
     }
 
     @Override
@@ -112,16 +116,22 @@ public class VisualizerView extends View {
 //        if (musicId == 0) return;
         try {
             //使用前先释放
-            if (mVisualizer != null) {
-                release();
-            }
+//            if (mVisualizer != null) {
+//                LogUtils.d("这里Link函数中释放了");
+//                release();
+//            }
             if (mVisualizer == null) {
-                mVisualizer = new Visualizer(musicId);
+                LogUtils.d("这里link函数中new了一个Visualizer");
+                //mVisualizer =VisualizerManager.getInstance().getOneVisualizer(true);
+                mVisualizer=new Visualizer(musicId);
+
+
                 // isLink = true;
             }
 //            LogUtils.e("测试"+TAG, "nsc link=" + mVisualizer.getEnabled() + " isLink=" + isLink + " musicId=" + musicId);
-            mVisualizer.setEnabled(false);
-            mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
+            LogUtils.d("这里设置了enable为false");
+           // mVisualizer.setEnabled(false);
+           // mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
 
             // Pass through Visualizer data to VisualizerView
             Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener() {
@@ -153,11 +163,54 @@ public class VisualizerView extends View {
             if (mVisualizer != null) {
                 mVisualizer.setDataCaptureListener(captureListener, Visualizer.getMaxCaptureRate() / 2, true, true);
                 // Enabled Visualizer and disable when we're done with the stream
+                LogUtils.d("这里设置了enable为true");
                 mVisualizer.setEnabled(true);
             }
 
         } catch (RuntimeException e) {
 
+        }
+    }
+
+    public void setListenNull(){
+        if(mVisualizer!=null){
+            LogUtils.d("这里设置了空的");
+            mVisualizer.setDataCaptureListener(null,0,false,false);
+        }
+    }
+
+    public void setListenResume(){
+        if(mVisualizer!=null){
+            Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener() {
+                @Override
+                public void onWaveFormDataCapture(Visualizer visualizer, byte[] bytes,
+                                                  int samplingRate) {
+                    long currentTimeMillis = System.currentTimeMillis();
+                    if (currentTimeMillis - mAudioSamplingTime >= mSamplingTime) {
+                        mBytes = bytes;
+                        invalidate();
+                        mAudioSamplingTime = currentTimeMillis;
+//                        LogUtils.d("测试+onWaveFormData执行了");
+                    }
+
+                }
+
+                @Override
+                public void onFftDataCapture(Visualizer visualizer, byte[] bytes,
+                                             int samplingRate) {
+                    long currentTimeMillis = System.currentTimeMillis();
+                    if (currentTimeMillis - mFftSamplingTime >= mSamplingTime) {
+                        mFFTBytes = bytes;
+                        invalidate();
+                        mFftSamplingTime = currentTimeMillis;
+                    }
+
+                }
+            };
+            mVisualizer.setDataCaptureListener(captureListener, Visualizer.getMaxCaptureRate() / 2, true, true);
+            // Enabled Visualizer and disable when we're done with the stream
+            LogUtils.d("2222这里设置了enable为true");
+            mVisualizer.setEnabled(true);
         }
     }
 
@@ -224,6 +277,7 @@ public class VisualizerView extends View {
     public void setVisualizerEnable(boolean flag) {
         try {
             if (mVisualizer != null) {
+                LogUtils.d("这里VisualizerView设置了Enable为："+flag);
                 mVisualizer.setEnabled(flag);
             }
         } catch (RuntimeException e) {

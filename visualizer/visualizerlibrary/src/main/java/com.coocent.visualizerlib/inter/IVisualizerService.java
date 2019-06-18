@@ -45,5 +45,5 @@ public interface IVisualizerService {
 	void resume();
 	void resetAndResume();
 	void destroy();
-	Visualizer getCurrentVisualizer();
+
 }
