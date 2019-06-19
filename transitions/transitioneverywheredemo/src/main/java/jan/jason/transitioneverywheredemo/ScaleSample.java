@@ -31,6 +31,9 @@ import com.transitionseverywhere.TransitionSet;
 import com.transitionseverywhere.extra.Scale;
 
 /**
+ * 文本隐藏到显示 实现缩放效果（Scale实现）
+ * 通过 TransitionSet组合缩放和渐变效果
+ *
  * Created by Andrey Kulikov on 24/03/16.
  */
 public class ScaleSample extends Fragment {

@@ -35,6 +35,8 @@ import com.transitionseverywhere.TransitionManager;
 
 
 /**
+ * 动态改变LayoutParams布局 自适应动态平移效果
+ *
  * 平移动画
  * 边界变化
  * Created by Andrey Kulikov on 17/04/16.

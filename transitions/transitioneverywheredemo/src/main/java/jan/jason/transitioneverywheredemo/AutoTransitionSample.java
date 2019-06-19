@@ -28,6 +28,9 @@ import com.transitionseverywhere.TransitionManager;
 
 /**
  * 第一个demo
+ *
+ * 文本显示隐藏自适应
+ *
  * 点击按钮，按钮下方弹出文字动画
  * 再点一次，文字隐藏，按钮下移
  * Created by Andrey Kulikov on 20/03/16.

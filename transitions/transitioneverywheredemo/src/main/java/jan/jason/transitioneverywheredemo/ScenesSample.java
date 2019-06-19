@@ -91,9 +91,12 @@ public class ScenesSample extends Fragment implements RadioGroup.OnCheckedChange
             set.addTransition(new ChangeBounds());
             set.setOrdering(TransitionSet.ORDERING_TOGETHER);
             set.setDuration(350);
-            TransitionManager.go(mScene2, set);
+//            TransitionManager.go(mScene2, set);
+            TransitionManager.go(mScene2);
         }else if (checkedId==R.id.select_scene_3){
             mTransitionManagerForScene3.transitionTo(mScene3);
+
+//            TransitionManager.go(mScene3);
         }
     }
 }

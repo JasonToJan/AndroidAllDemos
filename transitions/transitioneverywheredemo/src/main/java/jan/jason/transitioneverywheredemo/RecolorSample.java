@@ -29,6 +29,8 @@ import com.transitionseverywhere.TransitionManager;
 
 
 /**
+ * 点击图片切换颜色过渡
+ *
  * Created by Andrey Kulikov on 17/04/16.
  */
 public class RecolorSample extends Fragment {

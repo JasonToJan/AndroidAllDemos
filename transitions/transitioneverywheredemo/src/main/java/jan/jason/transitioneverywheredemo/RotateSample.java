@@ -27,6 +27,8 @@ import com.transitionseverywhere.TransitionManager;
 
 
 /**
+ * 点击旋转切换 过渡效果
+ *
  * Created by Andrey Kulikov on 17/04/16.
  */
 public class RotateSample extends Fragment {

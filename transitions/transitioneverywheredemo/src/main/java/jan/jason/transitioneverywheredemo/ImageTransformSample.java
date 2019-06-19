@@ -30,6 +30,8 @@ import com.transitionseverywhere.TransitionSet;
 
 
 /**
+ * 点击图片 实现图片片换效果（ChangeImageTransform）
+ *
  * Created by Andrey Kulikov on 20/03/16.
  */
 public class ImageTransformSample extends Fragment {
@@ -55,10 +57,10 @@ public class ImageTransformSample extends Fragment {
                     .addTransition(new ChangeImageTransform()));
 
                 ViewGroup.LayoutParams params = imageView.getLayoutParams();
-                params.height = mExpanded ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT;
+                params.height = mExpanded ? ViewGroup.LayoutParams.MATCH_PARENT : 1000;
                 imageView.setLayoutParams(params);
 
-                imageView.setScaleType(mExpanded ? ImageView.ScaleType.CENTER_CROP : ImageView.ScaleType.FIT_CENTER);
+                //imageView.setScaleType(mExpanded ? ImageView.ScaleType.CENTER_CROP : ImageView.ScaleType.FIT_CENTER);
             }
         });
 

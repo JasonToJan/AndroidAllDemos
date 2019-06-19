@@ -28,6 +28,8 @@ import com.transitionseverywhere.TransitionManager;
 
 
 /**
+ * 文字改变动态过渡效果
+ *
  * Created by Andrey Kulikov on 17/04/16.
  */
 public class ChangeTextSample extends Fragment {
@@ -51,8 +53,7 @@ public class ChangeTextSample extends Fragment {
             @Override
             public void onClick(View v) {
                 mSecondText = !mSecondText;
-                TransitionManager.beginDelayedTransition(transitionsContainer,
-                    new ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_OUT_IN));
+                TransitionManager.beginDelayedTransition(transitionsContainer, new ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_OUT_IN));
                 textView.setText(mSecondText ? TEXT_2 : TEXT_1);
             }
 

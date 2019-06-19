@@ -30,6 +30,8 @@ import com.transitionseverywhere.TransitionManager;
 
 
 /**
+ * 动态改变LayoutParams位置参数，实现曲线平移（ChangeBounds实现）
+ *
  * 可以将直线变成圆滑曲线
  * Created by Andrey Kulikov on 24/03/16.
  */

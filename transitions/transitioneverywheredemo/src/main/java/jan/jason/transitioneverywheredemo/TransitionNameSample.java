@@ -36,6 +36,8 @@ import java.util.List;
 
 
 /**
+ * 多个视图互相平移效果
+ *
  * Created by Andrey Kulikov on 12/05/16.
  */
 public class TransitionNameSample extends Fragment {
@@ -69,6 +71,12 @@ public class TransitionNameSample extends Fragment {
         return view;
     }
 
+    /**
+     * 创建视图组
+     * @param inflater
+     * @param layout
+     * @param titles
+     */
     private static void createViews(LayoutInflater inflater, ViewGroup layout, List<String> titles) {
         layout.removeAllViews();
         for (String title : titles) {

@@ -33,6 +33,8 @@ import com.transitionseverywhere.TransitionSet;
 
 
 /**
+ *
+ *
  * Created by Andrey Kulikov on 25/03/16.
  */
 public class ExplodeAndEpicenterExample extends Fragment {
@@ -43,18 +45,22 @@ public class ExplodeAndEpicenterExample extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRecyclerView = new RecyclerView(container.getContext());
-        mRecyclerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT));
+        mRecyclerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 4));
         mRecyclerView.setAdapter(new Adapter());
         return mRecyclerView;
     }
 
+    /**
+     * 点击实现爆炸效果
+     * @param clickedView
+     */
     private void letsExplodeIt(View clickedView) {
         // save rect of view in screen coordinated
         final Rect viewRect = new Rect();
-        clickedView.getGlobalVisibleRect(viewRect);
+        clickedView.getGlobalVisibleRect(viewRect);//将可见区域保存在矩形中
 
+        //设置爆炸起点
         final Explode explode = new Explode();
         explode.setEpicenterCallback(new Transition.EpicenterCallback() {
             @Override
@@ -62,7 +68,11 @@ public class ExplodeAndEpicenterExample extends Fragment {
                 return viewRect;
             }
         });
+
+        //设置爆炸包含视图
         explode.excludeTarget(clickedView, true);
+
+        //将爆炸效果和渐变效果组合起来,最后要返回
         TransitionSet set = new TransitionSet()
             .addTransition(explode)
             .addTransition(new Fade().addTarget(clickedView))
@@ -74,9 +84,9 @@ public class ExplodeAndEpicenterExample extends Fragment {
                 }
             });
         TransitionManager.beginDelayedTransition(mRecyclerView, set);
+        mRecyclerView.setAdapter(null);//必须要执行完爆炸动画后再设置
 
         // remove all views from Recycler View
-        mRecyclerView.setAdapter(null);
     }
 
     private class Adapter extends RecyclerView.Adapter<ViewHolder> {

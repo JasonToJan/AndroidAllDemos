@@ -34,6 +34,8 @@ import com.transitionseverywhere.utils.IntProperty;
 
 
 /**
+ * 自定义动画（继承Transition）
+ *
  * Created by Andrey Kulikov on 17/04/16.
  */
 public class CustomTransitionSample extends Fragment {

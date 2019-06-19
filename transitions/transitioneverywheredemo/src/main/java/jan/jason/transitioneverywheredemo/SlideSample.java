@@ -29,6 +29,8 @@ import com.transitionseverywhere.TransitionManager;
 
 
 /**
+ * 文本显示或隐藏 实现侧滑效果（Slide实现）
+ *
  * 点击按钮实现文字侧滑
  * Created by Andrey Kulikov on 20/03/16.
  */
