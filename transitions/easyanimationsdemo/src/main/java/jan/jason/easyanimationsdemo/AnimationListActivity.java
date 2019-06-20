@@ -20,8 +20,7 @@ import android.app.Activity;
  * {@link AnimationListFragment.Callbacks} interface to listen for item
  * selections.
  */
-public class AnimationListActivity extends Activity implements
-		AnimationListFragment.Callbacks {
+public class AnimationListActivity extends Activity implements AnimationListFragment.Callbacks {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -43,8 +42,7 @@ public class AnimationListActivity extends Activity implements
 
 			// In two-pane mode, list items should be given the
 			// 'activated' state when touched.
-			((AnimationListFragment) getFragmentManager().findFragmentById(
-					R.id.animation_list)).setActivateOnItemClick(true);
+			((AnimationListFragment) getFragmentManager().findFragmentById(R.id.animation_list)).setActivateOnItemClick(true);
 		}
 
 		// TODO: If exposing deep links into your app, handle intents here.
@@ -71,8 +69,7 @@ public class AnimationListActivity extends Activity implements
 		} else {
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
-			Intent detailIntent = new Intent(this,
-					AnimationDetailActivity.class);
+			Intent detailIntent = new Intent(this, AnimationDetailActivity.class);
 			detailIntent.putExtra(AnimationDetailFragment.ARG_ITEM_ID, id);
 			startActivity(detailIntent);
 		}

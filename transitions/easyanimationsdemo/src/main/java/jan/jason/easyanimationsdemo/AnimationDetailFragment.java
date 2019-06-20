@@ -179,10 +179,12 @@ public class AnimationDetailFragment extends Fragment implements
 	private void doAnimation() {
 		switch (mItem.id) {
 		case 1:
+			//视图向上折叠效果
 			new BlindAnimation(card).animate();
 			isFinished = true;
 			break;
 		case 2:
+			//闪两下
 			new BlinkAnimation(card).setListener(new AnimationListener() {
 				@Override
 				public void onAnimationEnd(Animation animation) {
@@ -191,6 +193,7 @@ public class AnimationDetailFragment extends Fragment implements
 			}).animate();
 			break;
 		case 3:
+			//视图震动
 			new BounceAnimation(card).setNumOfBounces(3)
 					.setDuration(Animation.DURATION_SHORT)
 					.setListener(new AnimationListener() {
@@ -202,19 +205,23 @@ public class AnimationDetailFragment extends Fragment implements
 					}).animate();
 			break;
 		case 4:
+			//视图爆炸效果
 			new ExplodeAnimation(card).animate();
 			isFinished = true;
 			break;
 		case 5:
+			//视图渐入
 			new FadeInAnimation(card).animate();
 			isFinished = true;
 			break;
 		case 6:
+			//视图渐出
 			new FadeOutAnimation(card).animate();
 			isFinished = true;
 			break;
 		case 7:
-			new FlipHorizontalAnimation(card).setListener(
+			//水平一百八十度翻转
+			new FlipHorizontalAnimation(card).setDegrees(180).setListener(
 					new AnimationListener() {
 
 						@Override
@@ -224,12 +231,14 @@ public class AnimationDetailFragment extends Fragment implements
 					}).animate();
 			break;
 		case 8:
+			//水平翻转成另外一张图片
 			new FlipHorizontalToAnimation(card).setFlipToView(card2)
 					.setInterpolator(new LinearInterpolator()).animate();
 			isFinished = true;
 			break;
 		case 9:
-			new FlipVerticalAnimation(card).setListener(
+			//垂直翻转
+			new FlipVerticalAnimation(card).setDegrees(180).setListener(
 					new AnimationListener() {
 
 						@Override
@@ -239,23 +248,27 @@ public class AnimationDetailFragment extends Fragment implements
 					}).animate();
 			break;
 		case 10:
+			//垂直翻转成另一张图片
 			new FlipVerticalToAnimation(card).setFlipToView(card2)
 					.setInterpolator(new LinearInterpolator()).animate();
 			isFinished = true;
 			break;
 		case 11:
+			//折叠进来
 			card2.setVisibility(View.VISIBLE);
 			new UnfoldAnimation(card).setNumOfFolds(10).setDuration(1000)
 					.setOrientation(FoldLayout.Orientation.HORIZONTAL).animate();
 			isFinished = true;
 			break;
 		case 12:
+			//折叠出去
 			card2.setVisibility(View.VISIBLE);
 			new FoldAnimation(card).setNumOfFolds(10).setDuration(1000)
 					.setOrientation(FoldLayout.Orientation.VERTICAL).animate();
 			isFinished = true;
 			break;
 		case 13:
+			//高亮一下
 			new HighlightAnimation(card).setListener(new AnimationListener() {
 
 				@Override
@@ -265,6 +278,7 @@ public class AnimationDetailFragment extends Fragment implements
 			}).animate();
 			break;
 		case 14:
+			//自定义路径
 			ArrayList<Point> points = new ArrayList<>();
 			points.add(new Point(0, 100));
 			points.add(new Point(50, 0));
@@ -284,14 +298,17 @@ public class AnimationDetailFragment extends Fragment implements
 			break;
 
 		case 15:
+			//从大到小缩放 到本身大小结束
 			new PuffInAnimation(card).animate();
 			isFinished = true;
 			break;
 		case 16:
+			//从小到大放大 从本身大小开始
 			new PuffOutAnimation(card).animate();
 			isFinished = true;
 			break;
 		case 17:
+			//视图绕一点旋转
 			new RotationAnimation(card)
 					.setPivot(RotationAnimation.PIVOT_TOP_LEFT)
 					.setListener(new AnimationListener() {
@@ -304,14 +321,17 @@ public class AnimationDetailFragment extends Fragment implements
 			break;
 
 		case 18:
+			//从0到本身 缩放效果
 			new ScaleInAnimation(card).animate();
 			isFinished = true;
 			break;
 		case 19:
+			//从本身到0 缩放效果
 			new ScaleOutAnimation(card).animate();
 			isFinished = true;
 			break;
 		case 20:
+			//抖动效果
 			new ShakeAnimation(card).setNumOfShakes(3)
 					.setDuration(Animation.DURATION_SHORT)
 					.setListener(new AnimationListener() {
@@ -324,31 +344,38 @@ public class AnimationDetailFragment extends Fragment implements
 			break;
 
 		case 21:
+			//滑入效果，方向自定义
 			new SlideInAnimation(card).setDirection(Animation.DIRECTION_UP)
 					.animate();
 			isFinished = true;
 			break;
 		case 22:
+			//滑入效果，有边界
 			new SlideInUnderneathAnimation(card).setDirection(
 					Animation.DIRECTION_DOWN).animate();
 			isFinished = true;
 			break;
 		case 23:
+			//滑出效果，方向自定义
 			new SlideOutAnimation(card).setDirection(Animation.DIRECTION_LEFT)
 					.animate();
 			isFinished = true;
 			break;
 		case 24:
+			//滑出效果，有边界
 			new SlideOutUnderneathAnimation(card).setDirection(
-					Animation.DIRECTION_RIGHT).animate();
+					Animation.DIRECTION_DOWN).animate();
 			isFinished = true;
 			break;
 		case 25:
+			//变换效果，从一个视图变换到另一个视图大小位置
 			new TransferAnimation(card).setDestinationView(target).animate();
 			break;
 		case 26:
+			//组合动画
 			card.setImageResource(R.drawable.img1);
 
+			//爆炸监听，结束了设置视图隐藏和显示
 			final AnimationListener explodeAnimListener = new AnimationListener() {
 
 				@Override
@@ -358,6 +385,7 @@ public class AnimationDetailFragment extends Fragment implements
 				}
 			};
 
+			//回弹监听，结束后设置爆炸效果
 			final AnimationListener bounceAnimListener = new AnimationListener() {
 
 				@Override
@@ -367,6 +395,7 @@ public class AnimationDetailFragment extends Fragment implements
 				}
 			};
 
+			//平行监听，结束后设置回弹监听
 			final ParallelAnimatorListener slideFadeInAnimListener = new ParallelAnimatorListener() {
 
 				@Override
@@ -378,6 +407,7 @@ public class AnimationDetailFragment extends Fragment implements
 				}
 			};
 
+			//平行监听，设置滑动，渐变
 			final ParallelAnimatorListener slideFadeOutAnimListener = new ParallelAnimatorListener() {
 
 				@Override
@@ -392,6 +422,7 @@ public class AnimationDetailFragment extends Fragment implements
 				}
 			};
 
+			//平行监听，设置滑出，渐变
 			final ParallelAnimatorListener rotatePathAnimListener = new ParallelAnimatorListener() {
 
 				@Override
@@ -407,6 +438,7 @@ public class AnimationDetailFragment extends Fragment implements
 				}
 			};
 
+			//平行监听，设置路径，旋转，
 			final ParallelAnimatorListener scaleFlipAnimListener = new ParallelAnimatorListener() {
 
 				@Override
@@ -417,6 +449,7 @@ public class AnimationDetailFragment extends Fragment implements
 					parallelPoints.add(new Point(50, 100));
 					parallelPoints.add(new Point(0, 50));
 					parallelPoints.add(new Point(50, 50));
+
 					ParallelAnimator rotatePathAnim = new ParallelAnimator();
 					rotatePathAnim.add(new PathAnimation(card)
 							.setPoints(parallelPoints));

@@ -63,6 +63,7 @@ public class ScenesSample extends Fragment implements RadioGroup.OnCheckedChange
         mSceneRoot = (ViewGroup) view.findViewById(R.id.scene_root);
 
         // A Scene can be instantiated from a live view hierarchy.
+        //一个是根视图ViewGroup，一个是场景的顶层view
         mScene1 = new Scene(mSceneRoot, mSceneRoot.findViewById(R.id.container));
 
         // You can also inflate a generate a Scene from a layout resource file.
@@ -73,6 +74,8 @@ public class ScenesSample extends Fragment implements RadioGroup.OnCheckedChange
 
         // We create a custom TransitionManager for Scene 3, in which ChangeBounds, Fade and
         // ChangeImageTransform take place at the same time.
+
+        //加载布局中的转场风格
         mTransitionManagerForScene3 = TransitionInflater.from(getContext())
             .inflateTransitionManager(R.transition.scene3_transition_manager, mSceneRoot);
 

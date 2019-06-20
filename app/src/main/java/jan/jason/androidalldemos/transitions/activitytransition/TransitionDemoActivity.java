@@ -5,6 +5,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.transition.ArcMotion;
 import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
@@ -65,6 +66,10 @@ public class TransitionDemoActivity extends AppCompatActivity {
         startActivity(intent, optionsCompat.toBundle());
     }
 
+    /**
+     * 转场自带的滑动动画
+     * @param view
+     */
     public void getActivityOptionSlide(View view) {
         Slide slide = new Slide();
         slide.setDuration(800);

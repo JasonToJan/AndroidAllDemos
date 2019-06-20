@@ -16,5 +16,8 @@ public class TransitionStyleActivity extends AppCompatActivity {
 
     public void getFinish(View view){
         finish();
+        overridePendingTransition(
+                android.R.anim.fade_in,
+                android.R.anim.fade_out);
     }
 }

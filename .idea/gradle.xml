@@ -9,9 +9,14 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/photos" />
+            <option value="$PROJECT_DIR$/photos/takephoto" />
+            <option value="$PROJECT_DIR$/photos/takephotodemo" />
             <option value="$PROJECT_DIR$/popupwindow" />
             <option value="$PROJECT_DIR$/popupwindow/popupwindowdemo" />
             <option value="$PROJECT_DIR$/tools" />
+            <option value="$PROJECT_DIR$/tools/multirecyclerviewdemo" />
+            <option value="$PROJECT_DIR$/tools/multirrecyclerview" />
             <option value="$PROJECT_DIR$/tools/notchfit" />
             <option value="$PROJECT_DIR$/tools/notchtools" />
             <option value="$PROJECT_DIR$/tools/pictureselector" />
