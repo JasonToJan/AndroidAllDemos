@@ -20,7 +20,8 @@ include ':popupwindow:popupwindowdemo'
 
 
 //tools工具相关
-include ':tools:notchtools',':tools:notchfit',':tools:pictureselector'
+include ':tools:notchtools',':tools:notchfit',':tools:pictureselector',':tools:multirrecyclerview',
+        ':tools:multirecyclerviewdemo'
 
 
 //photos相关

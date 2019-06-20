@@ -11,7 +11,7 @@
 
         <Button
             android:id="@+id/amt_btn1"
-            android:text="系统通知栏"
+            android:text="批量操作recyclerview"
             android:textAllCaps="false"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"

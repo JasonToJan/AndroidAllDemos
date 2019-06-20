@@ -67,6 +67,7 @@ dependencies {
 
 
     //工具相关
+    implementation project(":tools:multirecyclerviewdemo")
 
 
     //图片相关
