@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/ab_top_ll"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+            <TextView
+                android:id="@+id/ab_top_tv1"
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:text="Select All"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:background="?android:attr/selectableItemBackground"
+                />
+
+            <TextView
+                android:id="@+id/ab_top_tv2"
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:text="0 Selected"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:background="?android:attr/selectableItemBackground"
+                />
+
+            <TextView
+                android:id="@+id/ab_top_tv3"
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:background="?android:attr/selectableItemBackground"
+                />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/ab_recyclerview"
+            android:layout_above="@+id/ab_bottom_ll"
+            android:layout_below="@+id/ab_top_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <LinearLayout
+            android:id="@+id/ab_bottom_ll"
+            android:layout_alignParentBottom="true"
+            android:background="@color/bottom_operator_bg"
+            android:layout_width="match_parent"
+            android:layout_height="75dp">
+
+            <TextView
+                android:id="@+id/ab_bottom_tv1"
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/bulk_bottom_icon1"
+                android:text="Add to queue"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:background="?android:attr/selectableItemBackground"
+                />
+
+            <TextView
+                android:id="@+id/ab_bottom_tv2"
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/bulk_bottom_icon1"
+                android:text="Add to playlist"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:background="?android:attr/selectableItemBackground"
+                />
+
+            <TextView
+                android:id="@+id/ab_bottom_tv3"
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/bulk_bottom_icon1"
+                android:text="Delete"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:background="?android:attr/selectableItemBackground"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</layout>

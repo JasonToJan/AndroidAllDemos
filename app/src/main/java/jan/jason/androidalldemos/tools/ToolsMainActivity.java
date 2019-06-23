@@ -8,8 +8,12 @@ import android.view.View;
 
 import com.goyourfly.multiselectadapter.MainActivityMulti;
 
+import java.util.ArrayList;
+
 import jan.jason.androidalldemos.R;
 import jan.jason.androidalldemos.databinding.ActivityMainToolsBinding;
+import jan.jason.bulk.BulkUtils;
+import jan.jason.bulk.helper.Item;
 
 /**
  * desc: 工具类主页
@@ -20,6 +24,7 @@ import jan.jason.androidalldemos.databinding.ActivityMainToolsBinding;
 public class ToolsMainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ActivityMainToolsBinding mainBinding;
+    private ArrayList<Item> list=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +32,7 @@ public class ToolsMainActivity extends AppCompatActivity implements View.OnClick
         mainBinding= DataBindingUtil.setContentView(this, R.layout.activity_main_tools);
 
         mainBinding.amtBtn1.setOnClickListener(this);
+        mainBinding.amtBtn2.setOnClickListener(this);
     }
 
     @Override
@@ -36,6 +42,27 @@ public class ToolsMainActivity extends AppCompatActivity implements View.OnClick
             case R.id.amt_btn1:
                 startActivity(new Intent(this, MainActivityMulti.class));
                 break;
+
+            case R.id.amt_btn2:
+                list.clear();
+                for(int i=0;i<10;i++){
+                    list.add(new Item("title"+i,"title"+i+i,"title"+i+i+i));
+                }
+                BulkUtils.keepToBulkActivity(this,list);
+                break;
+        }
+    }
+
+    public class BulkEntity{
+
+        String title1;
+        String title2;
+        String title3;
+
+        public BulkEntity(String title1, String title2, String title3) {
+            this.title1 = title1;
+            this.title2 = title2;
+            this.title3 = title3;
         }
     }
 }

@@ -1,6 +1,5 @@
 include ':app'
 
-
 //转场动画相关
 include ':transitions:transitionEverywhere',':transitions:transitionEverywhereDemo',
         ':transitions:easyanimations', ':transitions:easyanimationsdemo',
@@ -21,7 +20,7 @@ include ':popupwindow:popupwindowdemo'
 
 //tools工具相关
 include ':tools:notchtools',':tools:notchfit',':tools:pictureselector',
-        ':tools:multirrecyclerview', ':tools:multirecyclerviewdemo'
+        ':tools:multirrecyclerview', ':tools:multirecyclerviewdemo',':tools:bulk'
 
 
 //photos相关
