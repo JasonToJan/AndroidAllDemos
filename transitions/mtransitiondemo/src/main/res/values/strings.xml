@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">MTranstionDemo</string>
     <string name="example0_title">示例0:基础示例</string>
     <string name="example1_title">示例1:随时改变动画</string>
     <string name="example2_title">示例2:基础示例2</string>

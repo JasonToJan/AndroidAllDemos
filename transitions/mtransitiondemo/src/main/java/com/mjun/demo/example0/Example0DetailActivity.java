@@ -27,24 +27,33 @@ public class Example0DetailActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAppDetailPage = new AppDetailPage(this);
+
+
         AppBean bean = (AppBean) MTransitionManager.getInstance().getTransition("example").getBundle().getObject("bean");
         mAppDetailPage.setImageId(bean.mIconId);
         mAppDetailPage.setName(bean.mName);
         setContentView(mAppDetailPage);
         mAppDetailPage.setContent(getString(R.string.example0_tip));
+
+
         initTranstion();
     }
 
     private void initTranstion() {
+
+
+        //进入动画
         final MTransition transition = MTransitionManager.getInstance().getTransition("example");
         transition.toPage().setContainer(mAppDetailPage, new ITransitPrepareListener() {
             @Override
             public void onPrepare(MTransitionView container) {
                 int width = container.getWidth();
-                transition.fromPage().getTransitionView("container").translateX(0, -width / 4);
+                transition.fromPage().getTransitionView("container").translateX(0, -width / 4);//有一种动态效果，底层也移动
                 container.translateX(width, 0);
             }
         });
+
+        //返回动画
         transition.setOnTransitListener(new TransitListenerAdapter() {
             @Override
             public void onTransitEnd(MTransition transition, boolean reverse) {
@@ -54,6 +63,8 @@ public class Example0DetailActivity extends Activity {
                 }
             }
         });
+
+
         transition.setDuration(500);
         transition.start();
 
@@ -79,7 +90,7 @@ public class Example0DetailActivity extends Activity {
                 } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
                     int delta = (int) (event.getX() - mDownX);
                     float progress = 1f - delta / (float) mAppDetailPage.getMeasuredWidth();
-                    if (progress < 0.5f) {
+                    if (progress < 0.2f) {
                         transition.gotoCeil();
                     } else {
                         transition.gotoFloor();

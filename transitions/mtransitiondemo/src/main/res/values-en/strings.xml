@@ -1,38 +1,75 @@
 <resources>
-    <string name="app_name">MTranstionDemo</string>
-    <string name="example0_title">Demo0:Basic example</string>
-    <string name="example1_title">Demo1:Change Transition at any time</string>
-    <string name="example2_title">Demo2:Basic example2</string>
-    <string name="example3_title">Demo3:Basic example3</string>
-    <string name="example4_title">Demo4:Multiple Activity example</string>
-    <string name="example41_title">Demo41:Multiple Activity example2</string>
-    <string name="example5_title">Demo5:Custom Transition Example</string>
-    <string name="example6_title">Demo6:Custom Transition Example2，Lottie</string>
-    <string name="example7_title">Demo7:Custom Transition Example3</string>
-    <string name="example8_title">Demo8:Transition between Fragment</string>
-    <string name="example9_title">Demo9:Transition in the same Activity</string>
-    <string name="example10_title">Demo10:A wounderful example</string>
+    <!--<string name="app_name">MTranstionDemo</string>-->
+    <!--<string name="example0_title">Demo0:Basic example</string>-->
+    <!--<string name="example1_title">Demo1:Change Transition at any time</string>-->
+    <!--<string name="example2_title">Demo2:Basic example2</string>-->
+    <!--<string name="example3_title">Demo3:Basic example3</string>-->
+    <!--<string name="example4_title">Demo4:Multiple Activity example</string>-->
+    <!--<string name="example41_title">Demo41:Multiple Activity example2</string>-->
+    <!--<string name="example5_title">Demo5:Custom Transition Example</string>-->
+    <!--<string name="example6_title">Demo6:Custom Transition Example2，Lottie</string>-->
+    <!--<string name="example7_title">Demo7:Custom Transition Example3</string>-->
+    <!--<string name="example8_title">Demo8:Transition between Fragment</string>-->
+    <!--<string name="example9_title">Demo9:Transition in the same Activity</string>-->
+    <!--<string name="example10_title">Demo10:A wounderful example</string>-->
 
-    <string name="example0_tip">Back key to return or try to slide to the right</string>
-    <string name="test_tip">This page is used to test the default android activity transitions</string>
+    <!--<string name="example0_tip">Back key to return or try to slide to the right</string>-->
+    <!--<string name="test_tip">This page is used to test the default android activity transitions</string>-->
 
-    <string name="example4_tip11">This is Activit 1</string>
-    <string name="example4_tip12">Click to Activity 2</string>
-    <string name="example4_tip21">This is Activit 2</string>
-    <string name="example4_tip22">Click to Activity 3</string>
-    <string name="example4_tip31">This is Activit 3</string>
-    <string name="example4_tip32">Click to Activity 4</string>
-    <string name="example4_tip41">This is Activit 4</string>
+    <!--<string name="example4_tip11">This is Activit 1</string>-->
+    <!--<string name="example4_tip12">Click to Activity 2</string>-->
+    <!--<string name="example4_tip21">This is Activit 2</string>-->
+    <!--<string name="example4_tip22">Click to Activity 3</string>-->
+    <!--<string name="example4_tip31">This is Activit 3</string>-->
+    <!--<string name="example4_tip32">Click to Activity 4</string>-->
+    <!--<string name="example4_tip41">This is Activit 4</string>-->
 
-    <string name="example41_tip11">This is Activit 1</string>
-    <string name="example41_tip12">Click to Activity 2</string>
-    <string name="example41_tip21">This is Activit 2, Or slide back</string>
-    <string name="example41_tip22">Click to Activity 3</string>
-    <string name="example41_tip31">This is Activit 3, Or slide back</string>
-    <string name="example41_tip32">Click to Activity 4</string>
-    <string name="example41_tip41">This is Activit 4, Or slide back</string>
+    <!--<string name="example41_tip11">This is Activit 1</string>-->
+    <!--<string name="example41_tip12">Click to Activity 2</string>-->
+    <!--<string name="example41_tip21">This is Activit 2, Or slide back</string>-->
+    <!--<string name="example41_tip22">Click to Activity 3</string>-->
+    <!--<string name="example41_tip31">This is Activit 3, Or slide back</string>-->
+    <!--<string name="example41_tip32">Click to Activity 4</string>-->
+    <!--<string name="example41_tip41">This is Activit 4, Or slide back</string>-->
 
-    <string name="example6_tip">Try to click on the cat, the material comes from http://www.lottiefiles.com/</string>
-    <string name="example7_tip1">The effect comes from https://github.com/7heaven/CurtainSlidingMenu</string>
-    <string name="example7_tip2">Exit or slide back</string>
+    <!--<string name="example6_tip">Try to click on the cat, the material comes from http://www.lottiefiles.com/</string>-->
+    <!--<string name="example7_tip1">The effect comes from https://github.com/7heaven/CurtainSlidingMenu</string>-->
+    <!--<string name="example7_tip2">Exit or slide back</string>-->
+
+    <string name="example0_title">示例0:基础示例</string>
+    <string name="example1_title">示例1:随时改变动画</string>
+    <string name="example2_title">示例2:基础示例2</string>
+    <string name="example3_title">示例3:基础示例3</string>
+    <string name="example4_title">示例4:多Activity示例</string>
+    <string name="example41_title">示例41:多Activity示例2</string>
+    <string name="example5_title">示例5:自定义动画View示例</string>
+    <string name="example6_title">示例6:自定义动画View示例2，Lottie</string>
+    <string name="example7_title">示例7:自定义动画View示例3</string>
+    <string name="example8_title">示例8:Fragment之间的切换动画</string>
+    <string name="example9_title">示例9:同一个Activity下的切换动画</string>
+    <string name="example10_title">示例10:一个不错的示例</string>
+
+    <string name="example0_tip">Back键返回或者尝试向右滑动</string>
+    <string name="test_tip">该页面用来测试默认的进退场动画</string>
+
+    <string name="example4_tip11">这是Activit 1</string>
+    <string name="example4_tip12">点击前往Activity 2</string>
+    <string name="example4_tip21">这是Activit 2</string>
+    <string name="example4_tip22">点击前往Activity 3</string>
+    <string name="example4_tip31">这是Activit 3</string>
+    <string name="example4_tip32">点击前往Activity 4</string>
+    <string name="example4_tip41">这是Activit 4</string>
+
+    <string name="example41_tip11">这是Activit 1</string>
+    <string name="example41_tip12">点击前往Activity 2</string>
+    <string name="example41_tip21">这是Activit 2，可以滑动返回</string>
+    <string name="example41_tip22">点击前往Activity 3</string>
+    <string name="example41_tip31">这是Activit 3，可以滑动返回</string>
+    <string name="example41_tip32">点击前往Activity 4</string>
+    <string name="example41_tip41">这是Activit 4，可以滑动返回</string>
+
+    <string name="example6_tip">试下点击那只猫,素材来自http://www.lottiefiles.com/</string>
+    <string name="example7_tip1">该动画效果来源于https://github.com/7heaven/CurtainSlidingMenu</string>
+    <string name="example7_tip2">Exit或者滑动返回</string>
+
 </resources>

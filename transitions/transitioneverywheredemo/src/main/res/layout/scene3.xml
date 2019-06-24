@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <View
-        android:id="@+id/transition_square"
+        android:id="@+id/transition_square2"
         android:layout_width="@dimen/square_size"
         android:layout_height="@dimen/square_size"
         android:layout_centerHorizontal="true"
@@ -14,14 +14,14 @@
         android:gravity="center"/>
 
     <ImageView
-        android:id="@+id/transition_image"
+        android:id="@+id/transition_image2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:src="@drawable/ic_launcher"/>
 
     <View
-        android:id="@+id/transition_oval"
+        android:id="@+id/transition_oval2"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_alignParentBottom="true"

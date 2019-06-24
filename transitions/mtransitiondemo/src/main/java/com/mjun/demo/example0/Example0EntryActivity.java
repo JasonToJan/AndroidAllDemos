@@ -44,6 +44,12 @@ public class Example0EntryActivity extends Activity{
         mPage.mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+
+
+
+
+
+                //创建Mtransition,mPage务必是最外层的
                 final MTransition transition = MTransitionManager.getInstance().createTransition("example");
                 transition.fromPage().setContainer(mPage, new ITransitPrepareListener() {
                     @Override
@@ -51,14 +57,20 @@ public class Example0EntryActivity extends Activity{
                         transition.fromPage().addTransitionView("container", mPage);
                     }
                 });
-                transition.getBundle().putObject("bean", mBeans.get(position));
+
+
+                transition.getBundle().putObject("bean", mBeans.get(position));//传intent数据
                 Intent intent = new Intent(mPage.getContext(), Example0DetailActivity.class);
                 //if (position == 2) {
                 //    MTranstionUtil.resumeActivityAnimation(Example0EntryActivity.this);
                 //    intent = new Intent(mPage.getContext(), TestActivityAnimtaionActivity.class);
                 //}
                 mPage.getContext().startActivity(intent);
-                MTranstionUtil.removeActivityAnimation(Example0EntryActivity.this);
+                MTranstionUtil.removeActivityAnimation(Example0EntryActivity.this);//关闭默认动画
+
+
+
+
             }
         });
     }
