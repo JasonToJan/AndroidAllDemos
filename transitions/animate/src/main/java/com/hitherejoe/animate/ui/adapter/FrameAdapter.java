@@ -16,7 +16,9 @@ public class FrameAdapter extends BaseAdapter {
 
     public FrameAdapter(Context context, int count) {
         mFrameViews = new ArrayList<>();
-        for (int i = 0; i < count; i++) mFrameViews.add(new ForegroundFrame(context));
+        for (int i = 0; i < count; i++){
+            mFrameViews.add(new ForegroundFrame(context));
+        }
     }
 
     @Override

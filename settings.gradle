@@ -25,3 +25,7 @@ include ':tools:notchtools',':tools:notchfit',':tools:pictureselector',
 
 //photos相关
 include ':photos:takephoto',':photos:takephotodemo'
+
+
+//player相关
+include ':player:exomedialib',':player:playlistlib',':player:exomediademo'

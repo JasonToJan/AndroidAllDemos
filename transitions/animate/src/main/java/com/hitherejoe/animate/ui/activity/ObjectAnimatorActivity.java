@@ -14,7 +14,7 @@ import butterknife.ButterKnife;
 public class ObjectAnimatorActivity extends BaseActivity {
 
     @BindView(R2.id.flipper_content)
-    AdapterViewAnimator mContentFlipper;
+    AdapterViewAnimator mContentFlipper;//多层布局
 
     private boolean isAnimatingUp;
     private int mContentCount;
@@ -45,10 +45,8 @@ public class ObjectAnimatorActivity extends BaseActivity {
     }
 
     private void setAnimations() {
-        mContentFlipper.setInAnimation(this, isAnimatingUp
-                ? R.animator.slide_in_bottom : R.animator.slide_in_left);
-        mContentFlipper.setOutAnimation(this, isAnimatingUp
-                ? R.animator.slide_out_top : R.animator.slide_out_right);
+        mContentFlipper.setInAnimation(this, isAnimatingUp ? R.animator.slide_in_bottom : R.animator.slide_in_left);
+        mContentFlipper.setOutAnimation(this, isAnimatingUp ? R.animator.slide_out_top : R.animator.slide_out_right);
     }
 
 }

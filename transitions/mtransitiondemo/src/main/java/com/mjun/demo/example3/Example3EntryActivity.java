@@ -47,26 +47,40 @@ public class Example3EntryActivity extends Activity{
         mPage.mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(final AdapterView<?> parent, final View view, int position, long id) {
+
+
                 final int firstItemPos = mPage.mListView.getFirstVisiblePosition();
                 final int lastItemPos = mPage.mListView.getLastVisiblePosition();
+
+
                 final MTransition transition = MTransitionManager.getInstance().createTransition("example");
                 transition.fromPage().setContainer(mPage, new ITransitPrepareListener() {
                     @Override
                     public void onPrepare(MTransitionView container) {
+
                         int count = lastItemPos - firstItemPos + 1;
                         for (int i = 0; i < count; i++) {
                             View child = parent.getChildAt(i);
                             transition.fromPage().addTransitionView("item" + i, child);
                         }
                         transition.fromPage().addTransitionView("header", mPage.mHeader);
+
+                        //加入可见区域的所有转场视图
+
                     }
                 });
+
+
                 transition.getBundle().putObject("bean", mBeans.get(position));
                 transition.getBundle().putInt("clickItemPos", position - firstItemPos);
                 transition.getBundle().putObject("itemCount", lastItemPos - firstItemPos + 1);
+
+
                 Intent intent = new Intent(mPage.getContext(), Example3DetailActivity.class);
                 mPage.getContext().startActivity(intent);
                 MTranstionUtil.removeActivityAnimation(Example3EntryActivity.this);
+
+
             }
         });
     }

@@ -96,6 +96,10 @@ public class TransitionActivity1 extends BaseDetailActivity {
         });
     }
 
+    /**
+     * 进入动画
+     * @return
+     */
     private Visibility buildEnterTransition() {
         Fade enterTransition = new Fade();
         enterTransition.setDuration(getResources().getInteger(R.integer.anim_duration_long));

@@ -58,6 +58,7 @@ public class Fragment1 extends Fragment implements Example8Activity.IHandleBack 
         mPage.mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+
                 final MTransition transition = MTransitionManager.getInstance().createTransition("example");
                 transition.fromPage().setContainer(mPage, new ITransitPrepareListener() {
                     @Override
@@ -70,6 +71,7 @@ public class Fragment1 extends Fragment implements Example8Activity.IHandleBack 
                 });
                 transition.getBundle().putObject("bean", mBeans.get(position));
                 ((Example8Activity) mActivity).enterOtherFragment();
+
             }
         });
     }

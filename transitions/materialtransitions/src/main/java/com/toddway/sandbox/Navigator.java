@@ -28,22 +28,19 @@ public class Navigator {
         if (backgroundView != null) BitmapUtil.storeBitmapInIntent(BitmapUtil.createBitmap(backgroundView), intent);
 
         ActivityCompat.startActivity(fromActivity, intent, options.toBundle());
-
         fromActivity.overridePendingTransition(R.anim.slide_up, R.anim.scale_down);
     }
 
     public static void launchOverlay(TransitionMaterialBaseActivity fromActivity, View fromView, View backgroundView) {
-        ActivityOptionsCompat options =
-                TransitionHelper.makeOptionsCompat(
-                        fromActivity
-                );
+        ActivityOptionsCompat options = TransitionHelper.makeOptionsCompat(fromActivity);
+
+
         Intent intent = new Intent(fromActivity, TransitionMaterialBaseActivity.class);
         intent.putExtra("fragment_resource_id", R.layout.fragment_overaly);
-
         if (backgroundView != null) BitmapUtil.storeBitmapInIntent(BitmapUtil.createBitmap(backgroundView), intent);
 
-        ActivityCompat.startActivity(fromActivity, intent, options.toBundle());
 
+        ActivityCompat.startActivity(fromActivity, intent, options.toBundle());
         fromActivity.overridePendingTransition(R.anim.slide_up, R.anim.scale_down);
     }
 

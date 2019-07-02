@@ -32,6 +32,8 @@ public class Example6EntryActivity extends Activity {
         animView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 final MTransition transition = MTransitionManager.getInstance().createTransition("example");
                 transition.fromPage().setContainer(myContainer, new ITransitPrepareListener() {
                     @Override
@@ -42,6 +44,8 @@ public class Example6EntryActivity extends Activity {
                 Intent intent = new Intent(Example6EntryActivity.this, Example6DetailActivity.class);
                 startActivity(intent);
                 MTranstionUtil.removeActivityAnimation(Example6EntryActivity.this);
+
+
             }
         });
     }

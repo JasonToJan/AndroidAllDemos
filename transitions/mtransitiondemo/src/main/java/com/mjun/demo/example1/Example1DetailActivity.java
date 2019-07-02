@@ -33,6 +33,8 @@ public class Example1DetailActivity extends Activity {
     }
 
     private void initTranstion() {
+
+
         final MTransition transition = MTransitionManager.getInstance().getTransition("example");
         transition.toPage().setContainer(mAppDetailPage, new ITransitPrepareListener() {
             @Override

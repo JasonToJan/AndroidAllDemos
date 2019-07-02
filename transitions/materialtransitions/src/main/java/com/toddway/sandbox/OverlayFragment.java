@@ -63,12 +63,14 @@ public class OverlayFragment extends TransitionHelper.BaseFragment {
 
     @Override
     public void onAfterEnter() {
-        animateRevealShow(overlayLayout);
+        animateRevealShow(overlayLayout);//波纹式展示
     }
 
     @Override
     public boolean onBeforeBack() {
-        animateRevealHide(overlayLayout);
+        animateRevealHide(overlayLayout);//波纹式返回
+
+
         TransitionMaterialBaseActivity.of(getActivity()).animateHomeIcon(MaterialMenuDrawable.IconState.BURGER);
         return false;
     }

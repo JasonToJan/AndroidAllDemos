@@ -43,6 +43,9 @@ public class Example1EntryActivity extends Activity{
         mPage.mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+
+
+
                 final MTransition transition = MTransitionManager.getInstance().createTransition("example");
                 transition.fromPage().setContainer(mPage, new ITransitPrepareListener() {
                     @Override
@@ -54,6 +57,9 @@ public class Example1EntryActivity extends Activity{
                 Intent intent = new Intent(mPage.getContext(), Example1DetailActivity.class);
                 mPage.getContext().startActivity(intent);
                 MTranstionUtil.removeActivityAnimation(Example1EntryActivity.this);
+
+
+
             }
         });
     }

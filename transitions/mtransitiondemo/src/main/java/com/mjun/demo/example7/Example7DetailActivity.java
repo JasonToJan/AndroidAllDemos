@@ -117,6 +117,11 @@ public class Example7DetailActivity extends Activity {
         MTransitionManager.getInstance().destoryTransition("example");
     }
 
+    /**
+     * 将View 变成 Bitmap
+     * @param v
+     * @return
+     */
     private Bitmap snapshot(View v) {
 
         Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);

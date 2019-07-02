@@ -37,10 +37,8 @@ public class AnimatedVectorDrawablesActivity extends BaseActivity {
 
         mAddToRemoveDrawable = (AnimatedVectorDrawable) getDrawable(R.drawable.avd_add_to_remove);
         mRemoveToAddDrawable = (AnimatedVectorDrawable) getDrawable(R.drawable.avd_remove_to_add);
-        mHeartToTwitterDrawable =
-                (AnimatedVectorDrawable) getDrawable(R.drawable.avd_heart_to_twitter);
-        mTwitterToHeartDrawable =
-                (AnimatedVectorDrawable) getDrawable(R.drawable.avd_twitter_to_heart);
+        mHeartToTwitterDrawable = (AnimatedVectorDrawable) getDrawable(R.drawable.avd_heart_to_twitter);
+        mTwitterToHeartDrawable = (AnimatedVectorDrawable) getDrawable(R.drawable.avd_twitter_to_heart);
 
         mIsAddState = true;
         mIsTwitterState = true;
@@ -53,8 +51,7 @@ public class AnimatedVectorDrawablesActivity extends BaseActivity {
 
     @OnClick(R2.id.image_add_remove)
     public void onAddRemoveImageClick() {
-        AnimatedVectorDrawable drawable =
-                mIsAddState ? mRemoveToAddDrawable : mAddToRemoveDrawable;
+        AnimatedVectorDrawable drawable = mIsAddState ? mRemoveToAddDrawable : mAddToRemoveDrawable;
         mAddRemoveImage.setImageDrawable(drawable);
         drawable.start();
         mIsAddState = !mIsAddState;
@@ -62,8 +59,7 @@ public class AnimatedVectorDrawablesActivity extends BaseActivity {
 
     @OnClick(R2.id.image_twitter_heart)
     public void onTwitterHeartImageClick() {
-        AnimatedVectorDrawable drawable =
-                mIsTwitterState ? mHeartToTwitterDrawable : mTwitterToHeartDrawable;
+        AnimatedVectorDrawable drawable = mIsTwitterState ? mHeartToTwitterDrawable : mTwitterToHeartDrawable;
         mTwitterHeartImage.setImageDrawable(drawable);
         drawable.start();
         mIsTwitterState = !mIsTwitterState;

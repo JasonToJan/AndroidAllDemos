@@ -28,8 +28,7 @@ public class AnimateMainActivity extends BaseActivity {
     private void setupRecyclerView() {
         mAnimationApisRecycler.setLayoutManager(new LinearLayoutManager(this));
         String[] apiArray = getResources().getStringArray(R.array.animation_apis);
-        AnimationApisAdapter animationApisAdapter =
-                new AnimationApisAdapter(apiArray, onRecyclerItemClick);
+        AnimationApisAdapter animationApisAdapter = new AnimationApisAdapter(apiArray, onRecyclerItemClick);
         mAnimationApisRecycler.setAdapter(animationApisAdapter);
     }
 
@@ -40,8 +39,7 @@ public class AnimateMainActivity extends BaseActivity {
                     Intent intent = null;
                     switch (position) {
                         case 0:
-                            intent = new Intent(
-                                    AnimateMainActivity.this, ViewPropertyAnimatorActivity.class);
+                            intent = new Intent(AnimateMainActivity.this, ViewPropertyAnimatorActivity.class);
                             break;
                         case 1:
                             intent = new Intent(AnimateMainActivity.this, ObjectAnimatorActivity.class);

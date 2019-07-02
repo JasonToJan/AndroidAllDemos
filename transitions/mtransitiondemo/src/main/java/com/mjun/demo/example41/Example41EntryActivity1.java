@@ -29,6 +29,8 @@ public class Example41EntryActivity1 extends Activity {
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 final MTransition transition = MTransitionManager.getInstance().createTransition("Activity1");
                 transition.fromPage().setContainer(findViewById(R.id.wrapper), new ITransitPrepareListener() {
                     @Override
@@ -39,6 +41,8 @@ public class Example41EntryActivity1 extends Activity {
                 Intent intent = new Intent(Example41EntryActivity1.this, Example41EntryActivity2.class);
                 startActivity(intent);
                 MTranstionUtil.removeActivityAnimation(Example41EntryActivity1.this);
+
+
             }
         });
     }

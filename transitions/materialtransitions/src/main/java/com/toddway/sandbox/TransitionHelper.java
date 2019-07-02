@@ -232,10 +232,8 @@ public class TransitionHelper {
         }
 
         sharedElements = list.toArray(new Pair[list.size()]);
-        return ActivityOptionsCompat.makeSceneTransitionAnimation(
-                fromActivity,
-                sharedElements
-        );
+
+        return ActivityOptionsCompat.makeSceneTransitionAnimation(fromActivity, sharedElements);
     }
 
     public static void fadeThenFinish(View v, final Activity a) {

@@ -3,11 +3,11 @@
     package="com.lgvalle.material_animations">
 
     <application
-        android:label="@string/app_name"
-        android:theme="@style/MaterialAnimations">
+        android:label="@string/app_name">
         <activity
             android:name=".MaterialMainActivity"
-            android:label="@string/app_name"/>
+            android:label="@string/app_name"
+            android:theme="@style/MaterialAnimations" />
         <activity
             android:name=".TransitionActivity1"
             android:theme="@style/MaterialAnimations.Red" />

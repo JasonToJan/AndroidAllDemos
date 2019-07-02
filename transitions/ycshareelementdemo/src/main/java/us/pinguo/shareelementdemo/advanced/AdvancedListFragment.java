@@ -97,6 +97,7 @@ public class AdvancedListFragment extends Fragment implements BaseListCell.OnCel
             cell.setOnCellClickListener(this);
             cellList.add(cell);
         }
+
         mAdapter.setList(cellList);
     }
 

@@ -76,8 +76,7 @@ public class CircularRevealActivity extends BaseActivity {
     @OnClick(R2.id.fab_reveal)
     public void onFabClick(View view) {
         mFragment = new CircularRevealedFragment();
-        getFragmentManager().beginTransaction()
-                .replace(mFragmentContainer.getId(), mFragment).commit();
+        getFragmentManager().beginTransaction().replace(mFragmentContainer.getId(), mFragment).commit();
         revealFragmentContainer(view, mFragmentContainer);
     }
 
@@ -91,8 +90,7 @@ public class CircularRevealActivity extends BaseActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void revealFragmentContainerLollipop(final View clickedView,
-                                                 final View fragmentContainer) {
+    private void revealFragmentContainerLollipop(final View clickedView, final View fragmentContainer) {
         prepareCircularReveal(clickedView, fragmentContainer);
         clickedView.animate()
                 .scaleX(0f)
@@ -122,13 +120,11 @@ public class CircularRevealActivity extends BaseActivity {
         int centerX = (startView.getLeft() + startView.getRight()) / 2;
         int centerY = (startView.getTop() + startView.getBottom()) / 2;
         float finalRadius = (float) Math.hypot((double) centerX, (double) centerY);
-        mCircularReveal = ViewAnimationUtils.createCircularReveal(
-                targetView, centerX, centerY, 0, finalRadius);
+        mCircularReveal = ViewAnimationUtils.createCircularReveal(targetView, centerX, centerY, 0, finalRadius);
         mCircularReveal.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mCircularReveal.removeListener(this);
-            }
+                mCircularReveal.removeListener(this); }
         });
     }
 }

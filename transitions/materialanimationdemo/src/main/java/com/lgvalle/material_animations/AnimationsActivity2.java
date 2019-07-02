@@ -74,6 +74,7 @@ public class AnimationsActivity2 extends BaseDetailActivity {
         ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.scene_root);
 
         scene0 = Scene.getSceneForLayout(sceneRoot, R.layout.activity_animations_scene0, this);
+
         scene0.setEnterAction(new Runnable() {
             @Override
             public void run() {

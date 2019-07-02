@@ -29,11 +29,15 @@ public class Example2DetailActivity extends Activity {
         transition.toPage().setContainer(mAppDetailPage, new ITransitPrepareListener() {
             @Override
             public void onPrepare(MTransitionView container) {
+
+
                 container.alpha(0f, 1f);
                 MTransitionView icon = transition.toPage().addTransitionView("icon", mAppDetailPage.mImage);
                 MTransitionView name = transition.toPage().addTransitionView("name", mAppDetailPage.mName);
                 transition.fromPage().getTransitionView("icon").above(icon).transitTo(icon, true);
                 transition.fromPage().getTransitionView("name").above(name).transitTo(name)/*.setDuration(1000).setStartDelay(500)*/;
+
+
             }
         });
         transition.setOnTransitListener(new TransitListenerAdapter() {

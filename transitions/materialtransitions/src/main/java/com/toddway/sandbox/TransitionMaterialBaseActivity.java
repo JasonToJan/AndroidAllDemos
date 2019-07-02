@@ -63,7 +63,9 @@ public class TransitionMaterialBaseActivity extends TransitionHelper.BaseActivit
         if (savedInstanceState != null) {
             fragment = getFragmentManager().findFragmentByTag(BASE_FRAGMENT);
         }
-        if (fragment == null) fragment = getBaseFragment();
+        if (fragment == null){
+            fragment = getBaseFragment();
+        }
         setBaseFragment(fragment);
     }
 

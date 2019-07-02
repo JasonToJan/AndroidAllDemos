@@ -12,9 +12,14 @@
             <option value="$PROJECT_DIR$/photos" />
             <option value="$PROJECT_DIR$/photos/takephoto" />
             <option value="$PROJECT_DIR$/photos/takephotodemo" />
+            <option value="$PROJECT_DIR$/player" />
+            <option value="$PROJECT_DIR$/player/exomediademo" />
+            <option value="$PROJECT_DIR$/player/exomedialib" />
+            <option value="$PROJECT_DIR$/player/playlistlib" />
             <option value="$PROJECT_DIR$/popupwindow" />
             <option value="$PROJECT_DIR$/popupwindow/popupwindowdemo" />
             <option value="$PROJECT_DIR$/tools" />
+            <option value="$PROJECT_DIR$/tools/bulk" />
             <option value="$PROJECT_DIR$/tools/multirecyclerviewdemo" />
             <option value="$PROJECT_DIR$/tools/multirrecyclerview" />
             <option value="$PROJECT_DIR$/tools/notchfit" />

@@ -43,11 +43,15 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         holder.mContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 initTransition(v);
                 MTransitionManager.getInstance().getTransition("example").getBundle().putInt("imgId", mImgIds.get(position));
                 Intent intent = new Intent(mActivity, Example10DetailActivity.class);
                 mActivity.startActivity(intent);
                 MTranstionUtil.removeActivityAnimation(mActivity);
+
+
             }
         });
     }

@@ -31,6 +31,8 @@ public class Example4EntryActivity2 extends Activity {
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 MTransition transition = MTransitionManager.getInstance().createTransition("Example4EntryActivity2");
                 transition.fromPage().setContainer(findViewById(R.id.container), new ITransitPrepareListener() {
                     @Override
@@ -41,6 +43,8 @@ public class Example4EntryActivity2 extends Activity {
                 Intent intent = new Intent(Example4EntryActivity2.this, Example4EntryActivity3.class);
                 startActivity(intent);
                 MTranstionUtil.removeActivityAnimation(Example4EntryActivity2.this);
+
+
             }
         });
         findViewById(R.id.container).setBackgroundColor(0xfffffea0);

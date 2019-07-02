@@ -59,7 +59,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:orientation="horizontal">
 
             <Button
@@ -76,14 +75,16 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/sample1_button5"
+            style="@style/MaterialAnimations.Button"
+            android:text="Exit (overriding return transition)" />
+
+        <Button
             android:id="@+id/sample1_button6"
             style="@style/MaterialAnimations.Button"
             android:text="Exit" />
 
-        <Button
-            android:id="@+id/sample1_button5"
-            style="@style/MaterialAnimations.Button"
-            android:text="Exit (overriding return transition)" />
+
 
     </LinearLayout>
 </layout>

@@ -49,6 +49,10 @@ public class TransitionActivity2 extends BaseDetailActivity {
         });
     }
 
+    /**
+     * 炸裂效果
+     * @return
+     */
     private Transition buildEnterTransition() {
         Explode enterTransition = new Explode();
         enterTransition.setDuration(getResources().getInteger(R.integer.anim_duration_long));

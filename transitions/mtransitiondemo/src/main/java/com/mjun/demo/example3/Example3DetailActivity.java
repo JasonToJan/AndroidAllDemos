@@ -24,7 +24,11 @@ public class Example3DetailActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAppDetailPage = new AppDetailPage(this);
+
+
         final MTransition transition = MTransitionManager.getInstance().getTransition("example");
+
+
         AppBean bean = (AppBean) transition.getBundle().getObject("bean");
         mAppDetailPage.setImageId(bean.mIconId);
         mAppDetailPage.setName(bean.mName);
@@ -35,10 +39,14 @@ public class Example3DetailActivity extends Activity {
     }
 
     private void initTranstion() {
+
+
         final MTransition transition = MTransitionManager.getInstance().getTransition("example");
         transition.toPage().setContainer(mAppDetailPage, new ITransitPrepareListener() {
             @Override
             public void onPrepare(MTransitionView container) {
+
+                //获取之前的视图
                 MTransitionView fromContainer = transition.fromPage().getContainer();
                 fromContainer.setBgColor(Color.TRANSPARENT);
                 for (int i = 0; i < mItemCount; i++) {
@@ -52,6 +60,8 @@ public class Example3DetailActivity extends Activity {
                 MTransitionView header = transition.fromPage().getTransitionView("header");
                 header.translateY(0, -header.getHeight()).setDuration(500);
                 container.below(fromContainer);
+
+
             }
         });
 

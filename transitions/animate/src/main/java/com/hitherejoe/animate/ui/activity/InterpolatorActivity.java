@@ -65,8 +65,7 @@ public class InterpolatorActivity extends BaseActivity {
 
     @OnClick(R2.id.text_animate)
     public void animate() {
-        int padding =
-                mFloatingActionButton.getPaddingBottom() + mFloatingActionButton.getPaddingTop();
+        int padding = mFloatingActionButton.getPaddingBottom() + mFloatingActionButton.getPaddingTop();
         int height = mLayoutRoot.getHeight() - padding;
 
         ActionBar actionBar = getSupportActionBar();

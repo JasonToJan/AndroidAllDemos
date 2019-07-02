@@ -34,6 +34,7 @@ public class Example10DetailActivity extends Activity {
     }
 
     private void init() {
+
         ImageView headView = findViewById(R.id.image);
         int width = ScreenUtil.getScreenWidth(this);
         headView.getLayoutParams().height = (int) (width * 1.5f);

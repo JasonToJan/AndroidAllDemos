@@ -11,8 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppThemeMain"
-        tools:replace="android:theme,android:name" >
-
+        tools:replace="android:theme,android:name">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,14 +28,16 @@
         <activity
             android:name=".visualizer.VisualizerMusicDetailActivity2"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".transitions.activitytransition.TransitionStyleActivity"
+        <activity
+            android:name=".transitions.activitytransition.TransitionStyleActivity"
             android:theme="@style/styleActivity" />
         <activity android:name=".transitions.activitytransition.TransitionOverridePendingActivity" />
         <activity android:name=".transitions.activitytransition.TransitionOptionsActivity" />
         <activity android:name=".transitions.activitytransition.TransitionOptionsMoreActivity" />
-        <activity android:name=".transitions.activitytransition.TransitionDemoActivity"></activity>
-        <activity android:name=".tools.ToolsMainActivity"/>
-        <activity android:name=".photo.PhotoMainActivity"/>
+        <activity android:name=".transitions.activitytransition.TransitionDemoActivity" />
+        <activity android:name=".tools.ToolsMainActivity" />
+        <activity android:name=".photo.PhotoMainActivity" />
+        <activity android:name=".player.PlayerMainActivity"></activity>
     </application>
 
 </manifest>
