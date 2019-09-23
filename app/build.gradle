@@ -72,5 +72,8 @@ dependencies {
     //播放器相关
     implementation project(":player:exomediademo")
 
+    //ndk相关
+    implementation project(":ndk:ndkdemo")
+
 
 }

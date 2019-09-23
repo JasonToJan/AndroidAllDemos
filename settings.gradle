@@ -1,4 +1,4 @@
-include ':app'
+include ':app', ':ndkdemo'
 
 //转场动画相关
 include ':transitions:transitionEverywhere',':transitions:transitionEverywhereDemo',
@@ -29,3 +29,7 @@ include ':photos:takephoto',':photos:takephotodemo'
 
 //player相关
 include ':player:exomedialib',':player:playlistlib',':player:exomediademo'
+
+
+//ndk相关
+include ':ndk:ndkdemo'

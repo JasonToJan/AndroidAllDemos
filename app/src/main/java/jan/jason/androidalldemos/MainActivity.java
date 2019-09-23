@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainBinding.amBtn4.setOnClickListener(this);
         mainBinding.amBtn5.setOnClickListener(this);
         mainBinding.amBtn6.setOnClickListener(this);
+        mainBinding.amBtn7.setOnClickListener(this);
     }
 
     @Override
@@ -57,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.am_btn6:
                 startActivity(new Intent(this, PlayerMainActivity.class));
+                break;
+
+            case R.id.am_btn7:
+
                 break;
         }
     }

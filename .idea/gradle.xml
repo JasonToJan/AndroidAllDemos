@@ -9,6 +9,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/ndk" />
+            <option value="$PROJECT_DIR$/ndk/ndkdemo" />
+            <option value="$PROJECT_DIR$/ndkdemo" />
             <option value="$PROJECT_DIR$/photos" />
             <option value="$PROJECT_DIR$/photos/takephoto" />
             <option value="$PROJECT_DIR$/photos/takephotodemo" />
@@ -48,6 +51,7 @@
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
+        <option name="testRunner" value="PLATFORM" />
       </GradleProjectSettings>
     </option>
   </component>
