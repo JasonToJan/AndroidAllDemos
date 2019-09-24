@@ -9,10 +9,34 @@
         android:id="@+id/amn_demo_txt1"
         android:text="ndk demo1"
         android:textAllCaps="false"
-        android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:textColor="@android:color/black"
         android:textSize="24sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/amn_demo_btn1"
+        android:text="改变"
+        android:textAllCaps="false"
+        android:layout_below="@+id/amn_demo_txt1"
+        android:textColor="@android:color/black"
+        android:layout_centerHorizontal="true"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/amn_demo_txt2"
+        android:text="text"
+        android:textAllCaps="false"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/amn_demo_btn1"
+        />
 
 </RelativeLayout>

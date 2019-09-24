@@ -1,4 +1,4 @@
-include ':app', ':ndkdemo'
+include ':app'
 
 //转场动画相关
 include ':transitions:transitionEverywhere',':transitions:transitionEverywhereDemo',

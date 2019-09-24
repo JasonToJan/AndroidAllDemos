@@ -17,7 +17,11 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             native-lib.cpp )
+             native-lib.cpp
+             ${native_srcs}
+        )
+
+include_directories(src/main/cpp/)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -36,12 +40,12 @@ find_library( # Sets the name of the path variable.
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
-set(CMAKE_VERBOSE_MAKEFILE on)
-set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../app)
-set_target_properties(native-lib PROPERTIES
-                      LIBRARY_OUTPUT_DIRECTORY
-                      ${distribution_DIR}/libs/${ANDROID_ABI})
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+#set(CMAKE_VERBOSE_MAKEFILE on)
+#set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../app)
+#set_target_properties(native-lib PROPERTIES
+#                      LIBRARY_OUTPUT_DIRECTORY
+#                      ${distribution_DIR}/libs/${ANDROID_ABI})
 
 target_link_libraries( # Specifies the target library.
                        native-lib
