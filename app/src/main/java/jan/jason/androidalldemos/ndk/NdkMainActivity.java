@@ -8,6 +8,7 @@ import android.view.View;
 
 import jan.jason.androidalldemos.R;
 import jan.jason.androidalldemos.databinding.ActivityMainNdkBinding;
+import jan.jason.ndkdemo.NdkDemoActivity;
 
 /**
  * Description: NDK主页
@@ -32,7 +33,7 @@ public class NdkMainActivity extends AppCompatActivity implements View.OnClickLi
         switch (v.getId()){
 
             case R.id.amn_btn1:
-                startActivity(new Intent(this, NdkMainActivity.class));
+                startActivity(new Intent(this, NdkDemoActivity.class));
                 break;
 
         }

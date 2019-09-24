@@ -1,0 +1,91 @@
+/**
+ * 在主项目的根目录下创建config.gradle文件
+ * 在这里单独处理统一依赖问题
+ * 注意需要在根目录的build.gradle中进行引入
+ *
+ * def config=rootProject.ext.config//android配置
+ * def google=rootProject.ext.google//相关库依赖
+ * def test=rootProject.ext.test//测试
+ * def common=rootProject.ext.common//常用三方库
+ * def coocent=rootProject.ext.coocent//公司依赖
+ *
+ */
+ext {
+
+    config = [
+            compileSdkVersion: 28,
+            minSdkVersion    : 17,
+            targetSdkVersion : 28,
+            versionCode      : 29,
+            flavorDimensions : "29",
+            versionName      : "2.0.9",
+            buildToolsVersion: "28.0.3",
+
+            MUSIC1_STOREFILE      : "E:\\JasonJan\\work\\keystone\\MusicPlayer1\\appokuco.keystone",
+            MUSIC1_STORE_PASSWORD : "kuxun328",
+            MUSIC1_KEY_ALIAS      : "music player 1",
+            MUSIC1_KEY_PASSWORD   : "kuxun328",
+    ]
+
+    //supportLibraries dependencies,系统支持库
+    google = [
+            appcompat:        "com.android.support:appcompat-v7:28+",
+            design:           "com.android.support:design:28+",
+            recyclerview:     "com.android.support:recyclerview-v7:28.0.0",
+            support_v4:       "com.android.support:support-v4:28.0.0",
+            coordinatorlayout:"com.android.support:coordinatorlayout:28.+",
+            constraintlayout: "com.android.support.constraint:constraint-layout:1.1.3",
+            material:         "com.google.android.material:material:1.0.0",
+            cardview:         "com.android.support:cardview-v7:28+",
+            palette:          "com.android.support:palette-v7:28+",
+            percent:          "com.android.support:percent:28+",
+            multidex:         "com.android.support:multidex:1.0.3",
+            gson:             "com.google.code.gson:gson:2.3.1",
+            media:            "androidx.media:media:1.0.0",
+            percentlayout:    "androidx.percentlayout:percentlayout:1.0.0",
+    ]
+
+    //测试相关
+    test=[
+            junit:                  "junit:junit:4.12",
+            runner:                 "com.android.support.test:runner:1.0.2",
+            espresso:               "com.android.support.test.espresso:espresso-core:3.0.2",
+            leakcanary:             "com.squareup.leakcanary:leakcanary-android:1.6.2",
+            leakcanary_no_op:       "com.squareup.leakcanary:leakcanary-android-no-op:1.6.2",
+            leakcanary_fragment:    "com.squareup.leakcanary:leakcanary-support-fragment:1.6.2",
+            anrwatchdog:            "com.github.anrwatchdog:anrwatchdog:1.4.0",
+            doraemonkit:            "com.didichuxing.doraemonkit:doraemonkit:1.1.0",
+            doraemonkit_no_op:      "com.didichuxing.doraemonkit:doraemonkit-no-op:1.1.0",
+    ]
+
+    //常用三方库，比较出名的
+    common=[
+            glide:                    "com.github.bumptech.glide:glide:4.9.0",
+            glide_processor:          "com.github.bumptech.glide:compiler:4.9.0",
+            glide_transformations:    "jp.wasabeef:glide-transformations:3.1.1",
+            lottie:                   "com.airbnb.android:lottie:2.7.0",
+            transitionseverywhere:    "com.andkulikov:transitionseverywhere:2.1.0-beta01",
+            retrofit:                 "com.squareup.retrofit:retrofit:1.9.0",
+            okhttp:                   "com.squareup.okhttp:okhttp:2.3.0",
+            okhttp_urlconnection:     "com.squareup.okhttp:okhttp-urlconnection:2.3.0",
+            material_dialogs_core:    "com.afollestad.material-dialogs:core:0.9.0.2",
+            material_dialogs_commons: "com.afollestad.material-dialogs:commons:0.9.0.2",
+            xxpermissions:            "com.hjq:xxpermissions:3.5",
+            eventbus:                 "org.greenrobot:eventbus:3.1.1",
+            universalimageloader:     "com.nostra13.universalimageloader:universal-image-loader:1.9.4",
+            rxjava:                   "io.reactivex.rxjava2:rxjava:2.1.9",
+            rxandroid:                "io.reactivex.rxjava2:rxandroid:2.0.2",
+            umeng_analytics:          "com.umeng.analytics:analytics:latest.integration",
+            materialiconlib:          "net.steamcrafted:materialiconlib:1.0.3",//图标库,github:https://github.com/code-mc/material-icon-lib
+            inapp_billing_v3:         "com.anjlab.android.iab.v3:library:1.0.+",//App内支持google购买, github: https://github.com/anjlab/android-inapp-billing-v3
+            swipebacklayout:          "me.imid.swipebacklayout.lib:library:1.0.0",//防iOS侧滑返回，github:https://github.com/ikew0ng/SwipeBackLayout
+            butterknife:              "com.jakewharton:butterknife:8.8.1",
+            butterknife_compiler:     "com.jakewharton:butterknife-compiler:8.8.1",
+    ]
+
+    //少见的，很少人用的，但很实用
+    rare=[
+            notchfit:                 "com.wcl.notchfit:notchfit:1.4.2"//适配刘海屏
+    ]
+
+}

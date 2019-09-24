@@ -1,2 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="androidalldemo.jan.jason.ndkdemo" />
+package="jan.jason.ndkdemo">
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true">
+
+        <activity android:name=".NdkDemoActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+
+    </application>
+
+</manifest>
