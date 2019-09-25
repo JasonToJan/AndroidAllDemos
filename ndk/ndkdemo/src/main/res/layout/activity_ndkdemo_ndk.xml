@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/amn_demo_txt1"
+        android:layout_margin="20dp"
         android:text="ndk demo1"
         android:textAllCaps="false"
         android:layout_alignParentTop="true"
@@ -18,7 +21,7 @@
 
     <Button
         android:id="@+id/amn_demo_btn1"
-        android:text="改变"
+        android:text="改变下面文本"
         android:textAllCaps="false"
         android:layout_below="@+id/amn_demo_txt1"
         android:textColor="@android:color/black"
@@ -29,6 +32,7 @@
 
     <TextView
         android:id="@+id/amn_demo_txt2"
+        android:layout_marginTop="10dp"
         android:text="text"
         android:textAllCaps="false"
         android:layout_centerHorizontal="true"
@@ -39,4 +43,72 @@
         android:layout_below="@+id/amn_demo_btn1"
         />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/amn_demo_static_btn"
+        android:text="改变下面静态文本"
+        android:textAllCaps="false"
+        android:layout_below="@+id/amn_demo_txt1"
+        android:textColor="@android:color/black"
+        android:layout_centerHorizontal="true"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/amn_demo_static_txt"
+        android:layout_marginTop="10dp"
+        android:text="text"
+        android:textAllCaps="false"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/amn_demo_btn1"
+        />
+
+    <Button
+        android:id="@+id/amn_demo_normalfun_btn"
+        android:text="JNI调用普通方法返回："
+        android:textAllCaps="false"
+        android:layout_below="@+id/amn_demo_txt1"
+        android:textColor="@android:color/black"
+        android:layout_centerHorizontal="true"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/amn_demo_staticfun_btn"
+        android:text="JNI调用静态方法返回："
+        android:textAllCaps="false"
+        android:layout_below="@+id/amn_demo_txt1"
+        android:textColor="@android:color/black"
+        android:layout_centerHorizontal="true"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/amn_demo_constructfun_btn"
+        android:text="JNI调用构造方法返回Date对象"
+        android:textAllCaps="false"
+        android:layout_below="@+id/amn_demo_txt1"
+        android:textColor="@android:color/black"
+        android:layout_centerHorizontal="true"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/amn_demo_array_btn"
+        android:text="JNI 生成随机数组然后排序："
+        android:textAllCaps="false"
+        android:layout_below="@+id/amn_demo_txt1"
+        android:textColor="@android:color/black"
+        android:layout_centerHorizontal="true"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</android.support.v7.widget.LinearLayoutCompat>

@@ -6,21 +6,39 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Date;
 
-public class NdkDemoActivity extends AppCompatActivity implements View.OnClickListener{
+
+public class NdkDemoActivity extends AppCompatActivity implements View.OnClickListener,
+        JniArraryOperation.JniPrinterInterface {
 
     static {
         System.loadLibrary("native-lib");
     }
 
     public native String stringFromJNI();
-
     public native void accessField();
+    public native void accessStaticField();
+    public native String accessMethod();
+    public native String accessStaticMethod();
+    public native Date accessConstructor();
 
     public String showText="Hello World!";
+    public static String staticString="I am a static string.";
+
     private TextView txtNdk;
     private TextView resultTxt;
     private Button btnChange;
+    private Button btnChangeStatic;
+    private TextView staticText;
+    private Button btnExecuteNormalFun;
+    private Button btnExecuteStaticFun;
+    private Button btnExecuteConstructFun;
+    private Button btnExecuteArrayFun;
+
+    private JniArraryOperation jniArraryOperation;
+
+    private int times=0;
 
 
     @Override
@@ -34,13 +52,58 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        accessField();
+
+       if(v==btnChange){
+           if(showText.equals("Hello World!")){
+               accessField();
+               resultTxt.setText(showText);
+           }else{
+               showText="Hello World!";
+               resultTxt.setText(showText);
+           }
+       }else if(v==btnChangeStatic){
+           if(staticString.equals("I am a static string.")){
+               accessStaticField();
+               staticText.setText(staticString);
+           }else{
+               staticString="I am a static string.";
+               staticText.setText(staticString);
+           }
+       }else if(v==btnExecuteNormalFun){
+           btnExecuteNormalFun.setText(times++%2==0?accessMethod():"Java中的字符串");
+       }else if(v==btnExecuteStaticFun){
+           btnExecuteStaticFun.setText(times++%2==0?accessStaticMethod():"Java中的字符串");
+       }else if(v==btnExecuteConstructFun){
+           btnExecuteConstructFun.setText(times++%2==0?accessConstructor().toString():"JNI调用构造方法返回Date对象为：");
+       }else if(v==btnExecuteArrayFun){
+           if(times++%2==0){
+               jniArraryOperation.test(this);
+           }else{
+               btnExecuteArrayFun.setText("JNI 生成随机数组然后排序：");
+           }
+       }
+    }
+
+    @Override
+    public void printRandomArray(int[] arr) {
+
+    }
+
+    @Override
+    public void printResultArray(int[] arr) {
+
     }
 
     private void initView(){
         txtNdk=(TextView) findViewById(R.id.amn_demo_txt1);
         btnChange=(Button) findViewById(R.id.amn_demo_btn1);
         resultTxt=(TextView) findViewById(R.id.amn_demo_txt2);
+        staticText=(TextView)findViewById(R.id.amn_demo_static_txt);
+        btnChangeStatic=(Button) findViewById(R.id.amn_demo_static_btn);
+        btnExecuteNormalFun=(Button) findViewById(R.id.amn_demo_normalfun_btn);
+        btnExecuteStaticFun=(Button) findViewById(R.id.amn_demo_staticfun_btn);
+        btnExecuteConstructFun=(Button) findViewById(R.id.amn_demo_constructfun_btn);
+        btnExecuteArrayFun=(Button) findViewById(R.id.amn_demo_array_btn);
     }
 
     private void initData(){
@@ -48,6 +111,32 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
         txtNdk.setText(text);
 
         btnChange.setOnClickListener(this);
+        btnChangeStatic.setOnClickListener(this);
+        btnExecuteNormalFun.setOnClickListener(this);
+        btnExecuteStaticFun.setOnClickListener(this);
+        btnExecuteConstructFun.setOnClickListener(this);
+        btnExecuteArrayFun.setOnClickListener(this);
+
+        jniArraryOperation=new JniArraryOperation();
     }
+
+    /**
+     * 普通函数，供NDK调用
+     * @param str
+     * @return
+     */
+    public String normalFunction(String str){
+        return "i am a normal function "+str;
+    }
+
+    /**
+     * 静态函数，供NDK调用
+     * @return
+     */
+    public static String staticFunction(String str){
+        return "i am a static function ，"+str;
+    }
+
+
 
 }
