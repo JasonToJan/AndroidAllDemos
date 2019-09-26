@@ -1,10 +1,15 @@
 package jan.jason.ndkdemo;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -37,6 +42,7 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
     private Button btnExecuteStaticFun;
     private Button btnExecuteConstructFun;
     private Button btnExecuteArrayFun;
+    private Button btnTestEncryptor;
     private TextView txtArraryBefore;
     private TextView txtArraryAfter;
 
@@ -84,6 +90,8 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
                txtArraryAfter.setText("After");
                txtArraryBefore.setText("Before");
            }
+       }else if(v==btnTestEncryptor){
+           testEncryptor();
        }
     }
 
@@ -109,6 +117,7 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
         btnExecuteArrayFun=(Button) findViewById(R.id.amn_demo_array_btn);
         txtArraryBefore=(TextView) findViewById(R.id.amn_demo_array_before_txt);
         txtArraryAfter=(TextView) findViewById(R.id.amn_demo_array_after_txt);
+        btnTestEncryptor=(Button) findViewById(R.id.amn_demo_test_encryptor_btn);
     }
 
     private void initData(){
@@ -121,6 +130,7 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
         btnExecuteStaticFun.setOnClickListener(this);
         btnExecuteConstructFun.setOnClickListener(this);
         btnExecuteArrayFun.setOnClickListener(this);
+        btnTestEncryptor.setOnClickListener(this);
 
         jniArraryOperation=new JniArraryOperation();
     }
@@ -142,6 +152,18 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
         return "i am a static function ，"+str;
     }
 
-
-
+    /**
+     * 测试JNI加密
+     */
+    private void testEncryptor(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0x1024);
+                return;
+            }
+        }
+        String encryptPath = new Encryptor().test();
+        Toast.makeText(this, "加密文件地址：" + encryptPath, Toast.LENGTH_SHORT).show();
+    }
 }

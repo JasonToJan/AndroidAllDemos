@@ -18,6 +18,10 @@ add_library(
         SHARED
         array_operation.cpp)
 
+#加密的so库
+add_library(encryptor
+        SHARED
+        encryptor.cpp)
 
 include_directories(src/main/cpp/)
 
@@ -30,8 +34,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 set(CMAKE_VERBOSE_MAKEFILE on)
 set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../app)
 set_target_properties(native-lib PROPERTIES
-                      LIBRARY_OUTPUT_DIRECTORY
-                      ${distribution_DIR}/libs/${ANDROID_ABI})
+        LIBRARY_OUTPUT_DIRECTORY
+        ${distribution_DIR}/libs/${ANDROID_ABI})
+
 
 target_link_libraries(
        native-lib
@@ -40,3 +45,9 @@ target_link_libraries(
 target_link_libraries(
         array_operation
         ${log-lib})
+
+target_link_libraries(
+        encryptor
+        ${log-lib})
+
+
