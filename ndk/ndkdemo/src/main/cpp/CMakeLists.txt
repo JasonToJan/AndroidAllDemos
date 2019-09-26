@@ -5,51 +5,38 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-# Creates and names a library, sets it as either STATIC
-# or SHARED, and provides the relative paths to its source code.
-# You can define multiple libraries, and CMake builds them for you.
-# Gradle automatically packages shared libraries with your APK.
+#获取方法属性的so库
+add_library(
+        native-lib
+        SHARED
+        native-lib.cpp
+        ${native_srcs})
 
-add_library( # Sets the name of the library.
-             native-lib
+#数组操作的so库
+add_library(
+        array_operation
+        SHARED
+        array_operation.cpp)
 
-             # Sets the library as a shared library.
-             SHARED
-
-             # Provides a relative path to your source file(s).
-             native-lib.cpp
-             ${native_srcs}
-        )
 
 include_directories(src/main/cpp/)
 
-# Searches for a specified prebuilt library and stores the path as a
-# variable. Because CMake includes system libraries in the search path by
-# default, you only need to specify the name of the public NDK library
-# you want to add. CMake verifies that the library exists before
-# completing its build.
+find_library(
+        log-lib
+        log )
 
-find_library( # Sets the name of the path variable.
-              log-lib
 
-              # Specifies the name of the NDK library that
-              # you want CMake to locate.
-              log )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+set(CMAKE_VERBOSE_MAKEFILE on)
+set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../app)
+set_target_properties(native-lib PROPERTIES
+                      LIBRARY_OUTPUT_DIRECTORY
+                      ${distribution_DIR}/libs/${ANDROID_ABI})
 
-# Specifies libraries CMake should link to your target library. You
-# can link multiple libraries, such as libraries you define in this
-# build script, prebuilt third-party libraries, or system libraries.
+target_link_libraries(
+       native-lib
+       ${log-lib} )
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
-#set(CMAKE_VERBOSE_MAKEFILE on)
-#set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../app)
-#set_target_properties(native-lib PROPERTIES
-#                      LIBRARY_OUTPUT_DIRECTORY
-#                      ${distribution_DIR}/libs/${ANDROID_ABI})
-
-target_link_libraries( # Specifies the target library.
-                       native-lib
-
-                       # Links the target library to the log library
-                       # included in the NDK.
-                       ${log-lib} )
+target_link_libraries(
+        array_operation
+        ${log-lib})

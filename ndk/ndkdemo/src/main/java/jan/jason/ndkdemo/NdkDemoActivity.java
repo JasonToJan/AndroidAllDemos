@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Arrays;
 import java.util.Date;
 
 
@@ -23,6 +24,7 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
     public native String accessStaticMethod();
     public native Date accessConstructor();
 
+    private int times=0;
     public String showText="Hello World!";
     public static String staticString="I am a static string.";
 
@@ -35,11 +37,10 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
     private Button btnExecuteStaticFun;
     private Button btnExecuteConstructFun;
     private Button btnExecuteArrayFun;
+    private TextView txtArraryBefore;
+    private TextView txtArraryAfter;
 
     private JniArraryOperation jniArraryOperation;
-
-    private int times=0;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,18 +81,20 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
                jniArraryOperation.test(this);
            }else{
                btnExecuteArrayFun.setText("JNI 生成随机数组然后排序：");
+               txtArraryAfter.setText("After");
+               txtArraryBefore.setText("Before");
            }
        }
     }
 
     @Override
     public void printRandomArray(int[] arr) {
-
+        txtArraryBefore.setText(Arrays.toString(arr));
     }
 
     @Override
     public void printResultArray(int[] arr) {
-
+        txtArraryAfter.setText(Arrays.toString(arr));
     }
 
     private void initView(){
@@ -104,6 +107,8 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
         btnExecuteStaticFun=(Button) findViewById(R.id.amn_demo_staticfun_btn);
         btnExecuteConstructFun=(Button) findViewById(R.id.amn_demo_constructfun_btn);
         btnExecuteArrayFun=(Button) findViewById(R.id.amn_demo_array_btn);
+        txtArraryBefore=(TextView) findViewById(R.id.amn_demo_array_before_txt);
+        txtArraryAfter=(TextView) findViewById(R.id.amn_demo_array_after_txt);
     }
 
     private void initData(){

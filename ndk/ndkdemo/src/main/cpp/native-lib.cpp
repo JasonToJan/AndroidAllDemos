@@ -90,30 +90,3 @@ Java_jan_jason_ndkdemo_NdkDemoActivity_accessConstructor(JNIEnv *env, jobject th
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

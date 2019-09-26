@@ -111,4 +111,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <TextView
+        android:id="@+id/amn_demo_array_before_txt"
+        android:text="before"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:layout_centerHorizontal="true"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/amn_demo_array_after_txt"
+        android:text="after"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:layout_centerHorizontal="true"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </android.support.v7.widget.LinearLayoutCompat>
