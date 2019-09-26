@@ -45,6 +45,7 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
     private Button btnTestEncryptor;
     private TextView txtArraryBefore;
     private TextView txtArraryAfter;
+    private Button btnExecuteSplitFile;
 
     private JniArraryOperation jniArraryOperation;
 
@@ -92,6 +93,8 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
            }
        }else if(v==btnTestEncryptor){
            testEncryptor();
+       }else if(v==btnExecuteSplitFile){
+           testSplitFile();
        }
     }
 
@@ -118,6 +121,7 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
         txtArraryBefore=(TextView) findViewById(R.id.amn_demo_array_before_txt);
         txtArraryAfter=(TextView) findViewById(R.id.amn_demo_array_after_txt);
         btnTestEncryptor=(Button) findViewById(R.id.amn_demo_test_encryptor_btn);
+        btnExecuteSplitFile=(Button) findViewById(R.id.amn_demo_test_splitfile_btn);
     }
 
     private void initData(){
@@ -131,6 +135,7 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
         btnExecuteConstructFun.setOnClickListener(this);
         btnExecuteArrayFun.setOnClickListener(this);
         btnTestEncryptor.setOnClickListener(this);
+        btnExecuteSplitFile.setOnClickListener(this);
 
         jniArraryOperation=new JniArraryOperation();
     }
@@ -165,5 +170,29 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
         }
         String encryptPath = new Encryptor().test();
         Toast.makeText(this, "加密文件地址：" + encryptPath, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 测试拆分文件
+     */
+    private void testSplitFile(){
+        if (hasFilePermission()) {
+            new JniFileOperation().test();
+            Toast.makeText(this, "任务完成，测试文件路径:" + Config.getBaseUrl(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 申请权限
+     */
+    private boolean hasFilePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0x1024);
+                return false;
+            }
+        }
+        return true;
     }
 }

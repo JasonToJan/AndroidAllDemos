@@ -23,13 +23,17 @@ add_library(encryptor
         SHARED
         encryptor.cpp)
 
-include_directories(src/main/cpp/)
+#文件拆分和合并
+add_library(
+        file_operation
+        SHARED
+        file_operation.cpp)
 
+
+include_directories(src/main/cpp/)
 find_library(
         log-lib
         log )
-
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 set(CMAKE_VERBOSE_MAKEFILE on)
 set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../app)
@@ -48,6 +52,9 @@ target_link_libraries(
 
 target_link_libraries(
         encryptor
+        ${log-lib})
+target_link_libraries(
+        file_operation
         ${log-lib})
 
 

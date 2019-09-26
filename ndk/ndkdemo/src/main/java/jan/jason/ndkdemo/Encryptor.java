@@ -45,8 +45,8 @@ public class Encryptor {
      */
     public String test() {
         String fileName = "testJni.txt";
-        String encryptPath = encryption(fileName);
-        decryption(encryptPath);
+        String encryptPath = encryption(fileName);//加密一个文件
+        decryption(encryptPath);//解密一个文件
 
         return encryptPath;
     }
