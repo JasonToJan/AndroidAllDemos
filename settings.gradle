@@ -33,3 +33,6 @@ include ':player:exomedialib',':player:playlistlib',':player:exomediademo'
 
 //ndk相关
 include ':ndk:ndkdemo'
+
+//opengl相关
+include 'opengl:opengl'

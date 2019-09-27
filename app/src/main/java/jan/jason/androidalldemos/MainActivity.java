@@ -14,6 +14,7 @@ import jan.jason.androidalldemos.player.PlayerMainActivity;
 import jan.jason.androidalldemos.tools.ToolsMainActivity;
 import jan.jason.androidalldemos.transitions.TransitionMainActivity;
 import jan.jason.androidalldemos.visualizer.VisualizerMainActivity;
+import jan.jason.opencv.OpenGlActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainBinding.amBtn5.setOnClickListener(this);
         mainBinding.amBtn6.setOnClickListener(this);
         mainBinding.amBtn7.setOnClickListener(this);
+        mainBinding.amBtn8.setOnClickListener(this);
     }
 
     @Override
@@ -63,6 +65,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.am_btn7:
                 startActivity(new Intent(this, NdkMainActivity.class));
+                break;
+
+            case R.id.am_btn8:
+                startActivity(new Intent(this, OpenGlActivity.class));
                 break;
         }
     }

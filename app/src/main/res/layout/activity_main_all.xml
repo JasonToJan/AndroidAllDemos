@@ -11,7 +11,7 @@
 
         <Button
             android:id="@+id/am_btn1"
-            android:text="Transitions转场动画相关"
+            android:text="转场动画相关"
             android:textAllCaps="false"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
@@ -27,7 +27,7 @@
 
         <Button
             android:id="@+id/am_btn3"
-            android:text="PopupWindow相关"
+            android:text="弹框相关"
             android:textAllCaps="false"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
@@ -65,6 +65,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/am_btn8"
+            android:text="Open GL相关"
+            android:textAllCaps="false"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

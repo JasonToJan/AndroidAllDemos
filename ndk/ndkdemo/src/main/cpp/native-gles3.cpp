@@ -30,12 +30,12 @@ auto gl_fragmentShader_source =
         "precision mediump float;\n"
         "out vec4 fragColor;\n"
         "void main() {\n"
-        "   fragColor = vec4(1.0,1.0,0.0,1.0);\n"
+        "   fragColor = vec4(1.00,0.15,0.14,1.0);\n" //三角形颜色
         "}\n";
 
-static float r;
-static float g;
-static float b;
+static float color_r;
+static float color_g;
+static float color_b;
 
 /**
  * 着色器程序
@@ -75,15 +75,15 @@ static void checkGlError(const char *op) {
  * 修改背景颜色
  */
 void changeBg() {
-    r += 0.01f;
-    if (r > 1.0f) {
-        g += 0.01f;
-        if (g > 1.0f) {
-            b += 0.01f;
-            if (b > 1.0f) {
-                r = 0.01f;
-                g = 0.01f;
-                b = 0.01f;
+    color_r += 0.01f;//红色值+0.01
+    if (color_r > 1.0f) {
+        color_g += 0.01f;//红色值加满后加绿色值
+        if (color_g > 1.0f) {
+            color_b += 0.01f;//绿色值加满后加蓝色值
+            if (color_b > 1.0f) {
+                color_r = 0.01f;//都加满后，还原为白色
+                color_g = 0.01f;
+                color_b = 0.01f;
             }
         }
     }
@@ -147,16 +147,16 @@ GLuint linkProgram(GLuint vertexShader, GLuint fragmentShader) {
     checkGlError("glAttachShader");
 
     //链接着色器程序
-    glLinkProgram(programObj);
+    glLinkProgram(programObj);//不调用，就没东西
 
     //检查程序链接状态
     GLint linkRes;
-    glGetProgramiv(programObj, GL_LINK_STATUS, &linkRes);
+    glGetProgramiv(programObj, GL_LINK_STATUS, &linkRes);//不调用也是可以的
 
     if (!linkRes) {//链接失败
         //获取日志长度
         GLint infoLen;
-        glGetProgramiv(programObj, GL_INFO_LOG_LENGTH, &infoLen);
+        glGetProgramiv(programObj, GL_INFO_LOG_LENGTH, &infoLen);//错误日志
         if (infoLen > 1) {
             //获取并输出日志
             char *infoLog = static_cast<char *>(malloc(sizeof(char) * infoLen));
@@ -173,6 +173,7 @@ GLuint linkProgram(GLuint vertexShader, GLuint fragmentShader) {
 
 /**
  * 供 Android 中的GLSurfaceView.Renderer 的onSurfaceChanged 调用。
+ * 仅仅在第一次打开或视图发生变化是执行 并不是一直绘制的
  */
 extern "C"
 JNIEXPORT void JNICALL
@@ -210,30 +211,32 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_jan_jason_ndkdemo_OpenGL_GLES3Render_drawFrame(JNIEnv *env, jobject thiz) {
 
-    //改变颜色值
-    changeBg();
+    changeBg(); //改变颜色值，仅仅是一个值而已
 
-    glClearColor(r, g, b, 1.0f);
+    glClearColor(color_r, color_g, color_b, 1.0f);//设置 清除颜色
     checkGlError("glClearColor");
-    //清空颜色缓冲区
-    glClear(GL_COLOR_BUFFER_BIT);
+
+    glClear(GL_COLOR_BUFFER_BIT); //清空颜色缓冲区，把窗口清除为当前颜色
     checkGlError("glClear");
 
-    //设置为活动程序
-    glUseProgram(program);
+    glUseProgram(program); //设置为活动程序，可以理解成openGL的钥匙，没有的话就打不开openGl的大门
     checkGlError("glUseProgram");
 
-
-    //加载顶点坐标
-    glVertexAttribPointer(vertexIndex, 3, GL_FLOAT, GL_FALSE, 0, vVertex);
+    /**
+     * 第一个参数指定从索引0开始取数据，与顶点着色器中layout(location=0)对应。
+     * 第二个参数指定顶点属性大小。
+     * 第三个参数指定数据类型。
+     * 四个参数定义是否希望数据被标准化（归一化），只表示方向不表示大小。
+     * 第五个参数是步长（Stride），指定在连续的顶点属性之间的间隔。
+     */
+    glVertexAttribPointer(vertexIndex, 3, GL_FLOAT, GL_FALSE, 0, vVertex); //加载三角形顶点坐标
     checkGlError("glVertexAttribPointer");
 
-    //启用通用顶点属性数组
-    glEnableVertexAttribArray(vertexIndex);
+    glEnableVertexAttribArray(vertexIndex); //启用通用顶点属性数组
     checkGlError("glEnableVertexAttribArray");
 
-    //绘制三角形
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    //当采用顶点数组方式绘制图形时，使用该函数
+    glDrawArrays(GL_TRIANGLES, 0, 3); //绘制三角形
     checkGlError("glDrawArrays");
 
     //禁用通用顶点属性数组

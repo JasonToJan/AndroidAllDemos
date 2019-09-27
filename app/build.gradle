@@ -29,6 +29,7 @@ android {
     dataBinding {
         enabled = true
     }
+
     externalNativeBuild {
         cmake {
             path file('../ndk/ndkdemo/src/main/cpp/CMakeLists.txt')
@@ -80,5 +81,6 @@ dependencies {
     //ndk相关
     implementation project(":ndk:ndkdemo")
 
-
+    //opengl相关
+    implementation project(":opengl:opengl")
 }
