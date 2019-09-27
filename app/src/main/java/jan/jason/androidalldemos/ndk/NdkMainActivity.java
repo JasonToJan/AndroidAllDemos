@@ -9,6 +9,7 @@ import android.view.View;
 import jan.jason.androidalldemos.R;
 import jan.jason.androidalldemos.databinding.ActivityMainNdkBinding;
 import jan.jason.ndkdemo.NdkDemoActivity;
+import jan.jason.ndkdemo.OpenGL.OpenGlTriangleActivity;
 
 /**
  * Description: NDK主页
@@ -26,6 +27,7 @@ public class NdkMainActivity extends AppCompatActivity implements View.OnClickLi
         mainBinding= DataBindingUtil.setContentView(this, R.layout.activity_main_ndk);
 
         mainBinding.amnBtn1.setOnClickListener(this);
+        mainBinding.amnBtnOpenglTriangle.setOnClickListener(this);
     }
 
     @Override
@@ -34,6 +36,10 @@ public class NdkMainActivity extends AppCompatActivity implements View.OnClickLi
 
             case R.id.amn_btn1:
                 startActivity(new Intent(this, NdkDemoActivity.class));
+                break;
+
+            case R.id.amn_btn_opengl_triangle:
+                startActivity(new Intent(this, OpenGlTriangleActivity.class));
                 break;
 
         }

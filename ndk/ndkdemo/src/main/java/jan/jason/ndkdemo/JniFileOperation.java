@@ -5,7 +5,7 @@ import android.util.Log;
 import java.io.File;
 
 /**
- * Description: JNI文件拆分和并相关
+ * Description: JNI文件拆分和并相关,文件夹遍历
  * *
  * Creator: Wang
  * Date: 2019/9/26 20:47
@@ -63,6 +63,13 @@ public class JniFileOperation {
     public native void merge(String pathMerge, String pathPattern, int count);
 
     /**
+     * 输出文件夹下得所有文件
+     *
+     * @param dirPath 文件夹路径
+     */
+    public native void listDirAllFile(String dirPath);
+
+    /**
      * 测试文件 拆分与合并
      */
     public void test() {
@@ -82,5 +89,13 @@ public class JniFileOperation {
         String mergePath = Config.getBaseUrl() + mergeFileName;
         merge(mergePath, pathPattern, splitCount);
         Log.e(TAG, "文件合并成功");
+    }
+
+    /**
+     * 列举所有文件
+     */
+    public void doListDirAllFile(){
+        Log.e(TAG, "filePath = " + Config.BASE_URL+"/logs");
+        listDirAllFile(Config.BASE_URL+"/logs");
     }
 }

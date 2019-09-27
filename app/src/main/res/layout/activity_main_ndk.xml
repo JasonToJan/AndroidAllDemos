@@ -11,7 +11,15 @@
 
         <Button
             android:id="@+id/amn_btn1"
-            android:text="ndk demo1"
+            android:text="ndk 基础"
+            android:textAllCaps="false"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/amn_btn_opengl_triangle"
+            android:text="ndk openGl 绘制三角形"
             android:textAllCaps="false"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"

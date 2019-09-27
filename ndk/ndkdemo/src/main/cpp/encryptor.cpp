@@ -112,3 +112,4 @@ Java_jan_jason_ndkdemo_Encryptor_decryption(JNIEnv *env, jclass type, jstring en
     env->ReleaseStringUTFChars(encryptPath_, encryptPath);
     env->ReleaseStringUTFChars(decryptPath_, decryptPath);
 }
+

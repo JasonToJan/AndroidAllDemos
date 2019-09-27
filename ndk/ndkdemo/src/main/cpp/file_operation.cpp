@@ -1,13 +1,14 @@
 #include <jni.h>
 #include <cstdio>
 #include <cstdlib>
-
+#include <string>
+#include <dirent.h>
+#include "LogUtils.h"
 #include <android/log.h>
 
 
-#define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,"TEST##",FORMAT,##__VA_ARGS__);
-
 const int SIZE = 100;
+const int PATH_MAX_LENGTH = 256;
 
 
 /**
@@ -133,7 +134,7 @@ Java_jan_jason_ndkdemo_JniFileOperation_merge(JNIEnv *env, jobject instance, jst
         //读取每个分割文件
         FILE *index_fp = fopen(index, "rb");//仅仅读取文件
         if (index_fp == nullptr) {
-            LOGE("文件%s读取失败", index)
+            LOGE("文件%s读取失败", index);
             return;
         }
         //依次写入合并文件
@@ -149,3 +150,63 @@ Java_jan_jason_ndkdemo_JniFileOperation_merge(JNIEnv *env, jobject instance, jst
     env->ReleaseStringUTFChars(pathMerge_, pathMerge);
     env->ReleaseStringUTFChars(pathPattern_, pathPattern);
 }
+
+/**
+ * 列出所有文件
+ */
+extern "C"
+JNIEXPORT void JNICALL
+Java_jan_jason_ndkdemo_JniFileOperation_listDirAllFile(JNIEnv *env, jobject instance,
+                                                       jstring dirPath_) {
+    //空判断
+    if (dirPath_ == nullptr) {
+        LOGE("dirPath is null!");
+        return;
+    }else{
+        LOGE("dirPath is not null!");
+    }
+    const char *dirPath = env->GetStringUTFChars(dirPath_, nullptr);
+    //长度判读
+    if (strlen(dirPath) == 0) {
+        LOGE("dirPath length is 0!");
+        return;
+    }else{
+        LOGE("dirPath length is not 0!");
+    }
+    //打开文件夹读取流
+    DIR *dir = opendir(dirPath);
+    if (nullptr == dir) {
+        LOGE("can not open dir,  check path or permission!");
+        return;
+    }
+
+    struct dirent *file;
+    while ((file = readdir(dir)) != nullptr) {
+        //判断是不是 . 或者 .. 文件夹
+        if (strcmp(file->d_name, ".") == 0 || strcmp(file->d_name, "..") == 0) {
+            LOGE("ignore . and ..");
+            continue;
+        }
+        if (file->d_type == DT_DIR) {
+            //是文件夹则遍历
+            //构建文件夹路径
+            char *path = new char[PATH_MAX_LENGTH];
+            memset(path, 0, PATH_MAX_LENGTH);
+            strcpy(path, dirPath);
+            strcat(path, "/");
+            strcat(path, file->d_name);
+            jstring tDir = env->NewStringUTF(path);
+            //读取指定文件夹
+            Java_jan_jason_ndkdemo_JniFileOperation_listDirAllFile(env, instance, tDir);
+            //释放文件夹路径内存
+            free(path);
+        } else {
+            //打印文件名
+            LOGD("%s/%s", dirPath, file->d_name);
+        }
+    }
+    //关闭读取流
+    closedir(dir);
+    env->ReleaseStringUTFChars(dirPath_, dirPath);
+}
+

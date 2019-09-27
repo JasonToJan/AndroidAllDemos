@@ -1,6 +1,7 @@
 package jan.jason.ndkdemo;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +30,10 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
     public native String accessStaticMethod();
     public native Date accessConstructor();
 
+    /**
+     * 计时是否已经运行
+     */
+    private boolean running;
     private int times=0;
     public String showText="Hello World!";
     public static String staticString="I am a static string.";
@@ -46,8 +51,17 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
     private TextView txtArraryBefore;
     private TextView txtArraryAfter;
     private Button btnExecuteSplitFile;
+    private Button btnExecuteListFiles;
+    private Button btnExecuteBitmap;
+    private Button btnExecuteThreadCallback;
 
     private JniArraryOperation jniArraryOperation;
+
+    /**
+     * jni回调用java计时的实例
+     */
+    private JniCallbackDemo jniCallbackDemo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +109,12 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
            testEncryptor();
        }else if(v==btnExecuteSplitFile){
            testSplitFile();
+       }else if(v==btnExecuteListFiles){
+           testListFiles();
+       }else if(v==btnExecuteBitmap){
+           testBitmap();
+       }else if(v==btnExecuteThreadCallback){
+           testJniCallback();
        }
     }
 
@@ -122,6 +142,9 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
         txtArraryAfter=(TextView) findViewById(R.id.amn_demo_array_after_txt);
         btnTestEncryptor=(Button) findViewById(R.id.amn_demo_test_encryptor_btn);
         btnExecuteSplitFile=(Button) findViewById(R.id.amn_demo_test_splitfile_btn);
+        btnExecuteListFiles=(Button) findViewById(R.id.amn_demo_test_listall_btn);
+        btnExecuteBitmap=(Button) findViewById(R.id.amn_demo_test_bitmap_btn);
+        btnExecuteThreadCallback=(Button) findViewById(R.id.amn_demo_test_thread_btn);
     }
 
     private void initData(){
@@ -136,6 +159,9 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
         btnExecuteArrayFun.setOnClickListener(this);
         btnTestEncryptor.setOnClickListener(this);
         btnExecuteSplitFile.setOnClickListener(this);
+        btnExecuteListFiles.setOnClickListener(this);
+        btnExecuteBitmap.setOnClickListener(this);
+        btnExecuteThreadCallback.setOnClickListener(this);
 
         jniArraryOperation=new JniArraryOperation();
     }
@@ -179,6 +205,47 @@ public class NdkDemoActivity extends AppCompatActivity implements View.OnClickLi
         if (hasFilePermission()) {
             new JniFileOperation().test();
             Toast.makeText(this, "任务完成，测试文件路径:" + Config.getBaseUrl(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 列出所有文件，日志中可见
+     */
+    private void testListFiles(){
+        if (hasFilePermission()) {
+            new JniFileOperation().doListDirAllFile();
+            Toast.makeText(this, "请查看日志，测试文件路径:" + Config.getBaseUrl()+"/logs", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 测试获取图片信息
+     */
+    private void testBitmap(){
+        new JniBitmapDemo().test();
+    }
+
+    /**
+     * 测试jni开线程调用java
+     */
+    private void testJniCallback() {
+        jniCallbackRun(times++%2==0);
+    }
+
+    /**
+     * 测试jni调用java
+     */
+    private void jniCallbackRun(boolean run) {
+
+        if (jniCallbackDemo == null) {
+            jniCallbackDemo = new JniCallbackDemo(this);
+        }
+        if (run) {
+            Toast.makeText(this, "开始计时，请查看控制台日志输出", Toast.LENGTH_SHORT).show();
+            jniCallbackDemo.startTiming();
+        } else {
+            Toast.makeText(this, "停止计时", Toast.LENGTH_SHORT).show();
+            jniCallbackDemo.stopTiming();
         }
     }
 

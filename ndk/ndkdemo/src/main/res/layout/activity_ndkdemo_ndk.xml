@@ -156,6 +156,39 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/amn_demo_test_listall_btn"
+            android:text="JNI 测试列出所有文件"
+            android:textAllCaps="false"
+            android:layout_below="@+id/amn_demo_txt1"
+            android:textColor="@android:color/black"
+            android:layout_centerHorizontal="true"
+            android:textSize="24sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/amn_demo_test_bitmap_btn"
+            android:text="JNI 测试读取 Bitmap"
+            android:textAllCaps="false"
+            android:layout_below="@+id/amn_demo_txt1"
+            android:textColor="@android:color/black"
+            android:layout_centerHorizontal="true"
+            android:textSize="24sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/amn_demo_test_thread_btn"
+            android:text="JNI 测试 线程回调"
+            android:textAllCaps="false"
+            android:layout_below="@+id/amn_demo_txt1"
+            android:textColor="@android:color/black"
+            android:layout_centerHorizontal="true"
+            android:textSize="24sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     </android.support.v7.widget.LinearLayoutCompat>
 
 </ScrollView>
