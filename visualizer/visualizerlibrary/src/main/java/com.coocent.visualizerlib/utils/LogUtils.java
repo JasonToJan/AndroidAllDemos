@@ -13,7 +13,7 @@ import java.util.Locale;
  * Date: 2019/5/28 22:16
  */
 public class LogUtils {
-    private static String APP_TAG = "音乐频谱相关";
+    private static String APP_TAG = "TEST##Visualizer";
 
     private static HashMap<String, String> sCachedTag = new HashMap<>();
     private static JsonFormatter sJsonFormatter = new GsonFormatter();

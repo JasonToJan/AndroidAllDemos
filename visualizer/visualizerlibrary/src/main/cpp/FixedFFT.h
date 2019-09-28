@@ -214,7 +214,7 @@ if (!neonMode) {
 	}
 } else {
 	//TODO 这里先注释了
-	//doFftNeon(workspace, outFft);
+	doFftNeon(workspace, outFft);
 }
 #else
 	doFftNeon(workspace, outFft);

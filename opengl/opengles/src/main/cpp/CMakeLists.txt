@@ -49,12 +49,8 @@ endif (${ANDROID_PLATFORM_LEVEL} LESS 11)
 target_link_libraries(
         open-lib
         android
-        EGL
         ${OPENGL_LIB}
         log)
 
-
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -s")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
 
 

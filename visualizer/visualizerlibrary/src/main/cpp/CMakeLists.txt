@@ -14,7 +14,9 @@ add_library(
         SimpleVisualizerJni
         SHARED
         SimpleVisualizerJni.cpp
+        NeonFunctions.cpp
         ${native_srcs})
+
 
 include_directories(src/main/cpp/)
 find_library(
@@ -28,6 +30,7 @@ set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../app)
 set_target_properties(SimpleVisualizerJni PROPERTIES
         LIBRARY_OUTPUT_DIRECTORY
         ${distribution_DIR}/libs/${ANDROID_ABI})
+
 
 if (${ANDROID_PLATFORM_LEVEL} LESS 11)
     message(FATAL_ERROR "OpenGL 2 is not supported before API level 11 (currently using ${ANDROID_PLATFORM_LEVEL}).")

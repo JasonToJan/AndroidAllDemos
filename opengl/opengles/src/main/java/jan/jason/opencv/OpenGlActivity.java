@@ -12,7 +12,7 @@ import jan.jason.opencv.databinding.ActivityOpenGlBinding;
 public class OpenGlActivity extends AppCompatActivity implements View.OnClickListener{
 
     static {
-        System.loadLibrary("SimpleVisualizerJni");
+        System.loadLibrary("open-lib");
     }
 
     static native String stringFromJNI();

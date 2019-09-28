@@ -243,70 +243,70 @@ int32_t JNICALL commonProcess(JNIEnv* env, jclass clazz, jbyteArray jwaveform, i
 
 	uint8_t* const processedData = _processedData;
 
-#ifdef FPLAY_ARM
-if (!neonMode) {
-	float* const fft = _fft;
-	const float* const multiplier = _multiplier;
-	float* const previousM = _previousM;
+	#ifdef FPLAY_ARM
+	if (!neonMode) {
+		float* const fft = _fft;
+		const float* const multiplier = _multiplier;
+		float* const previousM = _previousM;
 
-	float coefNew = commonCoefNew * (float)deltaMillis;
-	if (coefNew > 1.0f)
-		coefNew = 1.0f;
-	const float coefOld = 1.0f - coefNew;
+		float coefNew = commonCoefNew * (float)deltaMillis;
+		if (coefNew > 1.0f)
+			coefNew = 1.0f;
+		const float coefOld = 1.0f - coefNew;
 
-	if ((opt & IGNORE_INPUT)) {
-		for (i = 0; i < QUARTER_FFT_SIZE; i++) {
-			float m = previousM[i];
-			const float old = fft[i];
-			if (m < old)
-				m = (coefNew * m) + (coefOld * old);
-			fft[i] = m;
-			//m goes from 0 to 32768+ (inclusive)
-			const uint32_t v = ((uint32_t)m) >> 7;
-			processedData[i] = ((v >= 255) ? 255 : (uint8_t)v);
+		if ((opt & IGNORE_INPUT)) {
+			for (i = 0; i < QUARTER_FFT_SIZE; i++) {
+				float m = previousM[i];
+				const float old = fft[i];
+				if (m < old)
+					m = (coefNew * m) + (coefOld * old);
+				fft[i] = m;
+				//m goes from 0 to 32768+ (inclusive)
+				const uint32_t v = ((uint32_t)m) >> 7;
+				processedData[i] = ((v >= 255) ? 255 : (uint8_t)v);
+			}
+		/*} else if ((opt & DATA_FFT_HQ)) {
+			for (i = 0; i < QUARTER_FFT_SIZE; i++) {
+				//fftData[i] stores values from 0 to -128/127 (inclusive)
+				const float re = fftData[i << 1];
+				const float im = fftData[(i << 1) + 1];
+				const float amplSq = (re * re) + (im * im);
+				float m = ((amplSq <= 8.0f) ? 0.0f : (multiplier[i] * sqrtf(amplSq)));
+				previousM[i] = m;
+				const float old = fft[i];
+				if (m < old)
+					m = (coefNew * m) + (coefOld * old);
+				fft[i] = m;
+				//m goes from 0 to 32768+ (inclusive)
+				const uint32_t v = ((uint32_t)m) >> 7;
+				processedData[i] = ((v >= 255) ? 255 : (uint8_t)v);
+			}*/
+		} else {
+			uint8_t* const fftI = _fftI;
+			for (i = 0; i < QUARTER_FFT_SIZE; i++) {
+				//fftI[i] stores values from 0 to 255 (inclusive)
+				const int32_t re = (uint32_t)fftI[i << 1];
+				const int32_t im = (uint32_t)fftI[(i << 1) + 1];
+				const int32_t amplSq = (re * re) + (im * im);
+				float m = ((amplSq <= 8) ? 0.0f : (multiplier[i] * sqrtf((float)amplSq)));
+				previousM[i] = m;
+				const float old = fft[i];
+				if (m < old)
+					m = (coefNew * m) + (coefOld * old);
+				fft[i] = m;
+				//m goes from 0 to 32768+ (inclusive)
+				const uint32_t v = ((uint32_t)m) >> 7;
+				processedData[i] = ((v >= 255) ? 255 : (uint8_t)v);
+			}
 		}
-	/*} else if ((opt & DATA_FFT_HQ)) {
-		for (i = 0; i < QUARTER_FFT_SIZE; i++) {
-			//fftData[i] stores values from 0 to -128/127 (inclusive)
-			const float re = fftData[i << 1];
-			const float im = fftData[(i << 1) + 1];
-			const float amplSq = (re * re) + (im * im);
-			float m = ((amplSq <= 8.0f) ? 0.0f : (multiplier[i] * sqrtf(amplSq)));
-			previousM[i] = m;
-			const float old = fft[i];
-			if (m < old)
-				m = (coefNew * m) + (coefOld * old);
-			fft[i] = m;
-			//m goes from 0 to 32768+ (inclusive)
-			const uint32_t v = ((uint32_t)m) >> 7;
-			processedData[i] = ((v >= 255) ? 255 : (uint8_t)v);
-		}*/
 	} else {
-		uint8_t* const fftI = _fftI;
-		for (i = 0; i < QUARTER_FFT_SIZE; i++) {
-			//fftI[i] stores values from 0 to 255 (inclusive)
-			const int32_t re = (uint32_t)fftI[i << 1];
-			const int32_t im = (uint32_t)fftI[(i << 1) + 1];
-			const int32_t amplSq = (re * re) + (im * im);
-			float m = ((amplSq <= 8) ? 0.0f : (multiplier[i] * sqrtf((float)amplSq)));
-			previousM[i] = m;
-			const float old = fft[i];
-			if (m < old)
-				m = (coefNew * m) + (coefOld * old);
-			fft[i] = m;
-			//m goes from 0 to 32768+ (inclusive)
-			const uint32_t v = ((uint32_t)m) >> 7;
-			processedData[i] = ((v >= 255) ? 255 : (uint8_t)v);
-		}
+		//TODO 这里先注释了
+		commonProcessNeon(deltaMillis, opt);
 	}
-} else {
-	//TODO 这里先注释了
-	//commonProcessNeon(deltaMillis, opt);
-}
-#else
-	// x86 also uses this file
-	commonProcessNeon(deltaMillis, opt);
-#endif
+	#else
+		// x86 also uses this file
+		commonProcessNeon(deltaMillis, opt);
+	#endif
 
 	if ((opt & BEAT_DETECTION)) {
 		//Beat detection (we are using a threshold of 25%)

@@ -17,6 +17,7 @@ android {
             cmake {
                 cppFlags ""
                 abiFilters 'armeabi-v7a', 'arm64-v8a'
+                arguments "-DANDROID_ARM_NEON=TRUE"
             }
         }
 

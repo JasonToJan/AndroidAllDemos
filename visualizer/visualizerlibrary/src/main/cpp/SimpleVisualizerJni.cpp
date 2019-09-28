@@ -40,6 +40,8 @@
 #include <errno.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include "LogUtils.h"
+#include <android/log.h>
 
 //http://docs.oracle.com/javase/7/docs/technotes/guides/jni/spec/functions.html
 //http://docs.oracle.com/javase/7/docs/technotes/guides/jni/spec/design.html
@@ -54,10 +56,22 @@ static int32_t barW, barH, barBins, barWidthInPixels, recreateVoice, lerp;
 static uint16_t bgColor;
 static uint16_t* voice, *alignedVoice;
 
+/**
+ * 设置一个线性插值，要么为1，要么为0
+ * @param env
+ * @param clazz
+ * @param jlerp
+ */
 void JNICALL setLerp(JNIEnv* env, jclass clazz, jboolean jlerp) {
 	lerp = (jlerp ? 1 : 0);
 }
 
+/**
+ * 初始化背景颜色 得到RGB 3个颜色值
+ * @param env
+ * @param clazz
+ * @param jbgColor
+ */
 void JNICALL init(JNIEnv* env, jclass clazz, int32_t jbgColor) {
 	voice = 0;
 	recreateVoice = 0;
@@ -70,6 +84,11 @@ void JNICALL init(JNIEnv* env, jclass clazz, int32_t jbgColor) {
 	commonUpdateMultiplier(env, clazz, 0, 0);
 }
 
+/**
+ * 是否终止 删除静态声音指针
+ * @param env
+ * @param clazz
+ */
 void JNICALL terminate(JNIEnv* env, jclass clazz) {
 	if (voice) {
 		delete voice;
@@ -77,22 +96,33 @@ void JNICALL terminate(JNIEnv* env, jclass clazz) {
 	}
 }
 
+/**
+ * 准备开始渲染
+ * 在Android中 GLSurfaceView中的surfaceChanged方法中执行了
+ * 关键逻辑： 只是为了调用一个 ANativeWindow_setBuffersGeometry
+ *
+ * @param env
+ * @param clazz
+ * @param surface
+ * @return
+ */
 int32_t JNICALL prepareSurface(JNIEnv* env, jclass clazz, jobject surface) {
-	ANativeWindow* wnd = ANativeWindow_fromSurface(env, surface);
+	ANativeWindow* wnd = ANativeWindow_fromSurface(env, surface);//通过Android中Surface获取一个Window窗口指针
 	if (!wnd)
 		return -1;
 	int32_t ret = -2;
-	int32_t w = ANativeWindow_getWidth(wnd), h = ANativeWindow_getHeight(wnd);
-	if (w > 0 && h > 0) {
-		barW = w >> 8;
-		barH = h & (~1); //make the height always an even number
+	int32_t w = ANativeWindow_getWidth(wnd),h = ANativeWindow_getHeight(wnd);
+	if (w > 0 && h > 0) {//渲染的宽度和高度都大于0
+		barW = w >> 8; //宽度转换为2进制后，右移8位 可能会减小
+		barH = h & (~1); //make the height always an even number 1取反 再和高度与运算
 		if (barW < 1)
 			barW = 1;
-		const int32_t size = barW << 8;
-		invBarW = 1.0f / (float)barW;
+		const int32_t size = barW << 8;  //这里可能会增大 恢复为窗口宽度
+		invBarW = 1.0f / (float) barW;
 		barBins = ((size > w) ? ((w < 256) ? (w & ~7) : 256) : 256);
 		barWidthInPixels = barBins * barW;
 		recreateVoice = 1;
+		//默认格式为565
 		ret = ANativeWindow_setBuffersGeometry(wnd, barWidthInPixels, barH, WINDOW_FORMAT_RGB_565);
 	}
 	if (ret < 0) {
@@ -101,11 +131,21 @@ int32_t JNICALL prepareSurface(JNIEnv* env, jclass clazz, jobject surface) {
 		barWidthInPixels = 0;
 		recreateVoice = 0;
 	}
-	ANativeWindow_release(wnd);
+	ANativeWindow_release(wnd);//释放原生窗口
 	return ret;
 }
 
+/**
+ * 没有声音的时候进行绘制
+ * 根据 int数组 （频谱传出来的） 然后进行绘制过程
+ * @param env
+ * @param clazz
+ * @param jwaveform
+ * @param surface
+ * @param opt
+ */
 void JNICALL process(JNIEnv* env, jclass clazz, jbyteArray jwaveform, jobject surface, int32_t opt) {
+    LOGE("%s", "TEST##first go to process ");
 	ANativeWindow* wnd = ANativeWindow_fromSurface(env, surface);
 	if (!wnd)
 		return;
@@ -121,7 +161,7 @@ void JNICALL process(JNIEnv* env, jclass clazz, jbyteArray jwaveform, jobject su
 		return;
 	}
 	inf.stride <<= 1; //convert from pixels to uint16_t
-	
+
 	//fft format:
 	//index  0   1    2  3  4  5  ..... n-2        n-1
 	//       Rdc Rnyq R1 I1 R2 I2       R(n-1)/2  I(n-1)/2
@@ -170,13 +210,13 @@ void JNICALL process(JNIEnv* env, jclass clazz, jbyteArray jwaveform, jobject su
 		if (m < old)
 			m = (coefNew * m) + (coefOld * old);
 		fft[i] = m;
-		
+
 		if (barW == 1 || !lerp) {
 			//m goes from 0 to 32768+ (inclusive)
 			int32_t v = (int32_t)m;
 			if (v > 32768)
 				v = 32768;
-			
+
 			const uint16_t color = COLORS[commonColorIndex + (v >> 7)];
 			v = ((v * barH) >> 15);
 			int32_t v2 = v;
@@ -184,7 +224,7 @@ void JNICALL process(JNIEnv* env, jclass clazz, jbyteArray jwaveform, jobject su
 			v2 += v;
 			uint16_t* currentBar = (uint16_t*)inf.bits;
 			inf.bits = (void*)((uint16_t*)inf.bits + barW);
-			
+
 			int32_t y = 0;
 			switch (barW) {
 			case 1:
@@ -284,13 +324,13 @@ void JNICALL process(JNIEnv* env, jclass clazz, jbyteArray jwaveform, jobject su
 			const float delta = (int32_t)(m - previous) * invBarW;
 			for (int32_t i = 0; i < barW; i++) {
 				previous += delta;
-				
+
 				int32_t v = (int32_t)previous;
 				if (v < 0)
 					v = 0;
 				else if (v > 32768)
 					v = 32768;
-				
+
 				const uint16_t color = COLORS[commonColorIndex + (v >> 7)];
 				v = ((v * barH) >> 15);
 				int32_t v2 = v;
@@ -298,7 +338,7 @@ void JNICALL process(JNIEnv* env, jclass clazz, jbyteArray jwaveform, jobject su
 				v2 += v;
 				uint16_t* currentBar = (uint16_t*)inf.bits;
 				inf.bits = (void*)((uint16_t*)inf.bits + 1);
-				
+
 				int32_t y = 0;
 				for (; y < v; y++) {
 					*currentBar = bgColor;
@@ -318,8 +358,19 @@ void JNICALL process(JNIEnv* env, jclass clazz, jbyteArray jwaveform, jobject su
 
 	ANativeWindow_unlockAndPost(wnd);
 	ANativeWindow_release(wnd);
+
+    LOGE("%s", "TEST##finish process ");
 }
 
+/**
+ * 有声音的时候进行绘制
+ * 根据频谱传出来的byte[] 数据
+ * @param env
+ * @param clazz
+ * @param jwaveform
+ * @param surface
+ * @param opt
+ */
 void JNICALL processVoice(JNIEnv* env, jclass clazz, jbyteArray jwaveform, jobject surface, int32_t opt) {
 	ANativeWindow* wnd = ANativeWindow_fromSurface(env, surface);
 	if (!wnd)
@@ -351,11 +402,11 @@ void JNICALL processVoice(JNIEnv* env, jclass clazz, jbyteArray jwaveform, jobje
 		return;
 	}
 	inf.stride <<= 1; //convert from pixels to uint16_t
-	
+
 	int32_t v = inf.stride * (inf.height - 1);
 	memcpy(alignedVoice, (uint8_t*)alignedVoice + inf.stride, v);
 	uint16_t* currentBar = (uint16_t*)((uint8_t*)alignedVoice + v);
-	
+
 //	float* const fft = _fft;
 	const float* const multiplier = _multiplier;
 	float* const previousM = _previousM;
@@ -382,7 +433,7 @@ void JNICALL processVoice(JNIEnv* env, jclass clazz, jbyteArray jwaveform, jobje
 	}
 
 	float previous = 0;
-	
+
 	for (int32_t i = 0; i < barBins; i++) {
 		//fftI[i] stores values from 0 to 255 (inclusive)
 		float m;
@@ -500,35 +551,35 @@ extern "C" {
 
         //供外部调用的方法集合
         JNINativeMethod methodTable[] = {
-                {"commonSetSpeed",         "(I)V",                         (void *) commonSetSpeed},
-                {"commonSetColorIndex",    "(I)V",                         (void *) commonSetColorIndex},
-                {"commonUpdateMultiplier", "(ZZ)V",                        (void *) commonUpdateMultiplier},
-                {"commonProcess",          "([BI)I",                       (void *) commonProcess},
+                {"commonSetSpeed",         "(I)V",                         (void *) commonSetSpeed}, //设置速度
+                {"commonSetColorIndex",    "(I)V",                         (void *) commonSetColorIndex}, //设置颜色索引
+                {"commonUpdateMultiplier", "(ZZ)V",                        (void *) commonUpdateMultiplier}, //更新多路复用器
+                {"commonProcess",          "([BI)I",                       (void *) commonProcess}, //共同过程
 
-                {"setLerp",                "(Z)V",                         (void *) setLerp},
-                {"init",                   "(I)V",                         (void *) init},
-                {"terminate",              "()V",                          (void *) terminate},
-                {"prepareSurface",         "(Landroid/view/Surface;)I",    (void *) prepareSurface},
-                {"process",                "([BLandroid/view/Surface;I)V", (void *) process},
-                {"processVoice",           "([BLandroid/view/Surface;I)V", (void *) processVoice},
+                {"setLerp",                "(Z)V",                         (void *) setLerp},       //设置线性插值
+                {"init",                   "(I)V",                         (void *) init},          //初始化 设置背景颜色
+                {"terminate",              "()V",                          (void *) terminate},     //终结进程
+                {"prepareSurface",         "(Landroid/view/Surface;)I",    (void *) prepareSurface},//准备渲染
+                {"process",                "([BLandroid/view/Surface;I)V", (void *) process},       //过程
+                {"processVoice",           "([BLandroid/view/Surface;I)V", (void *) processVoice},  //声音
 
-                {"glGetOESTexture",        "()I",                          (void *) glGetOESTexture},
-                {"glOnSurfaceCreated",     "(IIIIII)I",                    (void *) glOnSurfaceCreated},
-                {"glOnSurfaceChanged",     "(IIIIII)V",                    (void *) glOnSurfaceChanged},
-                {"glLoadBitmapFromJava",   "(Landroid/graphics/Bitmap;)I", (void *) glLoadBitmapFromJava},
-                {"glDrawFrame",            "()V",                          (void *) glDrawFrame},
-                {"glOnSensorReset",        "()V",                          (void *) glOnSensorReset},
-                {"glOnSensorData",         "(JI[F)V",                      (void *) glOnSensorData},
-                {"glSetImmersiveCfg",      "(II)V",                        (void *) glSetImmersiveCfg},
-                {"glReleaseView",          "()V",                          (void *) glReleaseView}
+                {"glGetOESTexture",        "()I",                          (void *) glGetOESTexture}, //文本相关
+                {"glOnSurfaceCreated",     "(IIIIII)I",                    (void *) glOnSurfaceCreated}, //onSurfaceCreated
+                {"glOnSurfaceChanged",     "(IIIIII)V",                    (void *) glOnSurfaceChanged}, //onSurfaceChanged
+                {"glLoadBitmapFromJava",   "(Landroid/graphics/Bitmap;)I", (void *) glLoadBitmapFromJava}, //从Java中加载图片资源
+                {"glDrawFrame",            "()V",                          (void *) glDrawFrame},   //最为关键的绘制过程
+                {"glOnSensorReset",        "()V",                          (void *) glOnSensorReset},  //重力感应重置
+                {"glOnSensorData",         "(JI[F)V",                      (void *) glOnSensorData},   //重力数据
+                {"glSetImmersiveCfg",      "(II)V",                        (void *) glSetImmersiveCfg}, //设置沉浸式配置
+                {"glReleaseView",          "()V",                          (void *) glReleaseView}      //释放视图
         };
         JNIEnv *env;
         if (vm->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK)
             return -1;
-        jclass clazz = env->FindClass("br/com/carlosrafaelgn/fplay/visualizer/SimpleVisualizerJni");
+        jclass clazz = env->FindClass("br/com/carlosrafaelgn/fplay/visualizer/SimpleVisualizerJni");//获取调用者的一个class对象
         if (!clazz)
             return -1;
-        env->RegisterNatives(clazz, methodTable, sizeof(methodTable) / sizeof(methodTable[0]));
+        env->RegisterNatives(clazz, methodTable, sizeof(methodTable) / sizeof(methodTable[0]));     //动态注册原生方法
         return JNI_VERSION_1_6;
     }
 

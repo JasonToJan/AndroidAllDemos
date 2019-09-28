@@ -48,6 +48,7 @@ import com.coocent.visualizerlib.inter.IVisualizer;
 import com.coocent.visualizerlib.R;
 import com.coocent.visualizerlib.common.SlimLock;
 import com.coocent.visualizerlib.entity.SongInfo;
+import com.coocent.visualizerlib.utils.LogUtils;
 import com.coocent.visualizerlib.view.TextIconDrawable;
 import com.coocent.visualizerlib.ui.UI;
 
@@ -66,8 +67,8 @@ public final class SimpleVisualizerJni extends SurfaceView implements SurfaceHol
 	public static native void commonUpdateMultiplier(boolean isVoice, boolean hq);
 	public static native int commonProcess(byte[] waveform, int opt);
 
-	private static native void setLerp(boolean lerp);
-	private static native void init(int bgColor);
+	private static native void setLerp(boolean lerp);//设置线性插值
+	private static native void init(int bgColor);//初始化颜色
 	private static native void terminate();
 	private static native int prepareSurface(Surface surface);
 	private static native void process(byte[] waveform, Surface surface, int opt);
@@ -278,18 +279,23 @@ public final class SimpleVisualizerJni extends SurfaceView implements SurfaceHol
 	//Runs on a SECONDARY thread
 	@Override
 	public void processFrame(boolean playing, byte[] waveform) {
-		if (!lock.lockLowPriority())
+		LogUtils.d("TEST##","#go to process#"+"");
+
+		if (!lock.lockLowPriority()){
 			return;
+		}
+
 		try {
 			if (surface != null) {
 				//We use ignoreInput because taking 1024 samples, 60 times a seconds,
 				//is useless, as there are only 44100 or 48000 samples in one second
 				if (ignoreInput == 0 && !playing)
 					Arrays.fill(waveform, (byte)0x80);
-				if (!voice)
-					process(waveform, surface, ignoreInput | DATA_FFT);
-				else
-					processVoice(waveform, surface, ignoreInput | DATA_FFT);
+				if (!voice){
+					process(waveform, surface, ignoreInput | DATA_FFT);//没有声音的时候
+				}else{
+					processVoice(waveform, surface, ignoreInput | DATA_FFT);//有声音的时候
+				}
 				ignoreInput ^= IGNORE_INPUT;
 			}
 		} finally {
