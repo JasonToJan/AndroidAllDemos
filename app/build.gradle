@@ -30,11 +30,6 @@ android {
         enabled = true
     }
 
-    externalNativeBuild {
-        cmake {
-            path file('../ndk/ndkdemo/src/main/cpp/CMakeLists.txt')
-        }
-    }
 }
 
 dependencies {
@@ -82,5 +77,5 @@ dependencies {
     implementation project(":ndk:ndkdemo")
 
     //opengl相关
-    implementation project(":opengl:opengl")
+    implementation project(":opengl:opengles")
 }

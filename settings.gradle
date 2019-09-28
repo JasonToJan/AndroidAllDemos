@@ -11,7 +11,7 @@ include ':transitions:transitionEverywhere',':transitions:transitionEverywhereDe
 
 
 //频谱相关
-include ':visualizer:visualizerlib',':visualizer:visualizerlibrary',':visualizer:visualizerlib2'
+include ':visualizer:visualizerlibrary', ':visualizer:visualizerlibCoocent'
 
 
 //弹窗相关
@@ -35,4 +35,4 @@ include ':player:exomedialib',':player:playlistlib',':player:exomediademo'
 include ':ndk:ndkdemo'
 
 //opengl相关
-include 'opengl:opengl'
+include 'opengl:opengles'
