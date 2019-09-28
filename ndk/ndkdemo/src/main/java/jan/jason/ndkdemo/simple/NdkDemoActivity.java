@@ -1,7 +1,6 @@
-package jan.jason.ndkdemo;
+package jan.jason.ndkdemo.simple;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +13,8 @@ import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.Date;
+
+import jan.jason.ndkdemo.R;
 
 
 public class NdkDemoActivity extends AppCompatActivity implements View.OnClickListener,
