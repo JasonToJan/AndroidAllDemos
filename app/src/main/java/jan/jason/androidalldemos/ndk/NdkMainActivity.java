@@ -8,7 +8,7 @@ import android.view.View;
 
 import jan.jason.androidalldemos.R;
 import jan.jason.androidalldemos.databinding.ActivityMainNdkBinding;
-import jan.jason.ndkdemo.NdkDemoActivity;
+import jan.jason.ndkdemo.simple.NdkDemoActivity;
 import jan.jason.ndkdemo.OpenGL.OpenGlTriangleActivity;
 
 /**

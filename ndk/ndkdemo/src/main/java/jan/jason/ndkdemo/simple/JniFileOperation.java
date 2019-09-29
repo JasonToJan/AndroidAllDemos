@@ -1,4 +1,4 @@
-package jan.jason.ndkdemo;
+package jan.jason.ndkdemo.simple;
 
 import android.util.Log;
 

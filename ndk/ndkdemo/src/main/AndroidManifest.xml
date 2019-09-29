@@ -13,7 +13,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".NdkDemoActivity"
+            android:name=".simple.NdkDemoActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
     </application>
