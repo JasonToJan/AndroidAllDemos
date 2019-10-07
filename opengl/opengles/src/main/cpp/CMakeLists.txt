@@ -10,8 +10,19 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-rtti -fno-exceptions -Wall")
 
 add_library(
-        open-lib
+        lesson-lib
         SHARED
+        # graphics
+        graphics/GLUtils.h
+        graphics/GLUtils.cpp
+        graphics/Matrix.h
+        graphics/Matrix.cpp
+
+        # Provides a relative path to your source file(s).
+        # lesson1
+        lesson1/Native1Lesson.cpp
+        lesson1/Native1Lesson.h
+
         open-lib.cpp
         ${native_srcs})
 
@@ -24,7 +35,7 @@ find_library(
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 set(CMAKE_VERBOSE_MAKEFILE on)
 set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../app)
-set_target_properties(open-lib PROPERTIES
+set_target_properties(lesson-lib PROPERTIES
         LIBRARY_OUTPUT_DIRECTORY
         ${distribution_DIR}/libs/${ANDROID_ABI})
 
@@ -47,7 +58,7 @@ endif (${ANDROID_PLATFORM_LEVEL} LESS 11)
 #        log)
 
 target_link_libraries(
-        open-lib
+        lesson-lib
         android
         ${OPENGL_LIB}
         log)

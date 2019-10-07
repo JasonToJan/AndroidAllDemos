@@ -19,6 +19,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
+        <Button
+            android:id="@+id/ao_demo_triangle_btn"
+            android:layout_margin="20dp"
+            android:text="Lesson One:Triangle "
+            android:textAllCaps="false"
+            android:textSize="24sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
 
     </android.support.v7.widget.LinearLayoutCompat>
 

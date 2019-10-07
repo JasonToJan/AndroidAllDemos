@@ -4,6 +4,9 @@
 
     <application>
         <activity android:name=".OpenGlActivity"></activity>
+        <activity
+            android:name=".lessons.lesson1.LessonOneActivity" />
+
     </application>
 
 </manifest>
