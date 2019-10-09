@@ -320,7 +320,12 @@ public final class SimpleVisualizerJni extends SurfaceView implements SurfaceHol
 		point = null;
 		terminate();
 	}
-	
+
+	@Override
+	public void releaseSensor() {
+
+	}
+
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 		lock.lockHighPriority();

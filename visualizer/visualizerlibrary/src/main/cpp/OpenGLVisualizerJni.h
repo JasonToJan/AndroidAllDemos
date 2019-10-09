@@ -629,6 +629,7 @@ void glDrawSpectrumWithoutAmplitudeTexture() {
 }
 
 int32_t glCreateLiquid(uint32_t powerSaver) {
+
 	commonTimeLimit = 12566; //2 * 2 * pi * 1000
 
 	int32_t l;
@@ -809,6 +810,7 @@ int32_t glCreateLiquid(uint32_t powerSaver) {
 	glVertexAttribPointer(3, 2, GL_FLOAT, false, 0, 0);
 	if (glGetError()) return -112;
 
+    LOGD("go to glCreateLiquid");
 	glDrawProc = glDrawLiquid;
 
 	return 0;
@@ -914,6 +916,7 @@ int32_t glCreateSpin(int32_t estimatedWidth, int32_t estimatedHeight, int32_t dp
 	glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
 	if (glGetError()) return -109;
 
+    LOGD("go to glCreateSpin");
 	glDrawProc = glDrawSpin;
 
 	return 0;
@@ -975,6 +978,7 @@ int32_t glCreateColorWaves() {
 	glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
 	if (glGetError()) return -109;
 
+    LOGD("go to glCreateColorWaves");
 	glDrawProc = glDrawColorWaves;
 
 	return 0;
@@ -1057,6 +1061,7 @@ int32_t glCreateParticle(int32_t hasGyro) {
 	glVertexAttribPointer(2, 1, GL_FLOAT, false, 0, 0);
 	if (glGetError()) return -108;
 
+    LOGD("go to glCreateParticle");
 	glDrawProc = glDrawParticle;
 
 	return 0;
@@ -1154,6 +1159,7 @@ int32_t glCreateImmersiveParticle(int32_t hasGyro) {
 	}
 	if (glGetError()) return -109;
 
+    LOGD("go to glCreateImmersiveParticle or glDrawParticle");
 	glDrawProc = ((glType == TYPE_IMMERSIVE_PARTICLE_VR) ? glDrawImmersiveParticleVR : glDrawParticle);
 
 	return 0;
@@ -1323,6 +1329,7 @@ int32_t glCreateSpectrum2() {
 	glVertexAttribPointer(0, 1, GL_FLOAT, false, 0, 0);
 	if (glGetError()) return -111;
 
+    LOGD("go to glCreateSpectrum2");
 	glDrawProc = (spectrumUsesTexture ? glDrawSpectrum2 : glDrawSpectrum2WithoutAmplitudeTexture);
 
 	return 0;
@@ -1460,6 +1467,7 @@ int32_t glCreateSpectrum() {
 	glVertexAttribPointer(0, 1, GL_FLOAT, false, 0, 0);
 	if (glGetError()) return -111;
 
+    LOGD("go to glCreateSpectrum");
 	glDrawProc = (spectrumUsesTexture ? glDrawSpectrum : glDrawSpectrumWithoutAmplitudeTexture);
 
 	return 0;
@@ -1469,11 +1477,19 @@ int32_t JNICALL glGetOESTexture(JNIEnv* env, jclass clazz) {
 	return glOESTexture;
 }
 
-int32_t JNICALL glOnSurfaceCreated(JNIEnv* env, jclass clazz, int32_t bgColor, int32_t type, int32_t estimatedWidth, int32_t estimatedHeight, int32_t dp1OrLess, int32_t hasGyro) {
-	commonSRand();
+int32_t JNICALL glOnSurfaceCreated(JNIEnv* env, jclass clazz,
+		int32_t bgColor,
+		int32_t type,
+		int32_t estimatedWidth,
+		int32_t estimatedHeight,
+		int32_t dp1OrLess,// (UI._1dp < 2) ? 1 : 0 单位长度
+		int32_t hasGyro//是否有陀螺仪
+		) {
+
+    commonSRand();
 	glType = type;
 	glResetState();
-
+    LOGD("go to glOnSurfaceCreated");
 	//settings common to all OpenGL visualizations
 
 	commonTime = 0;
@@ -1497,6 +1513,7 @@ int32_t JNICALL glOnSurfaceCreated(JNIEnv* env, jclass clazz, int32_t bgColor, i
 
 	int32_t ret;
 
+	//频谱类型
 	switch (type) {
 	case TYPE_LIQUID:
 		ret = glCreateLiquid(false);
@@ -1536,6 +1553,9 @@ int32_t JNICALL glOnSurfaceCreated(JNIEnv* env, jclass clazz, int32_t bgColor, i
 
 void JNICALL glOnSurfaceChanged(JNIEnv* env, jclass clazz, int32_t width, int32_t height, int32_t rotation, int32_t cameraPreviewW, int32_t cameraPreviewH, int32_t dp1OrLess) {
 	glViewport(0, 0, width, height);
+
+    LOGD("go to glOnSurfaceChanged");
+
 	if (glProgram && glBuf[0] && glBuf[1] && width > 0 && height > 0) {
 		if (glType == TYPE_SPIN) {
 			int32_t size = glComputeSpinSize(width, height, dp1OrLess);
@@ -1657,6 +1677,9 @@ void JNICALL glOnSurfaceChanged(JNIEnv* env, jclass clazz, int32_t width, int32_
 }
 
 int32_t JNICALL glLoadBitmapFromJava(JNIEnv* env, jclass clazz, jobject bitmap) {
+
+    LOGD("go to glLoadBitmapFromJava");
+
 	AndroidBitmapInfo inf;
 	if (AndroidBitmap_getInfo(env, bitmap, &inf))
 		return ERR_INFO;
@@ -1683,16 +1706,22 @@ int32_t JNICALL glLoadBitmapFromJava(JNIEnv* env, jclass clazz, jobject bitmap) 
 }
 
 void JNICALL glDrawFrame(JNIEnv* env, jclass clazz) {
+    //LOGD("go to glDrawFrame");
 	glDrawProc();
 }
 
 void JNICALL glOnSensorReset(JNIEnv* env, jclass clazz) {
+
+    LOGD("go to glOnSensorReset");
+
 	if (glSoundParticle)
 		glSoundParticle->onSensorReset();
 }
 
 void JNICALL glOnSensorData(JNIEnv* env, jclass clazz, uint64_t sensorTimestamp, int32_t sensorType, jfloatArray jvalues) {
-	if (!glSoundParticle || !jvalues)
+    LOGD("go to glOnSensorData");
+
+    if (!glSoundParticle || !jvalues)
 		return;
 	float* values = (float*)env->GetPrimitiveArrayCritical(jvalues, 0);
 	float v[] = { values[0], values[1], values[2] };
@@ -1701,12 +1730,16 @@ void JNICALL glOnSensorData(JNIEnv* env, jclass clazz, uint64_t sensorTimestamp,
 }
 
 void JNICALL glSetImmersiveCfg(JNIEnv* env, jclass clazz, int32_t diffusion, int32_t riseSpeed) {
+    LOGD("go to glSetImmersiveCfg");
+
 	if (!glSoundParticle || (glType != TYPE_IMMERSIVE_PARTICLE && glType != TYPE_IMMERSIVE_PARTICLE_VR))
 		return;
 	glSoundParticle->setImmersiveCfg(diffusion, riseSpeed);
 }
 
 void JNICALL glReleaseView(JNIEnv* env, jclass clazz) {
+    LOGD("go to glReleaseView");
+
 	if (glSoundParticle) {
 		delete glSoundParticle;
 		glSoundParticle = 0;

@@ -138,6 +138,8 @@ int32_t JNICALL prepareSurface(JNIEnv* env, jclass clazz, jobject surface) {
 /**
  * 没有声音的时候进行绘制
  * 根据 int数组 （频谱传出来的） 然后进行绘制过程
+ *
+ * 这里具体作用不详，因为注释掉整个函数，好像没什么影响
  * @param env
  * @param clazz
  * @param jwaveform
@@ -145,7 +147,7 @@ int32_t JNICALL prepareSurface(JNIEnv* env, jclass clazz, jobject surface) {
  * @param opt
  */
 void JNICALL process(JNIEnv* env, jclass clazz, jbyteArray jwaveform, jobject surface, int32_t opt) {
-    LOGE("%s", "TEST##first go to process ");
+    LOGD("TEST##first go to process ");
 	ANativeWindow* wnd = ANativeWindow_fromSurface(env, surface);
 	if (!wnd)
 		return;
@@ -365,6 +367,8 @@ void JNICALL process(JNIEnv* env, jclass clazz, jbyteArray jwaveform, jobject su
 /**
  * 有声音的时候进行绘制
  * 根据频谱传出来的byte[] 数据
+ *
+ * 这里作用不详，因为注释掉整个函数，对绘制没有任何影响
  * @param env
  * @param clazz
  * @param jwaveform
@@ -525,6 +529,9 @@ extern "C" {
         #ifdef FPLAY_ARM
         checkNeonMode();
         #endif
+
+        LOGD("go to JNI_OnLoad");
+
         voice = 0;
         recreateVoice = 0;
         glResetState(); //初始化状态 下面基本上都是一些常量定义
@@ -588,6 +595,8 @@ extern "C" {
             delete glSoundParticle;
             glSoundParticle = 0;
         }
+
+        LOGD("go to JNI_OnUnload");
     }
 
 }

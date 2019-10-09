@@ -114,4 +114,9 @@ public interface IVisualizer {
 	//Runs on the MAIN thread (AFTER release())
 	void releaseView();
 
+	/**
+	 * 释放重力感应的东西，否则线程会一直执行
+	 */
+	void releaseSensor();
+
 }
