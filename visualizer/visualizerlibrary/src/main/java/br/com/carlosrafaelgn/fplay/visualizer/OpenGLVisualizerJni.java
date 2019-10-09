@@ -479,7 +479,9 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 					int largestW = 0, largestH = 0;
 					float smallestRatioError = 10000.0f;
 					final float viewRatio = (float)width / (float)height;
+					//横竖屏处理
 					if (cameraDisplayOrientation == 0 || cameraDisplayOrientation == 180) {
+						//遍历支持的尺寸
 						for (int i = localSizes.size() - 1; i >= 0; i--) {
 							final int w = localSizes.get(i).width, h = localSizes.get(i).height;
 							final float ratioError = Math.abs(((float)w / (float)h) - viewRatio);
@@ -543,7 +545,8 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 
 		viewWidth = width;
 		viewHeight = height;
-		SimpleVisualizerJni.glOnSurfaceChanged(width, height, rotation, cameraPreviewW, cameraPreviewH, (UI._1dp < 2) ? 1 : 0);
+		SimpleVisualizerJni.glOnSurfaceChanged(width, height, rotation,
+				cameraPreviewW, cameraPreviewH, (UI._1dp < 2) ? 1 : 0);
 		okToRender = true;
 	}
 
@@ -738,9 +741,6 @@ public final class OpenGLVisualizerJni extends GLSurfaceView
 				synchronized (this) {
 					if (cameraTexture != null){
 						cameraTexture.updateTexImage();
-//						float[] mtx = new float[16];
-//						cameraTexture.getTransformMatrix(mtx);
-//						mDirectDrawer.draw(mtx,mCameraId);
 					}
 				}
 			}

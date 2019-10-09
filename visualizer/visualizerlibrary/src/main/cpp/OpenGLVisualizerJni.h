@@ -699,6 +699,7 @@ int32_t glCreateLiquid(uint32_t powerSaver) {
 	glLinkProgram(glProgram);
 	if (glGetError()) return -102;
 
+	//加载第二个Program
 	if ((l = glCreateProgramAndShaders(
 		rectangleVShader,
 		textureFShader,
@@ -732,7 +733,6 @@ int32_t glCreateLiquid(uint32_t powerSaver) {
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, glBuf[0]);
 	glBufferData(GL_ARRAY_BUFFER, (512 * 2) * sizeof(float), vertices, GL_STATIC_DRAW);
-
 	//vertices at odd indices receive a -1, to indicate they are static, and must be placed
 	//at the top of the screen
 	for (int32_t i = 1; i < 1024; i += 2)
@@ -742,9 +742,7 @@ int32_t glCreateLiquid(uint32_t powerSaver) {
 		vertices[i] = (float)(i << 5) / 1024.0f;
 	glBindBuffer(GL_ARRAY_BUFFER, glBuf[1]);
 	glBufferData(GL_ARRAY_BUFFER, (512 * 2) * sizeof(float), vertices, GL_STATIC_DRAW);
-
 	delete[] vertices;
-
 	//create a rectangle that occupies the entire screen
 	glBindBuffer(GL_ARRAY_BUFFER, glBuf[2]);
 	glBufferData(GL_ARRAY_BUFFER, (4 * 4) * sizeof(float), glVerticesRect, GL_STATIC_DRAW);
@@ -1551,7 +1549,8 @@ int32_t JNICALL glOnSurfaceCreated(JNIEnv* env, jclass clazz,
 	return ret;
 }
 
-void JNICALL glOnSurfaceChanged(JNIEnv* env, jclass clazz, int32_t width, int32_t height, int32_t rotation, int32_t cameraPreviewW, int32_t cameraPreviewH, int32_t dp1OrLess) {
+void JNICALL glOnSurfaceChanged(JNIEnv* env, jclass clazz, int32_t width, int32_t height,
+		int32_t rotation, int32_t cameraPreviewW, int32_t cameraPreviewH, int32_t dp1OrLess) {
 	glViewport(0, 0, width, height);
 
     LOGD("go to glOnSurfaceChanged");
