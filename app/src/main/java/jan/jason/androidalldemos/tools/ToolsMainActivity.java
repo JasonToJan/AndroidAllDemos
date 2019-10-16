@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import jan.jason.androidalldemos.R;
 import jan.jason.androidalldemos.databinding.ActivityMainToolsBinding;
+import jan.jason.androidalldemos.demo.reflect.ReflectActivity;
 import jan.jason.bulk.BulkUtils;
 import jan.jason.bulk.helper.Item;
 
@@ -33,6 +34,7 @@ public class ToolsMainActivity extends AppCompatActivity implements View.OnClick
 
         mainBinding.amtBtn1.setOnClickListener(this);
         mainBinding.amtBtn2.setOnClickListener(this);
+        mainBinding.amtBtn3.setOnClickListener(this);
     }
 
     @Override
@@ -49,6 +51,10 @@ public class ToolsMainActivity extends AppCompatActivity implements View.OnClick
                     list.add(new Item("title"+i,"title"+i+i,"title"+i+i+i));
                 }
                 BulkUtils.keepToBulkActivity(this,list);
+                break;
+
+            case R.id.amt_btn3:
+                startActivity(new Intent(this, ReflectActivity.class));
                 break;
         }
     }

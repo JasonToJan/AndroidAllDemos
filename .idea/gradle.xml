@@ -11,7 +11,8 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/ndk" />
             <option value="$PROJECT_DIR$/ndk/ndkdemo" />
-            <option value="$PROJECT_DIR$/ndkdemo" />
+            <option value="$PROJECT_DIR$/opengl" />
+            <option value="$PROJECT_DIR$/opengl/opengles" />
             <option value="$PROJECT_DIR$/photos" />
             <option value="$PROJECT_DIR$/photos/takephoto" />
             <option value="$PROJECT_DIR$/photos/takephotodemo" />
@@ -21,6 +22,7 @@
             <option value="$PROJECT_DIR$/player/playlistlib" />
             <option value="$PROJECT_DIR$/popupwindow" />
             <option value="$PROJECT_DIR$/popupwindow/popupwindowdemo" />
+            <option value="$PROJECT_DIR$/reflectlibrary" />
             <option value="$PROJECT_DIR$/tools" />
             <option value="$PROJECT_DIR$/tools/bulk" />
             <option value="$PROJECT_DIR$/tools/multirecyclerviewdemo" />
@@ -45,8 +47,7 @@
             <option value="$PROJECT_DIR$/transitions/ycshareelement" />
             <option value="$PROJECT_DIR$/transitions/ycshareelementdemo" />
             <option value="$PROJECT_DIR$/visualizer" />
-            <option value="$PROJECT_DIR$/visualizer/visualizerlib" />
-            <option value="$PROJECT_DIR$/visualizer/visualizerlib2" />
+            <option value="$PROJECT_DIR$/visualizer/visualizerlibCoocent" />
             <option value="$PROJECT_DIR$/visualizer/visualizerlibrary" />
           </set>
         </option>
