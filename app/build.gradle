@@ -80,5 +80,5 @@ dependencies {
     implementation project(":opengl:opengles")
 
     //demo相关
-    implementation project(":reflectlibrary")
+    implementation project(":otherdemo:reflectlibrary")
 }
