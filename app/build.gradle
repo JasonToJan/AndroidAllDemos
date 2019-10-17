@@ -78,4 +78,7 @@ dependencies {
 
     //opengl相关
     implementation project(":opengl:opengles")
+
+    //demo相关
+    implementation project(":reflectlibrary")
 }

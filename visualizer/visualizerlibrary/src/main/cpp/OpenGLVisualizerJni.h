@@ -228,7 +228,7 @@ float glSmoothStep(float edge0, float edge1, float x) {
 	);
 }
 
-#include "GLSoundParticle.h"//位置相当有讲究
+#include "GLSoundParticle.h"
 
 int32_t glCreateProgramAndShaders(const char* vertexShaderSource, const char* fragmentShaderSource, uint32_t* program) {
 	int32_t l;
@@ -293,39 +293,29 @@ int32_t glComputeSpinSize(int32_t width, int32_t height, int32_t dp1OrLess) {
 	return size;
 }
 
-/**
- * 设置纹理相关函数,频谱怎么动起来的
- * 水滴频谱页： 设置了glSumData，才有动态的频谱显示
- */
 void glSumData() {
 	int32_t i, idx, last;
 	uint8_t avg, *processedData = _processedData;
 
+	//instead of dividing by 255, we are dividing by 256 (* 0.00390625f)
+	//since the difference is visually unnoticeable
 	idx = glAmplitude;
-
-	//使频谱动起来，其它的循环是为了覆盖全部
-    LOGD("\n\n");
-	for (i = 0; i < 6; i++){
-        glUniform1f(idx++, (float)processedData[i] * 0.00390625f);
-	}
-
+	for (i = 0; i < 6; i++)
+		glUniform1f(idx++, (float)processedData[i] * 0.00390625f);
 	for (; i < 20; i += 2)
 		glUniform1f(idx++, (float)MAX(processedData[i], processedData[i + 1]) * 0.00390625f);
-
 	for (; i < 36; i += 4) {
 		avg = MAX(processedData[i], processedData[i + 1]);
 		avg = MAX(avg, processedData[i + 2]);
 		avg = MAX(avg, processedData[i + 3]);
 		glUniform1f(idx++, (float)avg * 0.00390625f);
 	}
-
 	for (last = 44; last <= 100; last += 8) {
 		avg = processedData[i++];
 		for (; i < last; i++)
 			avg = MAX(avg, processedData[i]);
 		glUniform1f(idx++, (float)avg * 0.00390625f);
 	}
-
 	for (last = 116; last <= 228; last += 16) {
 		avg = processedData[i++];
 		for (; i < last; i++)
@@ -472,14 +462,13 @@ void glDrawNothing() {
 }
 
 void glDrawLiquid() {
-    //这个应该是绘制频谱跟随声音变化的颜色，如果注释掉之后，颜色变成黑色了
-	glUseProgram(glProgram2);//渲染状态glProgram2
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);//注释掉后，背景变成黑色的了
+	glUseProgram(glProgram2);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glFlush(); //faster than glFinish :)
 
-	glUseProgram(glProgram);//指定程序对象的句柄，该程序对象的可执行文件将用作当前渲染状态的一部分。
-	glUniform1f(glTime, (float)commonTime * 0.001f);//对纹理采样器变量进行设置,背景白色部分会动
-	glSumData();//这个应该是绘制频谱随声音变化的动态曲线，如果注释掉后，就没有动态效果了
+	glUseProgram(glProgram);
+	glUniform1f(glTime, (float)commonTime * 0.001f);
+	glSumData();
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 512 * 2);
 }
 
@@ -639,28 +628,6 @@ void glDrawSpectrumWithoutAmplitudeTexture() {
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 128 * 2);
 }
 
-#define imageWidth 2
-#define imageHeight 2
-GLubyte image[imageWidth][imageHeight][3];
-
-/*绘制一个简单的二维纹理图*/
-void makeImage(void) {
-    int i, j, r, g, b;
-
-    /*根据点的位置设置不同的颜色*/
-    for (i = 0; i < imageWidth; i++) {
-        for (j = 0; j < imageHeight; j++) {
-            r = (i * j) % 255;
-            g = (i * i) % 255;
-            b = (j * j) % 255;
-
-            image[i][j][0] = (GLubyte) b;
-            image[i][j][1] = (GLubyte) g;
-            image[i][j][2] = (GLubyte) r;
-        }
-    }
-}
-
 int32_t glCreateLiquid(uint32_t powerSaver) {
 
 	commonTimeLimit = 12566; //2 * 2 * pi * 1000
@@ -725,24 +692,25 @@ int32_t glCreateLiquid(uint32_t powerSaver) {
 		&glProgram)))
 		return l;
 
-	glBindAttribLocation(glProgram, 0, "inPosition");//将inPositon属性绑定到0号位置
+	glBindAttribLocation(glProgram, 0, "inPosition");
 	if (glGetError()) return -100;
-	glBindAttribLocation(glProgram, 1, "inTexCoord");//将inTexCoord属性绑定到1号位置
+	glBindAttribLocation(glProgram, 1, "inTexCoord");
 	if (glGetError()) return -101;
-	glLinkProgram(glProgram);//链接程序，glProgram通过opengl代码语句生成
+	glLinkProgram(glProgram);
 	if (glGetError()) return -102;
 
-	if ((l = glCreateProgramAndShaders(//加载固定代码块，所有频谱通用
+	//加载第二个Program
+	if ((l = glCreateProgramAndShaders(
 		rectangleVShader,
 		textureFShader,
 		&glProgram2)))
 		return l;
 
-	glBindAttribLocation(glProgram2, 2, "inPosition");//将inPosition属性绑定在2号位置（glProgram2）
+	glBindAttribLocation(glProgram2, 2, "inPosition");
 	if (glGetError()) return -100;
-	glBindAttribLocation(glProgram2, 3, "inTexCoord");//将inTexCoord属性绑定在3号位置（glProgram2）
+	glBindAttribLocation(glProgram2, 3, "inTexCoord");
 	if (glGetError()) return -101;
-	glLinkProgram(glProgram2);//链接程序
+	glLinkProgram(glProgram2);
 	if (glGetError()) return -102;
 
 	glGenBuffers(4, glBuf);
@@ -765,7 +733,6 @@ int32_t glCreateLiquid(uint32_t powerSaver) {
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, glBuf[0]);
 	glBufferData(GL_ARRAY_BUFFER, (512 * 2) * sizeof(float), vertices, GL_STATIC_DRAW);
-
 	//vertices at odd indices receive a -1, to indicate they are static, and must be placed
 	//at the top of the screen
 	for (int32_t i = 1; i < 1024; i += 2)
@@ -775,9 +742,7 @@ int32_t glCreateLiquid(uint32_t powerSaver) {
 		vertices[i] = (float)(i << 5) / 1024.0f;
 	glBindBuffer(GL_ARRAY_BUFFER, glBuf[1]);
 	glBufferData(GL_ARRAY_BUFFER, (512 * 2) * sizeof(float), vertices, GL_STATIC_DRAW);
-
 	delete[] vertices;
-
 	//create a rectangle that occupies the entire screen
 	glBindBuffer(GL_ARRAY_BUFFER, glBuf[2]);
 	glBufferData(GL_ARRAY_BUFFER, (4 * 4) * sizeof(float), glVerticesRect, GL_STATIC_DRAW);
@@ -800,21 +765,12 @@ int32_t glCreateLiquid(uint32_t powerSaver) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	//create a default blue background,创建一个默认蓝色的背景
-//	((uint16_t*)floatBuffer)[0] = 0x31fb;
-//	((uint16_t*)floatBuffer)[1] = 0x5b3a;
-//	((uint16_t*)floatBuffer)[2] = 0x041f;
-//	((uint16_t*)floatBuffer)[3] = 0x34df;
-
-    ((uint16_t*)floatBuffer)[0] = 0xf800;
-    ((uint16_t*)floatBuffer)[1] = 0x5b3a;
-    ((uint16_t*)floatBuffer)[2] = 0x041f;
-    ((uint16_t*)floatBuffer)[3] = 0xeabb;
-
-    makeImage();
-    //5_6_5 : rrrr rggg gggbbbbb 2*2
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB,
-	        GL_UNSIGNED_SHORT_5_6_5,(uint8_t*) floatBuffer);
+	//create a default blue background
+	((uint16_t*)floatBuffer)[0] = 0x31fb;
+	((uint16_t*)floatBuffer)[1] = 0x5b3a;
+	((uint16_t*)floatBuffer)[2] = 0x041f;
+	((uint16_t*)floatBuffer)[3] = 0x34df;
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, (uint8_t*)floatBuffer);
 
 	if (glGetError()) return -107;
 
@@ -1593,7 +1549,8 @@ int32_t JNICALL glOnSurfaceCreated(JNIEnv* env, jclass clazz,
 	return ret;
 }
 
-void JNICALL glOnSurfaceChanged(JNIEnv* env, jclass clazz, int32_t width, int32_t height, int32_t rotation, int32_t cameraPreviewW, int32_t cameraPreviewH, int32_t dp1OrLess) {
+void JNICALL glOnSurfaceChanged(JNIEnv* env, jclass clazz, int32_t width, int32_t height,
+		int32_t rotation, int32_t cameraPreviewW, int32_t cameraPreviewH, int32_t dp1OrLess) {
 	glViewport(0, 0, width, height);
 
     LOGD("go to glOnSurfaceChanged");

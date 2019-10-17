@@ -36,3 +36,6 @@ include ':ndk:ndkdemo'
 
 //opengl相关
 include 'opengl:opengles'
+
+//demo相关
+includ  ':reflectlibrary'

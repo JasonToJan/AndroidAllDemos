@@ -12,6 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppThemeMain"
         tools:replace="android:theme,android:name">
+        <activity android:name=".demo.reflect.ReflectBaseActivity"></activity>
+        <activity android:name=".demo.reflect.ReflectActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,8 +39,8 @@
         <activity android:name=".transitions.activitytransition.TransitionDemoActivity" />
         <activity android:name=".tools.ToolsMainActivity" />
         <activity android:name=".photo.PhotoMainActivity" />
-        <activity android:name=".player.PlayerMainActivity"></activity>
-        <activity android:name=".ndk.NdkMainActivity"></activity>
+        <activity android:name=".player.PlayerMainActivity" />
+        <activity android:name=".ndk.NdkMainActivity" />
     </application>
 
 </manifest>
