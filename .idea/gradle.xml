@@ -12,7 +12,10 @@
             <option value="$PROJECT_DIR$/ndk" />
             <option value="$PROJECT_DIR$/ndk/ndkdemo" />
             <option value="$PROJECT_DIR$/opengl" />
+            <option value="$PROJECT_DIR$/opengl/neopencv" />
             <option value="$PROJECT_DIR$/opengl/opengles" />
+            <option value="$PROJECT_DIR$/otherdemo" />
+            <option value="$PROJECT_DIR$/otherdemo/reflectlibrary" />
             <option value="$PROJECT_DIR$/photos" />
             <option value="$PROJECT_DIR$/photos/takephoto" />
             <option value="$PROJECT_DIR$/photos/takephotodemo" />
@@ -22,7 +25,6 @@
             <option value="$PROJECT_DIR$/player/playlistlib" />
             <option value="$PROJECT_DIR$/popupwindow" />
             <option value="$PROJECT_DIR$/popupwindow/popupwindowdemo" />
-            <option value="$PROJECT_DIR$/reflectlibrary" />
             <option value="$PROJECT_DIR$/tools" />
             <option value="$PROJECT_DIR$/tools/bulk" />
             <option value="$PROJECT_DIR$/tools/multirecyclerviewdemo" />

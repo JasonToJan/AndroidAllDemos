@@ -78,6 +78,7 @@ dependencies {
 
     //opengl相关
     implementation project(":opengl:opengles")
+    implementation project(":opengl:neopencv")
 
     //demo相关
     implementation project(":otherdemo:reflectlibrary")

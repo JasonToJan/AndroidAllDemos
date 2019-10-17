@@ -78,27 +78,33 @@ public class InjectManager {
 
         Method[] methods = clazz.getDeclaredMethods();
 
+        //Activity中所有方法
         for (Method method : methods) {
             Annotation[] annotations = method.getAnnotations();
+
+            //当前方法所有注解
             for (Annotation annotation : annotations) {
                 Class<? extends Annotation> annotationType = annotation.annotationType();
                 if(annotationType!=null){
+
+                    //获取第二层注解，这个bean是对Android 长按，短按的一个封装
                     EventBase eventBase=annotationType.getAnnotation(EventBase.class);
-                    //点击，长按，条目点击的封装注解
+                    //点击，长按，条目点击的封装注解，Android的长按或者短按
                     if(eventBase!=null){
+
                         String listenerSetter = eventBase.listenerSetter();
                         Class<?> listenerType = eventBase.listenerType();
-                        String callBackListener = eventBase.callBackListener();
+                        String callBackListener = eventBase.callBackListener();//android定义好的，比如短按是onClick 长按是onLongClick
 
 
 
-                        //通过AnnotationType获取onClick注解的value值
+                        //通过AnnotationType获取onClick注解的value值，添加了注解的 布局id组
                         try {
-                            Method valueMethod = annotationType.getDeclaredMethod("value");
-                            int[] viewIds=(int[])valueMethod.invoke(annotation);
+                            Method valueMethod = annotationType.getDeclaredMethod("value");//通过注解获取方法
+                            int[] viewIds=(int[])valueMethod.invoke(annotation);//获取注解中的id组
 
                             ListenerInvocationHandler listenerInvocationHandler = new ListenerInvocationHandler(activity);
-                            listenerInvocationHandler.add(callBackListener,method);
+                            listenerInvocationHandler.add(callBackListener,method);//method为用户自己写的方法
 
                             //需要一个代理 weisheme 不用onClick.value()
                             Object listener = Proxy.newProxyInstance(listenerType.getClassLoader(),

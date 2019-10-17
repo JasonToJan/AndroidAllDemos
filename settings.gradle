@@ -35,7 +35,7 @@ include ':player:exomedialib',':player:playlistlib',':player:exomediademo'
 include ':ndk:ndkdemo'
 
 //opengl相关
-include 'opengl:opengles'
+include ':opengl:opengles', ':opengl:neopencv'
 
 //demo相关
 include  ':otherdemo:reflectlibrary'

@@ -34,7 +34,7 @@ public class OpenGlActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         if(v==mainBinding.aoDemoBtn){
-            mainBinding.aoDemoBtn.setText(times++%2==1?stringFromJNI():"Click Me");
+//            mainBinding.aoDemoBtn.setText(times++%2==1?stringFromJNI():"Click Me");
         }else if(v==mainBinding.aoDemoTriangleBtn){
             startActivity(new Intent(this, LessonOneActivity.class));
         }
