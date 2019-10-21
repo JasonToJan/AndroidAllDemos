@@ -16,9 +16,10 @@
             <option value="$PROJECT_DIR$/opengl/opengles" />
             <option value="$PROJECT_DIR$/otherdemo" />
             <option value="$PROJECT_DIR$/otherdemo/reflectlibrary" />
-            <option value="$PROJECT_DIR$/photos" />
-            <option value="$PROJECT_DIR$/photos/takephoto" />
-            <option value="$PROJECT_DIR$/photos/takephotodemo" />
+            <option value="$PROJECT_DIR$/picture" />
+            <option value="$PROJECT_DIR$/picture/myimageloader" />
+            <option value="$PROJECT_DIR$/picture/takephoto" />
+            <option value="$PROJECT_DIR$/picture/takephotodemo" />
             <option value="$PROJECT_DIR$/player" />
             <option value="$PROJECT_DIR$/player/exomediademo" />
             <option value="$PROJECT_DIR$/player/exomedialib" />

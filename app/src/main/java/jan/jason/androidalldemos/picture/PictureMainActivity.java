@@ -1,4 +1,4 @@
-package jan.jason.androidalldemos.photo;
+package jan.jason.androidalldemos.picture;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -8,9 +8,9 @@ import android.view.View;
 
 import org.devio.simple.MainActivityTakePhoto;
 
+import androidalldemo.jan.jason.myimageloader.ImageLoaderMainActivity;
 import jan.jason.androidalldemos.R;
 import jan.jason.androidalldemos.databinding.ActivityMainPhotoBinding;
-import jan.jason.androidalldemos.databinding.ActivityMainToolsBinding;
 
 /**
  * desc: 图片类主页
@@ -18,7 +18,7 @@ import jan.jason.androidalldemos.databinding.ActivityMainToolsBinding;
  * user: JasonJan 1211241203@qq.com
  * time: 2019/6/17 10:11
  **/
-public class PhotoMainActivity extends AppCompatActivity implements View.OnClickListener{
+public class PictureMainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ActivityMainPhotoBinding mainBinding;
 
@@ -28,6 +28,7 @@ public class PhotoMainActivity extends AppCompatActivity implements View.OnClick
         mainBinding= DataBindingUtil.setContentView(this, R.layout.activity_main_photo);
 
         mainBinding.ampBtn1.setOnClickListener(this);
+        mainBinding.ampBtn2.setOnClickListener(this);
     }
 
     @Override
@@ -36,6 +37,10 @@ public class PhotoMainActivity extends AppCompatActivity implements View.OnClick
 
             case R.id.amp_btn1:
                 startActivity(new Intent(this, MainActivityTakePhoto.class));
+                break;
+
+            case R.id.amp_btn2:
+                startActivity(new Intent(this, ImageLoaderMainActivity.class));
                 break;
         }
     }

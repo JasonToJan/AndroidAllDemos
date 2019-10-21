@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 
 import com.devbrackets.android.exomediademo.manager.PlaylistManager;
 
+import androidalldemo.jan.jason.myimageloader.ApplicationUtils;
+
 
 /**
  * Description: App全局入口
@@ -29,6 +31,15 @@ public class MyApplication extends Application {
 
         initDebug();
 
+        initData();
+
+    }
+
+    /**
+     * 初始化数据相关
+     */
+    private void initData(){
+        ApplicationUtils.doOnCreate(this);
     }
 
 

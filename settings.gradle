@@ -23,8 +23,8 @@ include ':tools:notchtools',':tools:notchfit',':tools:pictureselector',
         ':tools:multirrecyclerview', ':tools:multirecyclerviewdemo',':tools:bulk'
 
 
-//photos相关
-include ':photos:takephoto',':photos:takephotodemo'
+//套相关
+include ':picture:takephoto',':picture:takephotodemo', ':picture:myimageloader'
 
 
 //player相关

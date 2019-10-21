@@ -38,7 +38,7 @@
         <activity android:name=".transitions.activitytransition.TransitionOptionsMoreActivity" />
         <activity android:name=".transitions.activitytransition.TransitionDemoActivity" />
         <activity android:name=".tools.ToolsMainActivity" />
-        <activity android:name=".photo.PhotoMainActivity" />
+        <activity android:name=".picture.PictureMainActivity" />
         <activity android:name=".player.PlayerMainActivity" />
         <activity android:name=".ndk.NdkMainActivity" />
     </application>

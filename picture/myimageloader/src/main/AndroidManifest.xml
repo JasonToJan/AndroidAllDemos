@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+package="androidalldemo.jan.jason.myimageloader"  >
+<application>
+
+    <activity android:name=".ImageLoaderMainActivity"
+        android:screenOrientation="portrait"
+        android:configChanges="orientation|keyboardHidden|screenSize"></activity>
+
+    <activity android:name=".selectimage.ChoosePictureActivity"
+        android:screenOrientation="portrait"
+        android:configChanges="orientation|keyboardHidden|screenSize"></activity>
+
+
+</application>
+</manifest>

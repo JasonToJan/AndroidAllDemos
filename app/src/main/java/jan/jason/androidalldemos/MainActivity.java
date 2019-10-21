@@ -9,7 +9,7 @@ import android.view.View;
 import androidalldemo.popupwindowdemo.PopupMainActivity;
 import jan.jason.androidalldemos.databinding.ActivityMainAllBinding;
 import jan.jason.androidalldemos.ndk.NdkMainActivity;
-import jan.jason.androidalldemos.photo.PhotoMainActivity;
+import jan.jason.androidalldemos.picture.PictureMainActivity;
 import jan.jason.androidalldemos.player.PlayerMainActivity;
 import jan.jason.androidalldemos.tools.ToolsMainActivity;
 import jan.jason.androidalldemos.transitions.TransitionMainActivity;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.am_btn5:
-                startActivity(new Intent(this, PhotoMainActivity.class));
+                startActivity(new Intent(this, PictureMainActivity.class));
                 break;
 
             case R.id.am_btn6:

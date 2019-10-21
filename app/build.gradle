@@ -68,7 +68,8 @@ dependencies {
     implementation project(":tools:bulk")
 
     //图片相关
-    implementation project(":photos:takephotodemo")
+    implementation project(":picture:takephotodemo")
+    implementation project(":picture:myimageloader")
 
     //播放器相关
     implementation project(":player:exomediademo")
